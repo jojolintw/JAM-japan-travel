@@ -11,8 +11,8 @@
 
     <link href="~/lib/font-awesome/css/fontawesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/prjJapanTravelBackendMVC.styles.css" asp-append-version="true" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <link rel="stylesheet" href="~/prjJapanTravel_BackendMVC.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -40,10 +40,10 @@
         <div class="nav-header">
             <div class="brand-logo">
                 <a asp-controller="Home" asp-action="Index">
-                    <b class="logo-abbr"><img src="images/logo.png" alt=""> </b>
-                    <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>
+                    <b class="logo-abbr"><img src="~/images/logo.png" alt=""> </b>
+                    <span class="logo-compact"><img src="~/images/logo-compact.png" alt=""></span>
                     <span class="brand-title">
-                        <img src="images/logo-text.png" alt="">                      
+                        <img src="~/images/logo-text.png" alt="">                      
                     </span>
                 </a>
             </div>
@@ -87,7 +87,7 @@
                                     <span class="">3 New Messages</span>
 
                                 </div>
-                                <div class="dropdown-content-body">
+                                @* <div class="dropdown-content-body">
                                     <ul>
                                         <li class="notification-unread">
                                             <a href="javascript:void()">
@@ -101,7 +101,7 @@
                                         </li>
                                         <li class="notification-unread">
                                             <a href="javascript:void()">
-                                                <img class="float-left mr-3 avatar-img" src="images/avatar/2.jpg" alt="">
+                                                <img class="float-left mr-3 avatar-img" src="" alt="">
                                                 <div class="notification-content">
                                                     <div class="notification-heading">Adam Smith</div>
                                                     <div class="notification-timestamp">08 Hours ago</div>
@@ -131,7 +131,7 @@
                                         </li>
                                     </ul>
 
-                                </div>
+                                </div> *@
                             </div>
                         </li>
                         <li class="icons dropdown">
@@ -203,7 +203,7 @@
                         <li class="icons dropdown">
                             <div class="user-img c-pointer position-relative" data-toggle="dropdown">
                                 <span class="activity active"></span>
-                                <img src="images/user/1.png" height="40" width="40" alt="">
+                                <img src="" height="40" width="40" alt="">
                             </div>
                             <div class="drop-down dropdown-profile   dropdown-menu">
                                 <div class="dropdown-content-body">
@@ -243,7 +243,7 @@
                             <i class="icon-speedometer menu-icon"></i></i><span class="nav-text">管理員管理系統</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a asp-controller="Admin" asp-action="Index">管理員管理</a></li>
+                            <li><a asp-controller="Admin" asp-action="List">管理員管理</a></li>
                         </ul>
                     </li>
                     <li class="mega-menu mega-menu-sm">
@@ -251,7 +251,7 @@
                             <i class="icon-globe-alt menu-icon"></i><span class="nav-text">會員管理系統</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a asp-controller="Member" asp-action="Index">會員管理</a></li>
+                            <li><a asp-controller="Member" asp-action="List">會員管理</a></li>
                         </ul>
                     </li>
                     <br />
@@ -402,11 +402,11 @@
     <script src="~/lib/font-awesome/js/fontawesome.min.js"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="plugins/common/common.min.js"></script>
-    <script src="js/custom.min.js"></script>
-    <script src="js/settings.js"></script>
-    <script src="js/gleek.js"></script>
-    <script src="js/styleSwitcher.js"></script>
+    <script src="~/plugins/common/common.min.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/settings.js"></script>
+    <script src="~/js/gleek.js"></script>
+    <script src="~/js/styleswitcher.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

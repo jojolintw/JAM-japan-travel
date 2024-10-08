@@ -1,0 +1,113 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Admin管理員>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>List</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AdminId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdminName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Account)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdminManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IniteraryManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShipmentManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CouponManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CommentManageStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BlogManageStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdminId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdminName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Account)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Photo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdminManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IniteraryManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShipmentManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CouponManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CommentManageStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlogManageStatus)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

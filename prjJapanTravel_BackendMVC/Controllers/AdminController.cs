@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using prjJapanTravel_BackendMVC.Models;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
     public class AdminController : Controller
     {
-        public IActionResult Index()
+        public JapanTravelContext _context;
+
+        public AdminController(JapanTravelContext context)
         {
-            return View();
+            _context = context;
+        }
+        public IActionResult List()
+        {
+            var Admindatas = _context.Admin管理員s;
+            return View(Admindatas);
         }
     }
 }

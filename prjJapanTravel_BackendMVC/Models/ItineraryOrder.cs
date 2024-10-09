@@ -2,13 +2,19 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("ItineraryOrder")]
 public partial class ItineraryOrder
 {
+    [Key]
     public int ItineraryOrderId { get; set; }
 
+    [StringLength(50)]
     public string ItineraryOrderNumber { get; set; }
 
     public int MemberId { get; set; }
@@ -17,49 +23,72 @@ public partial class ItineraryOrder
 
     public int Quantity { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime OrderTime { get; set; }
 
     public int PaymentMethodId { get; set; }
 
     public int PaymentStatusId { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime? PaymentTime { get; set; }
 
     public int OrderStatusId { get; set; }
 
     public int? CouponId { get; set; }
 
+    [Column(TypeName = "money")]
     public decimal TotalAmount { get; set; }
 
+    [StringLength(50)]
     public string Remarks { get; set; }
 
     public int? ReviewRating { get; set; }
 
+    [StringLength(50)]
     public string ReveiwContent { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime? ReviewTime { get; set; }
 
     public bool? ReviewStatus { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeLastName { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeFirstName { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeIdnumber { get; set; }
 
+    [StringLength(50)]
     public string RepresentativePassportNumber { get; set; }
 
+    [StringLength(50)]
     public string RepresentativePhoneNumber { get; set; }
 
+    [ForeignKey("CouponId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual Coupon Coupon { get; set; }
 
+    [ForeignKey("ItineraryDateSystemId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual ItineraryDate ItineraryDateSystem { get; set; }
 
+    [ForeignKey("MemberId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual Member Member { get; set; }
 
+    [ForeignKey("OrderStatusId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual OrderStatus OrderStatus { get; set; }
 
+    [ForeignKey("PaymentMethodId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual PaymentMethod PaymentMethod { get; set; }
 
+    [ForeignKey("PaymentStatusId")]
+    [InverseProperty("ItineraryOrders")]
     public virtual PaymentStatus PaymentStatus { get; set; }
 }

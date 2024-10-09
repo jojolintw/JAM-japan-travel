@@ -2,16 +2,25 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("PaymentStatus")]
 public partial class PaymentStatus
 {
+    [Key]
     public int PaymentStatusId { get; set; }
 
+    [Column("PaymentStatus")]
+    [StringLength(50)]
     public string PaymentStatus1 { get; set; }
 
+    [InverseProperty("PaymentStatus")]
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
 
+    [InverseProperty("PaymentStatus")]
     public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
 }

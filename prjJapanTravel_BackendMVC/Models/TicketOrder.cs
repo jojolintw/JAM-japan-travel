@@ -2,60 +2,88 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("TicketOrder")]
 public partial class TicketOrder
 {
+    [Key]
     public int TicketOrderId { get; set; }
 
+    [StringLength(50)]
     public string TicketOrderNumber { get; set; }
 
     public int MemberId { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime OrderTime { get; set; }
 
     public int PaymentMethodId { get; set; }
 
     public int PaymentStatusId { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime? PaymentTime { get; set; }
 
     public int OrderStatusId { get; set; }
 
     public int? CouponId { get; set; }
 
+    [Column(TypeName = "money")]
     public decimal TotalAmount { get; set; }
 
+    [StringLength(50)]
     public string Remarks { get; set; }
 
     public int? ReviewRating { get; set; }
 
+    [StringLength(50)]
     public string ReviewContent { get; set; }
 
+    [Column(TypeName = "datetime")]
     public DateTime? ReviewTime { get; set; }
 
     public bool? ReviewStatus { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeLastName { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeFirstName { get; set; }
 
+    [StringLength(50)]
     public string RepresentativeIdnumber { get; set; }
 
+    [StringLength(50)]
     public string RepresentativePassportNumber { get; set; }
 
+    [StringLength(50)]
     public string RepresentativePhoneNumber { get; set; }
 
+    [ForeignKey("CouponId")]
+    [InverseProperty("TicketOrders")]
     public virtual Coupon Coupon { get; set; }
 
+    [ForeignKey("MemberId")]
+    [InverseProperty("TicketOrders")]
     public virtual Member Member { get; set; }
 
+    [ForeignKey("OrderStatusId")]
+    [InverseProperty("TicketOrders")]
     public virtual OrderStatus OrderStatus { get; set; }
 
+    [ForeignKey("PaymentMethodId")]
+    [InverseProperty("TicketOrders")]
     public virtual PaymentMethod PaymentMethod { get; set; }
 
+    [ForeignKey("PaymentStatusId")]
+    [InverseProperty("TicketOrders")]
     public virtual PaymentStatus PaymentStatus { get; set; }
 
+    [InverseProperty("TicketOrder")]
     public virtual ICollection<TicketOrderItem> TicketOrderItems { get; set; } = new List<TicketOrderItem>();
 }

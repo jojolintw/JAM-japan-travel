@@ -14,8 +14,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult List()
         {
-            var Admindatas = _context.Admin管理員s;
-            return View(Admindatas);
+
+            return View();
         }
     }
 }

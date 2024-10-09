@@ -23,7 +23,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Admin管理員]",
+         "Name": "[dbo].[Admin]",
          "ObjectType": 0
       },
       {
@@ -43,15 +43,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[City]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Coupon]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[DetailSpot明細景點]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Entourage]",
          "ObjectType": 0
       },
       {
@@ -151,7 +151,7 @@
    "UseDateOnlyTimeOnly": true,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
-   "UseFluentApiOnly": true,
+   "UseFluentApiOnly": false,
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": true,

@@ -2,18 +2,29 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("Article圖片")]
 public partial class Article圖片
 {
+    [Key]
     public int 圖片編號 { get; set; }
 
     public int 文章編號 { get; set; }
 
+    [Required]
+    [Column(TypeName = "image")]
     public byte[] 圖片 { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string 圖片說明 { get; set; }
 
+    [ForeignKey("文章編號")]
+    [InverseProperty("Article圖片s")]
     public virtual Article文章 文章編號Navigation { get; set; }
 }

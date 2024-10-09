@@ -2,18 +2,28 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("文章hashtag中介表")]
 public partial class 文章hashtag中介表
 {
+    [Key]
     public int 文章hashtag編號 { get; set; }
 
     public int 文章編號 { get; set; }
 
+    [Column("hashtag編號")]
     public int Hashtag編號 { get; set; }
 
+    [ForeignKey("Hashtag編號")]
+    [InverseProperty("文章hashtag中介表s")]
     public virtual Hashtag Hashtag編號Navigation { get; set; }
 
+    [ForeignKey("文章編號")]
+    [InverseProperty("文章hashtag中介表s")]
     public virtual Article文章 文章編號Navigation { get; set; }
 }

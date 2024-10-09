@@ -8,15 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Theme")]
-public partial class Theme
+[Table("City")]
+public partial class City
 {
     [Key]
-    public int ThemeSystemId { get; set; }
+    [Column("CityID")]
+    public int CityId { get; set; }
 
+    [Required]
+    [Column("City")]
     [StringLength(50)]
-    public string ThemeName { get; set; }
+    public string City1 { get; set; }
 
-    [InverseProperty("ThemeSystem")]
-    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
+    [Required]
+    [StringLength(50)]
+    public string CityCode { get; set; }
+
+    [InverseProperty("City")]
+    public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 }

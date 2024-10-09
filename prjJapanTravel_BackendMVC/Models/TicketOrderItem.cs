@@ -2,11 +2,16 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("TicketOrderItem")]
 public partial class TicketOrderItem
 {
+    [Key]
     public int TicketOrderItemId { get; set; }
 
     public int TicketOrderId { get; set; }
@@ -15,9 +20,14 @@ public partial class TicketOrderItem
 
     public int Quantity { get; set; }
 
+    [InverseProperty("TicketOrderItem")]
     public virtual ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
 
+    [ForeignKey("ScheduleId")]
+    [InverseProperty("TicketOrderItems")]
     public virtual Schedule Schedule { get; set; }
 
+    [ForeignKey("TicketOrderId")]
+    [InverseProperty("TicketOrderItems")]
     public virtual TicketOrder TicketOrder { get; set; }
 }

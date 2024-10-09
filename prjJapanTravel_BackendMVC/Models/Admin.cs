@@ -2,22 +2,34 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-public partial class Admin管理員
+[Table("Admin")]
+public partial class Admin
 {
+    [Key]
+    [Column("AdminID")]
     public int AdminId { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string AdminName { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string Account { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string Password { get; set; }
 
-    public string Email { get; set; }
-
-    public byte[] Photo { get; set; }
+    [Column("imagePath")]
+    [StringLength(50)]
+    public string ImagePath { get; set; }
 
     public bool AdminManageStatus { get; set; }
 

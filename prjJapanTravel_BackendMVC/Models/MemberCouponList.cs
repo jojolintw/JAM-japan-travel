@@ -2,20 +2,32 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("MemberCouponList")]
 public partial class MemberCouponList
 {
+    [Key]
+    [Column("MemberCouponID")]
     public int MemberCouponId { get; set; }
 
+    [Column("MemberID")]
     public int MemberId { get; set; }
 
+    [Column("CouponID")]
     public int CouponId { get; set; }
 
     public bool Used { get; set; }
 
+    [ForeignKey("CouponId")]
+    [InverseProperty("MemberCouponLists")]
     public virtual Coupon Coupon { get; set; }
 
+    [ForeignKey("MemberId")]
+    [InverseProperty("MemberCouponLists")]
     public virtual Member Member { get; set; }
 }

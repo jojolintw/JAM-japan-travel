@@ -2,46 +2,72 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("Member")]
 public partial class Member
 {
+    [Key]
+    [Column("MemberID")]
     public int MemberId { get; set; }
 
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
+    [Required]
+    [StringLength(50)]
+    public string MemberName { get; set; }
 
     public bool? Gender { get; set; }
 
-    public DateOnly Birthday { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? Birthday { get; set; }
 
-    public string Country { get; set; }
+    [Column("CityID")]
+    public int? CityId { get; set; }
 
+    [StringLength(50)]
     public string Phone { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string Email { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string Password { get; set; }
 
-    public byte[] MemberPhoto { get; set; }
+    [StringLength(50)]
+    public string Photoimage { get; set; }
 
-    public int? MemberLevelId { get; set; }
+    [Column("MemberLevelID")]
+    public int MemberLevelId { get; set; }
 
+    [Column("MemberStatusID")]
     public int MemberStatusId { get; set; }
 
-    public virtual ICollection<Entourage> Entourages { get; set; } = new List<Entourage>();
+    [ForeignKey("CityId")]
+    [InverseProperty("Members")]
+    public virtual City City { get; set; }
 
+    [InverseProperty("Member")]
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
 
+    [InverseProperty("Member")]
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();
 
+    [ForeignKey("MemberLevelId")]
+    [InverseProperty("Members")]
     public virtual MemberLevel MemberLevel { get; set; }
 
+    [ForeignKey("MemberStatusId")]
+    [InverseProperty("Members")]
     public virtual MemberStatus MemberStatus { get; set; }
 
+    [InverseProperty("Member")]
     public virtual ICollection<MyCollection> MyCollections { get; set; } = new List<MyCollection>();
 
+    [InverseProperty("Member")]
     public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
 }

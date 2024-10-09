@@ -2,16 +2,23 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Keyless]
+[Table("ItinerarytoPic")]
 public partial class ItinerarytoPic
 {
     public int? ItineraryPicSystemId { get; set; }
 
     public int? ItinerarySystemId { get; set; }
 
+    [ForeignKey("ItineraryPicSystemId")]
     public virtual Image ItineraryPicSystem { get; set; }
 
+    [ForeignKey("ItinerarySystemId")]
     public virtual Itinerary ItinerarySystem { get; set; }
 }

@@ -2,24 +2,37 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("Coupon")]
 public partial class Coupon
 {
+    [Key]
+    [Column("CouponID")]
     public int CouponId { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string CouponName { get; set; }
 
+    [Column(TypeName = "decimal(18, 0)")]
     public decimal Discount { get; set; }
 
-    public DateTime ExpirationDate { get; set; }
+    [Column("Expiration date")]
+    public DateOnly ExpirationDate { get; set; }
 
     public bool CouponStatus { get; set; }
 
+    [InverseProperty("Coupon")]
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
 
+    [InverseProperty("Coupon")]
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();
 
+    [InverseProperty("Coupon")]
     public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
 }

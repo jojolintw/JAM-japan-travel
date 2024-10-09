@@ -2,18 +2,27 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("ItineraryDate")]
 public partial class ItineraryDate
 {
+    [Key]
     public int ItineraryDateSystemId { get; set; }
 
     public int? ItinerarySystemId { get; set; }
 
+    [StringLength(20)]
     public string DepartureDate { get; set; }
 
+    [InverseProperty("ItineraryDateSystem")]
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
 
+    [ForeignKey("ItinerarySystemId")]
+    [InverseProperty("ItineraryDates")]
     public virtual Itinerary ItinerarySystem { get; set; }
 }

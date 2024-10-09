@@ -2,24 +2,41 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
+[Table("Passenger")]
 public partial class Passenger
 {
+    [Key]
     public int PassengerId { get; set; }
 
     public int TicketOrderItemId { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string PassengerLastName { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string PassengerFirstName { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string PassengerIdNumber { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string PassportNumber { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string PhoneNumber { get; set; }
 
+    [ForeignKey("TicketOrderItemId")]
+    [InverseProperty("Passengers")]
     public virtual TicketOrderItem TicketOrderItem { get; set; }
 }

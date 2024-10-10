@@ -8,6 +8,10 @@ namespace prjJapanTravel_BackendMVC.Models;
 
 public partial class JapanTravelContext : DbContext
 {
+    public JapanTravelContext()
+    {
+    }
+
     public JapanTravelContext(DbContextOptions<JapanTravelContext> options)
         : base(options)
     {

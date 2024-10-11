@@ -10,4 +10,6 @@ public partial class HashtagMain
     public int HashtagNumber { get; set; }
 
     public string HashtagName { get; set; }
+
+    public virtual ICollection<ArticleHashtag> ArticleHashtags { get; set; } = new List<ArticleHashtag>();
 }

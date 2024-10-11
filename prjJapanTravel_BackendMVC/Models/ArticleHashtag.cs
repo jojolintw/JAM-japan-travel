@@ -12,4 +12,8 @@ public partial class ArticleHashtag
     public int ArticleNumber { get; set; }
 
     public int HashtagNumber { get; set; }
+
+    public virtual ArticleMain ArticleNumberNavigation { get; set; }
+
+    public virtual HashtagMain HashtagNumberNavigation { get; set; }
 }

@@ -14,4 +14,6 @@ public partial class ArticlePic
     public byte[] Pic { get; set; }
 
     public string PicDescription { get; set; }
+
+    public virtual ArticleMain ArticleNumberNavigation { get; set; }
 }

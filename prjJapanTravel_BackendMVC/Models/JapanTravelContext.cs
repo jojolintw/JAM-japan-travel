@@ -119,6 +119,16 @@ public partial class JapanTravelContext : DbContext
             entity.HasKey(e => e.ArticleHashtagnumber).HasName("PK_文章hashtag中介表_1");
 
             entity.ToTable("ArticleHashtag");
+
+            entity.HasOne(d => d.ArticleNumberNavigation).WithMany(p => p.ArticleHashtags)
+                .HasForeignKey(d => d.ArticleNumber)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleHashtag_ArticleMain");
+
+            entity.HasOne(d => d.HashtagNumberNavigation).WithMany(p => p.ArticleHashtags)
+                .HasForeignKey(d => d.HashtagNumber)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleHashtag_HashtagMain");
         });
 
         modelBuilder.Entity<ArticleMain>(entity =>
@@ -131,6 +141,16 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
+
+            entity.HasOne(d => d.ArticleStatusnumberNavigation).WithMany(p => p.ArticleMains)
+                .HasForeignKey(d => d.ArticleStatusnumber)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleMain_ArticleStatus");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.ArticleMains)
+                .HasForeignKey(d => d.MemberId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleMain_Member");
         });
 
         modelBuilder.Entity<ArticlePic>(entity =>
@@ -147,6 +167,11 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.PicDescription)
                 .IsRequired()
                 .HasMaxLength(50);
+
+            entity.HasOne(d => d.ArticleNumberNavigation).WithMany(p => p.ArticlePics)
+                .HasForeignKey(d => d.ArticleNumber)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticlePic_ArticleMain");
         });
 
         modelBuilder.Entity<ArticleStatus>(entity =>

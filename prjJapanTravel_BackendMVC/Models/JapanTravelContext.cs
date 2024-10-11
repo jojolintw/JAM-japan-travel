@@ -137,6 +137,9 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("ArticleMain");
 
+            entity.Property(e => e.ArticleContent)
+                .IsRequired()
+                .HasMaxLength(500);
             entity.Property(e => e.ArticleTitle)
                 .IsRequired()
                 .HasMaxLength(50);

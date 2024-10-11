@@ -18,19 +18,15 @@
 
   <ItemGroup>
     <Folder Include="PartialClass\Member\" />
-    <Folder Include="PartialClass\Admin\" />
     <Folder Include="PartialClass\Blog\" />
     <Folder Include="PartialClass\Order\" />
     <Folder Include="PartialClass\Shipment\" />
     <Folder Include="PartialClass\Product\" />
-    <Folder Include="ViewModels\LoginViewModels\" />
     <Folder Include="ViewModels\AdminViewModels\" />
-    <Folder Include="ViewModels\MemberViewModels\" />
     <Folder Include="ViewModels\BlogViewModels\" />
     <Folder Include="ViewModels\OrderViewModels\" />
     <Folder Include="ViewModels\ShipmentViewModels\" />
     <Folder Include="ViewModels\ProductViewModels\" />
-    <Folder Include="wwwroot\images\Admin\" />
     <Folder Include="wwwroot\images\Blog\" />
     <Folder Include="wwwroot\images\Order\" />
     <Folder Include="wwwroot\images\Shipment\" />

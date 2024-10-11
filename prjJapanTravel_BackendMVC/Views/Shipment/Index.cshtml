@@ -1,4 +1,65 @@
-﻿<div class="text-center">
-    <h1 class="display-4">船票管理系統</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+﻿@* @model IEnumerable<prjJapanTravel_BackendMVC.Models.Route> *@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>航線清單</h1>
+
+<p>
+    <a asp-action="Create">新增航線</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                序號
+            </th>
+            <th>
+                出航港口
+            </th>
+            <th>
+                目的地
+            </th>
+            <th>
+                票價
+            </th>
+            <th>
+                簡介
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @item.OriginPortName <!-- 顯示出發港口名稱 -->
+                    </td>
+                    <td>
+                        @item.DestinationPortName <!-- 顯示目的地港口名稱 -->
+                    </td>
+                    <td>
+                        @item.Price <!-- 顯示票價 -->
+                    </td>
+                    <td>
+                        @item.RouteDescription <!-- 顯示簡介 -->
+                    </td>
+                    <td>
+                        @Html.ActionLink("修改", "Edit", "Product", new { id = item.RouteId }, null) |
+                        @Html.ActionLink("刪除", "Delete", "Product", new { id = item.RouteId },
+                             new { onclick = "return confirm('確定要刪除嗎')" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

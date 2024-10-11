@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjJapanTravel_BackendMVC.Models;
+using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -10,12 +11,23 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             _JP = JP;
         }
-
         public IActionResult List()
         {
-            
-            var datas = from iti in _JP.Itineraries
-                        select iti;
+            var datas = _JP.Itineraries.Select(n => new ItineraryListViewModel()
+            {
+                行程系統編號 = n.ItinerarySystemId,
+                行程編號 = n.ItineraryId,
+                行程名稱 = n.ItineraryName,
+                體驗項目 = n.ActivitySystemId,
+                總團位 = n.Stock,
+                價格 = n.Price,
+                體驗主題 = n.ThemeSystemId,
+                地區 = n.AreaSystemId,
+                行程圖片 = n.ItineraryPicSystemId,
+                行程詳情 = n.ItineraryDetail,
+                行程簡介 = n.ItineraryBrief,
+                行程注意事項 = n.ItineraryNotes
+            });
             return View(datas);
         }
 
@@ -47,13 +59,49 @@ namespace prjJapanTravel_BackendMVC.Controllers
             }
             return RedirectToAction("List");
         }
-
         public IActionResult ItineraryEdit(int? id)
         {
-            Itinerary iti = _JP.Itineraries.FirstOrDefault(n => n.ItinerarySystemId == id);
-            if (iti == null)
+            var data = _JP.Itineraries.Where(n => n.ItinerarySystemId == id).Select(n => new ItineraryListViewModel()
+            {
+                行程系統編號 = n.ItinerarySystemId,
+                行程編號 = n.ItineraryId,
+                行程名稱 = n.ItineraryName,
+                體驗項目 = n.ActivitySystemId,
+                總團位 = n.Stock,
+                價格 = n.Price,
+                體驗主題 = n.ThemeSystemId,
+                地區 = n.AreaSystemId,
+                行程圖片 = n.ItineraryPicSystemId,
+                行程詳情 = n.ItineraryDetail,
+                行程簡介 = n.ItineraryBrief,
+                行程注意事項 = n.ItineraryNotes
+            }).FirstOrDefault();
+            return View(data);
+        }
+        [HttpPost]
+        public IActionResult ItineraryEdit(ItineraryListViewModel itiModel)
+        {
+            var itinerary = _JP.Itineraries.FirstOrDefault(n => n.ItinerarySystemId == itiModel.行程系統編號);
+            if (itinerary == null)
+            {
                 return RedirectToAction("List");
-            return View(iti);
+            }
+
+            itinerary.ItineraryId = itiModel.行程編號;
+            itinerary.ItineraryName = itiModel.行程名稱;
+            itinerary.ActivitySystemId = itiModel.體驗項目;
+            itinerary.Stock = itiModel.總團位;
+            itinerary.Price = itiModel.價格;
+            itinerary.ThemeSystemId = itiModel.體驗主題;
+            itinerary.AreaSystemId = itiModel.地區;
+            itinerary.ItineraryPicSystemId = itiModel.行程圖片;
+            itinerary.ItineraryDetail = itiModel.行程詳情;
+            itinerary.ItineraryBrief = itiModel.行程簡介;
+            itinerary.ItineraryNotes = itiModel.行程注意事項;
+
+            _JP.SaveChanges();
+            return RedirectToAction("List");
+            
         }
     }
 }

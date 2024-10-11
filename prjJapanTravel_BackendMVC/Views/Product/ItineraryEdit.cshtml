@@ -1,0 +1,87 @@
+﻿@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.ItineraryListViewModel
+
+@{
+    ViewData["Title"] = "修改行程";
+}
+
+<h1>修改行程</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ItineraryEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="行程系統編號" class="control-label"></label>
+                <input asp-for="行程系統編號" class="form-control" />
+                <span asp-validation-for="行程系統編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程編號" class="control-label"></label>
+                <input asp-for="行程編號" class="form-control" />
+                <span asp-validation-for="行程編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程名稱" class="control-label"></label>
+                <input asp-for="行程名稱" class="form-control" />
+                <span asp-validation-for="行程名稱" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="體驗項目" class="control-label"></label>
+                <input asp-for="體驗項目" class="form-control" />
+                <span asp-validation-for="體驗項目" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="總團位" class="control-label"></label>
+                <input asp-for="總團位" class="form-control" />
+                <span asp-validation-for="總團位" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="價格" class="control-label"></label>
+                <input asp-for="價格" class="form-control" />
+                <span asp-validation-for="價格" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="體驗主題" class="control-label"></label>
+                <input asp-for="體驗主題" class="form-control" />
+                <span asp-validation-for="體驗主題" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="地區" class="control-label"></label>
+                <input asp-for="地區" class="form-control" />
+                <span asp-validation-for="地區" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程圖片" class="control-label"></label>
+                <input asp-for="行程圖片" class="form-control" />
+                <span asp-validation-for="行程圖片" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程詳情" class="control-label"></label>
+                <input asp-for="行程詳情" class="form-control" />
+                <span asp-validation-for="行程詳情" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程簡介" class="control-label"></label>
+                <input asp-for="行程簡介" class="form-control" />
+                <span asp-validation-for="行程簡介" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程注意事項" class="control-label"></label>
+                <input asp-for="行程注意事項" class="form-control" />
+                <span asp-validation-for="行程注意事項" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="送出" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="List">取消</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -10,71 +10,73 @@
     <div style="padding:50px">
         <div class="row">
             <div class="col-4">
+                <input type="text" id="AdminId" name="AdminId" class="form-control" value="" />
                 <div class="mb-3">
                     <label for="AdminName" class="form-label" style="font-size:20px">管理員姓名</label>
-                    <input type="text" class="form-control" id="AdminName" aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="AdminName" name="AdminName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="AdminAccount" class="form-label " style="font-size:20px">帳號</label>
-                    <input type="text" class="form-control" id="AdminAccount" aria-describedby="emailHelp" disabled="disabled">
+                    <label for="Account" class="form-label " style="font-size:20px">帳號</label>
+                    <input type="text" id="Account" name="Account" class="form-control" id="AdminAccount" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="AdminPassword" class="form-label" style="font-size:20px">密碼</label>
-                    <input type="password" class="form-control" id="AdminPassword" disabled="disabled">
+                    <label for="Password" class="form-label" style="font-size:20px">密碼</label>
+                    <input type="text" id="Password" name="Password" class="form-control" disabled="disabled">
                 </div>
-                <button type="submit" class="btn btn-primary">送出並儲存</button>
+                <button type="button" id="InsertAdmin" class="btn btn-primary">新增管理員</button>
+                <button type="submit" class="btn btn-primary" disabled="disabled">送出並儲存</button>
             </div>
         
             @* ================================================================================= *@
-            <div class="col-4" style="margin-left:75px;margin-top:30px;font-size:25px">
+            <div class="col-4"  style="margin-left:75px;margin-top:30px;font-size:25px">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled"/>
+                    <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         管理員管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="MemberManageStatus" name="MemberManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         會員管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="IniteraryManageStatus" name="IniteraryManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         行程管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="ShipmentManageStatus" name="ShipmentManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         航班管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="OrderManageStatus" name="OrderManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         訂單管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="CouponManageStatus" name="CouponManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         優惠券管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="CommentManageStatus" name="CommentManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         評論管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <input id="BlogManageStatus" name="BlogManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
                     <label class="form-check-label" for="">
                         部落格管理權限
                     </label>
@@ -82,13 +84,13 @@
             </div>
             @* ============================================================================================= *@
              <div class="col-3">
-                <img src="~/images/Admin/Noimage.png" class="img-thumbnail" alt="..." style="height:300px">        
-                <input type="file" class="form-control" style="margin-top:30px">
+                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
+                <input type="file" id="photo" name="photo" class="form-control" style="margin-top:30px" disabled="disabled">
             </div> 
     </div>
     </div>
 </form> 
-
+<button id="btntest">測試</button>
 <hr />
 <div class="row" style="margin-left:50px">
     @foreach(var item in Model)
@@ -96,7 +98,14 @@
         <div class="col-md-6 col-lg-3" id="divp @item.AdminId">
             <div class="card" style="width: 300px;height:400px" data-adminid="@item.AdminId">
                 <input type="text" value="@item.AdminId" />
-                <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px;padding:20px">
+                @if (item.ImagePath != null)
+                {
+                    <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px;padding:20px">
+                }
+                else
+                {
+                    <img class="img-fluid" src="~/images/Admin/Noimage.png" alt="" style="height:280px;padding:20px">
+                }
                 <div class="card-body">
                     <h5 class="card-title">@item.AdminName</h5>
                 </div>
@@ -108,24 +117,88 @@
 @section Scripts
 {
     <script>
-        const cards = document.querySelectorAll('.card');
+        const allcards = document.querySelectorAll('.card');
+        const alltext = document.querySelectorAll('.form-control');
+        const allcheck = document.querySelectorAll('.form-check-input');
+        const allimage = document.querySelectorAll('.img-fluid');
+
+
         const doman = "https://localhost:7146";
+        const AdminId = document.getElementById('AdminId');
+        const AdminName = document.getElementById('AdminName');
+        const Account = document.getElementById('Account');
+        const Password = document.getElementById('Password')
+        const AdminManageStatus = document.getElementById('AdminManageStatus');
+        const MemberManageStatus = document.getElementById('MemberManageStatus');
+        const IniteraryManageStatus = document.getElementById('IniteraryManageStatus');
+        const ShipmentManageStatus = document.getElementById('ShipmentManageStatus');
+        const OrderManageStatus = document.getElementById('OrderManageStatus');
+        const CouponManageStatus = document.getElementById('CouponManageStatus');
+        const CommentManageStatus = document.getElementById('CommentManageStatus');
+        const BlogManageStatus = document.getElementById('BlogManageStatus');
+        const AdminPhoto = document.getElementById('image');
+        const Imglist = document.getElementById('imglist');
+        const NoimageUrl = '/images/Admin/Noimage.png';
+        const imageUrl = '/images/Admin/';
+
+
         // 為每張卡片添加點擊事件
-        cards.forEach(card => {
+        allcards.forEach(card => {
             card.addEventListener('click', async function () {
                 // 從 data-adminid 屬性中取得 AdminId
                 const adminId = this.getAttribute('data-adminid');
 
-                const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
+                const response = await fetch(`${doman}/api/AdminAPI/GetData/?adminId=${adminId}`,
                 {
                     method:"Get"
                 })
 
                 const data = await response.json();
-                console.log(data.adminName);
-
-
+                console.log(data);
+                AdminId.value = data.adminId;
+                AdminName.value = data.adminName;
+                Account.value = data.account;
+                Password.value = data.password;
+                AdminManageStatus.checked = data.adminManageStatus ? true : false;
+                MemberManageStatus.checked = data.memberManageStatus ? true : false;
+                IniteraryManageStatus.checked = data.initeraryManageStatus ? true : false;
+                ShipmentManageStatus.checked = data.shipmentManageStatus ? true : false;
+                OrderManageStatus.checked = data.orderManageStatus ? true : false;
+                CouponManageStatus.checked = data.couponManageStatus ? true : false;
+                CommentManageStatus.checked = data.commentManageStatus ? true : false;
+                BlogManageStatus.checked = data.blogManageStatus ? true : false;
+                if (data.imagePath == null) 
+                {
+                    AdminPhoto.src = NoimageUrl;
+                    
+                }
+                else 
+                {
+                    AdminPhoto.src = `${imageUrl}${data.imagePath}`;
+                }
             });
         });
+        // =============新增管理員======================================================
+        document.getElementById('InsertAdmin').addEventListener('click', () => 
+        {
+            alltext.forEach(input => { 
+                input.disabled = false;
+                input.value = '';
+            })
+            allcheck.forEach(check => {
+                check.disabled = false;
+                check.checked = false;
+            })
+            AdminPhoto.src = null;
+                })
+
+
+
+
+
+        document.getElementById('btntest').addEventListener('click', () => {
+            
+        })
+
     </script>
 } 

@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using prjJapanTravel_BackendMVC.Models;
+using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
-    public class AdminAPIController : Controller
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class AdminAPIController : ControllerBase
     {
         public JapanTravelContext _context;
 
@@ -17,7 +21,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult GetData(int adminId)
         {
             Admin ad = _context.Admins.FirstOrDefault(a => a.AdminId == adminId);
-            return Json(ad);
+            return Ok(ad);
         }
     }
 }

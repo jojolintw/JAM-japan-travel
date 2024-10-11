@@ -1,0 +1,149 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.TicketOrder>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>船票訂單管理</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            @* <th>
+                @Html.DisplayNameFor(model => model.TicketOrderId)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.TicketOrderNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentMethodId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentStatusId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderStatusId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CouponId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalAmount)
+            </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.Remarks)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewContent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReviewStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepresentativeLastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepresentativeFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepresentativeIdnumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepresentativePassportNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RepresentativePhoneNumber)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.TicketOrderId)
+            </td> *@
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketOrderNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethodId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentStatusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderStatusId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CouponId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            @* <td>
+                @Html.DisplayFor(modelItem => item.Remarks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReviewRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReviewContent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReviewTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReviewStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepresentativeLastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepresentativeFirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepresentativeIdnumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepresentativePassportNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RepresentativePhoneNumber)
+            </td> *@
+            <td>
+                    @Html.ActionLink("修改", "Edit", new { id = item.TicketOrderId }, null) |
+                    @Html.ActionLink("明細", "Details", new { id = item.TicketOrderId }, null) |
+                    @Html.ActionLink("取消", "Cancel", new { id = item.TicketOrderId }, null)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

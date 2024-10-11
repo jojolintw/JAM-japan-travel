@@ -10,4 +10,6 @@ public partial class ArticleStatus
     public string StatusName { get; set; }
 
     public int StatusNumber { get; set; }
+
+    public virtual ICollection<ArticleMain> ArticleMains { get; set; } = new List<ArticleMain>();
 }

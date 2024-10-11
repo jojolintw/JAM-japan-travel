@@ -18,4 +18,12 @@ public partial class ArticleMain
     public string ArticleTitle { get; set; }
 
     public DateOnly ArticleUpdatetime { get; set; }
+
+    public virtual ICollection<ArticleHashtag> ArticleHashtags { get; set; } = new List<ArticleHashtag>();
+
+    public virtual ICollection<ArticlePic> ArticlePics { get; set; } = new List<ArticlePic>();
+
+    public virtual ArticleStatus ArticleStatusnumberNavigation { get; set; }
+
+    public virtual Member Member { get; set; }
 }

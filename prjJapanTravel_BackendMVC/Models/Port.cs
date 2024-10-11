@@ -2,32 +2,18 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Port")]
 public partial class Port
 {
-    [Key]
-    [Column("PortID")]
     public int PortId { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
     public string PortName { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
     public string City { get; set; }
 
-    [InverseProperty("DestinationPort")]
     public virtual ICollection<Route> RouteDestinationPorts { get; set; } = new List<Route>();
 
-    [InverseProperty("OriginPort")]
     public virtual ICollection<Route> RouteOriginPorts { get; set; } = new List<Route>();
 }

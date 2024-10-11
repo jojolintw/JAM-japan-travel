@@ -2,23 +2,20 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Image")]
 public partial class Image
 {
-    [Key]
     public int ItineraryPicSystemId { get; set; }
 
-    [Column(TypeName = "image")]
-    public byte[] ImagePath { get; set; }
+    public int? ItinerarySystemId { get; set; }
 
-    [StringLength(50)]
+    public string ImagePath { get; set; }
+
     public string ImageName { get; set; }
 
     public string ImageDetail { get; set; }
+
+    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
 }

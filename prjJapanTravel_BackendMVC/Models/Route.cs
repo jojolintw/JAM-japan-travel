@@ -2,42 +2,26 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Route")]
 public partial class Route
 {
-    [Key]
-    [Column("RouteID")]
     public int RouteId { get; set; }
 
-    [Column("OriginPortID")]
     public int OriginPortId { get; set; }
 
-    [Column("DestinationPortID")]
     public int DestinationPortId { get; set; }
 
-    [Column("price", TypeName = "money")]
     public decimal Price { get; set; }
 
-    [Column(TypeName = "text")]
     public string RouteDescription { get; set; }
 
-    [ForeignKey("DestinationPortId")]
-    [InverseProperty("RouteDestinationPorts")]
     public virtual Port DestinationPort { get; set; }
 
-    [ForeignKey("OriginPortId")]
-    [InverseProperty("RouteOriginPorts")]
     public virtual Port OriginPort { get; set; }
 
-    [InverseProperty("Route")]
     public virtual ICollection<RouteImage> RouteImages { get; set; } = new List<RouteImage>();
 
-    [InverseProperty("Route")]
     public virtual ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

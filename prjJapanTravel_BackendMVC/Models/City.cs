@@ -2,28 +2,16 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("City")]
 public partial class City
 {
-    [Key]
-    [Column("CityID")]
     public int CityId { get; set; }
 
-    [Required]
-    [Column("City")]
-    [StringLength(50)]
     public string City1 { get; set; }
 
-    [Required]
-    [StringLength(50)]
     public string CityCode { get; set; }
 
-    [InverseProperty("City")]
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 }

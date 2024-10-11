@@ -2,30 +2,18 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("RouteImage")]
 public partial class RouteImage
 {
-    [Key]
-    [Column("RouteImageID")]
     public int RouteImageId { get; set; }
 
-    [Column("RouteID")]
     public int RouteId { get; set; }
 
-    [Column(TypeName = "image")]
     public byte[] Image { get; set; }
 
-    [StringLength(255)]
-    [Unicode(false)]
     public string Description { get; set; }
 
-    [ForeignKey("RouteId")]
-    [InverseProperty("RouteImages")]
     public virtual Route Route { get; set; }
 }

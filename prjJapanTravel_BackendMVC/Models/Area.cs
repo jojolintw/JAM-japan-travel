@@ -2,21 +2,14 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Area")]
 public partial class Area
 {
-    [Key]
     public int AreaSystemId { get; set; }
 
-    [StringLength(20)]
     public string AreaName { get; set; }
 
-    [InverseProperty("AreaSystem")]
     public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
 }

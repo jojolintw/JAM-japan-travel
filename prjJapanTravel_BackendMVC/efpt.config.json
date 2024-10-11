@@ -15,10 +15,6 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[文章hashtag中介表]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Activity]",
          "ObjectType": 0
       },
@@ -31,15 +27,19 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Article文章]",
+         "Name": "[dbo].[ArticleHashtag]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Article狀態]",
+         "Name": "[dbo].[ArticleMain]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Article圖片]",
+         "Name": "[dbo].[ArticlePic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ArticleStatus]",
          "ObjectType": 0
       },
       {
@@ -51,11 +51,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[DetailSpot明細景點]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[hashtag]",
+         "Name": "[dbo].[HashtagMain]",
          "ObjectType": 0
       },
       {
@@ -72,10 +68,6 @@
       },
       {
          "Name": "[dbo].[ItineraryOrder]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ItinerarytoPic]",
          "ObjectType": 0
       },
       {
@@ -151,7 +143,7 @@
    "UseDateOnlyTimeOnly": true,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
-   "UseFluentApiOnly": false,
+   "UseFluentApiOnly": true,
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": true,

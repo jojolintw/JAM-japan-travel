@@ -2,23 +2,14 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("MemberLevel")]
 public partial class MemberLevel
 {
-    [Key]
-    [Column("MemberLevelID")]
     public int MemberLevelId { get; set; }
 
-    [Required]
-    [StringLength(50)]
     public string MemberLevelName { get; set; }
 
-    [InverseProperty("MemberLevel")]
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 }

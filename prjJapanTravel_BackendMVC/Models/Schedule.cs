@@ -2,36 +2,24 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Schedule")]
 public partial class Schedule
 {
-    [Key]
-    [Column("ScheduleID")]
     public int ScheduleId { get; set; }
 
-    [Column("RouteID")]
     public int RouteId { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime DepartureTime { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime ArrivalTime { get; set; }
 
     public int Seats { get; set; }
 
     public int Capacity { get; set; }
 
-    [ForeignKey("RouteId")]
-    [InverseProperty("Schedules")]
     public virtual Route Route { get; set; }
 
-    [InverseProperty("Schedule")]
     public virtual ICollection<TicketOrderItem> TicketOrderItems { get; set; } = new List<TicketOrderItem>();
 }

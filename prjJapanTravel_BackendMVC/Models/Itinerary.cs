@@ -2,20 +2,13 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-[Table("Itinerary")]
 public partial class Itinerary
 {
-    [Key]
     public int ItinerarySystemId { get; set; }
 
-    [Required]
-    [StringLength(20)]
     public string ItineraryId { get; set; }
 
     public string ItineraryName { get; set; }
@@ -24,12 +17,13 @@ public partial class Itinerary
 
     public int? Stock { get; set; }
 
-    [Column(TypeName = "money")]
     public decimal? Price { get; set; }
 
     public int? ThemeSystemId { get; set; }
 
     public int? AreaSystemId { get; set; }
+
+    public int? ItineraryPicSystemId { get; set; }
 
     public string ItineraryDetail { get; set; }
 
@@ -37,21 +31,15 @@ public partial class Itinerary
 
     public string ItineraryNotes { get; set; }
 
-    [ForeignKey("ActivitySystemId")]
-    [InverseProperty("Itineraries")]
     public virtual Activity ActivitySystem { get; set; }
 
-    [ForeignKey("AreaSystemId")]
-    [InverseProperty("Itineraries")]
     public virtual Area AreaSystem { get; set; }
 
-    [InverseProperty("ItinerarySystem")]
     public virtual ICollection<ItineraryDate> ItineraryDates { get; set; } = new List<ItineraryDate>();
 
-    [InverseProperty("Itinerary")]
+    public virtual Image ItineraryPicSystem { get; set; }
+
     public virtual ICollection<MyCollection> MyCollections { get; set; } = new List<MyCollection>();
 
-    [ForeignKey("ThemeSystemId")]
-    [InverseProperty("Itineraries")]
     public virtual Theme ThemeSystem { get; set; }
 }

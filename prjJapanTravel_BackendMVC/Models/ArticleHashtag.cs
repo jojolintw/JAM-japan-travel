@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-public partial class Theme
+public partial class ArticleHashtag
 {
-    public int ThemeSystemId { get; set; }
+    public int ArticleHashtagnumber { get; set; }
 
-    public string ThemeName { get; set; }
+    public int ArticleNumber { get; set; }
 
-    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
+    public int HashtagNumber { get; set; }
 }

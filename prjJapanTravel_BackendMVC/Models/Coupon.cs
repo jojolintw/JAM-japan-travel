@@ -13,7 +13,7 @@ public partial class Coupon
 
     public decimal Discount { get; set; }
 
-    public DateTime ExpirationDate { get; set; }
+    public DateOnly ExpirationDate { get; set; }
 
     public bool CouponStatus { get; set; }
 

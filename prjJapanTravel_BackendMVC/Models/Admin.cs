@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-public partial class Admin管理員
+public partial class Admin
 {
     public int AdminId { get; set; }
 
@@ -15,9 +15,7 @@ public partial class Admin管理員
 
     public string Password { get; set; }
 
-    public string Email { get; set; }
-
-    public byte[] Photo { get; set; }
+    public string ImagePath { get; set; }
 
     public bool AdminManageStatus { get; set; }
 

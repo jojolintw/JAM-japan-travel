@@ -8,10 +8,6 @@ namespace prjJapanTravel_BackendMVC.Models;
 
 public partial class JapanTravelContext : DbContext
 {
-    public JapanTravelContext()
-    {
-    }
-
     public JapanTravelContext(DbContextOptions<JapanTravelContext> options)
         : base(options)
     {
@@ -19,23 +15,23 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<Activity> Activities { get; set; }
 
-    public virtual DbSet<Admin管理員> Admin管理員s { get; set; }
+    public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Area> Areas { get; set; }
 
-    public virtual DbSet<Article圖片> Article圖片s { get; set; }
+    public virtual DbSet<ArticleHashtag> ArticleHashtags { get; set; }
 
-    public virtual DbSet<Article文章> Article文章s { get; set; }
+    public virtual DbSet<ArticleMain> ArticleMains { get; set; }
 
-    public virtual DbSet<Article狀態> Article狀態s { get; set; }
+    public virtual DbSet<ArticlePic> ArticlePics { get; set; }
+
+    public virtual DbSet<ArticleStatus> ArticleStatuses { get; set; }
+
+    public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Coupon> Coupons { get; set; }
 
-    public virtual DbSet<DetailSpot明細景點> DetailSpot明細景點s { get; set; }
-
-    public virtual DbSet<Entourage> Entourages { get; set; }
-
-    public virtual DbSet<Hashtag> Hashtags { get; set; }
+    public virtual DbSet<HashtagMain> HashtagMains { get; set; }
 
     public virtual DbSet<Image> Images { get; set; }
 
@@ -44,8 +40,6 @@ public partial class JapanTravelContext : DbContext
     public virtual DbSet<ItineraryDate> ItineraryDates { get; set; }
 
     public virtual DbSet<ItineraryOrder> ItineraryOrders { get; set; }
-
-    public virtual DbSet<ItinerarytoPic> ItinerarytoPics { get; set; }
 
     public virtual DbSet<Member> Members { get; set; }
 
@@ -79,8 +73,6 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<TicketOrderItem> TicketOrderItems { get; set; }
 
-    public virtual DbSet<文章hashtag中介表> 文章hashtag中介表s { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Activity>(entity =>
@@ -92,11 +84,11 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.ActivityName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<Admin管理員>(entity =>
+        modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminId);
+            entity.HasKey(e => e.AdminId).HasName("PK_Admin管理員");
 
-            entity.ToTable("Admin管理員");
+            entity.ToTable("Admin");
 
             entity.Property(e => e.AdminId).HasColumnName("AdminID");
             entity.Property(e => e.Account)
@@ -105,13 +97,12 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.AdminName)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.Email)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(50)
+                .HasColumnName("imagePath");
             entity.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.Photo).HasColumnType("image");
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -123,53 +114,65 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.AreaName).HasMaxLength(20);
         });
 
-        modelBuilder.Entity<Article圖片>(entity =>
+        modelBuilder.Entity<ArticleHashtag>(entity =>
         {
-            entity.HasKey(e => e.圖片編號);
+            entity.HasKey(e => e.ArticleHashtagnumber).HasName("PK_文章hashtag中介表_1");
 
-            entity.ToTable("Article圖片");
+            entity.ToTable("ArticleHashtag");
+        });
 
-            entity.Property(e => e.圖片編號).ValueGeneratedNever();
-            entity.Property(e => e.圖片)
+        modelBuilder.Entity<ArticleMain>(entity =>
+        {
+            entity.HasKey(e => e.ArticleNumber).HasName("PK_Article文章_1");
+
+            entity.ToTable("ArticleMain");
+
+            entity.Property(e => e.ArticleTitle)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.MemberId).HasColumnName("MemberID");
+        });
+
+        modelBuilder.Entity<ArticlePic>(entity =>
+        {
+            entity.HasKey(e => e.PicNumber).HasName("PK_Article圖片_1");
+
+            entity.ToTable("ArticlePic");
+
+            entity.Property(e => e.PicNumber).ValueGeneratedNever();
+            entity.Property(e => e.ArticleNumber).ValueGeneratedOnAdd();
+            entity.Property(e => e.Pic)
                 .IsRequired()
                 .HasColumnType("image");
-            entity.Property(e => e.圖片說明)
+            entity.Property(e => e.PicDescription)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.文章編號).ValueGeneratedOnAdd();
-
-            entity.HasOne(d => d.文章編號Navigation).WithMany(p => p.Article圖片s)
-                .HasForeignKey(d => d.文章編號)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Article圖片_Article文章");
         });
 
-        modelBuilder.Entity<Article文章>(entity =>
+        modelBuilder.Entity<ArticleStatus>(entity =>
         {
-            entity.HasKey(e => e.文章編號);
+            entity.HasKey(e => e.StatusNumber).HasName("PK_Article狀態_1");
 
-            entity.ToTable("Article文章");
+            entity.ToTable("ArticleStatus");
 
-            entity.Property(e => e.文章標題)
+            entity.Property(e => e.StatusName)
                 .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.會員id).HasColumnName("會員ID");
-
-            entity.HasOne(d => d.文章狀態編號Navigation).WithMany(p => p.Article文章s)
-                .HasForeignKey(d => d.文章狀態編號)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Article文章_Article狀態");
-        });
-
-        modelBuilder.Entity<Article狀態>(entity =>
-        {
-            entity.HasKey(e => e.文章狀態編號);
-
-            entity.ToTable("Article狀態");
-
-            entity.Property(e => e.狀態名稱)
                 .HasMaxLength(10)
                 .IsFixedLength();
+        });
+
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.ToTable("City");
+
+            entity.Property(e => e.CityId).HasColumnName("CityID");
+            entity.Property(e => e.City1)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("City");
+            entity.Property(e => e.CityCode)
+                .IsRequired()
+                .HasMaxLength(50);
         });
 
         modelBuilder.Entity<Coupon>(entity =>
@@ -183,50 +186,18 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.Discount).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ExpirationDate)
-                .HasColumnType("smalldatetime")
-                .HasColumnName("Expiration date");
+            entity.Property(e => e.ExpirationDate).HasColumnName("Expiration date");
         });
 
-        modelBuilder.Entity<DetailSpot明細景點>(entity =>
+        modelBuilder.Entity<HashtagMain>(entity =>
         {
-            entity.HasKey(e => e.明細景點編號);
+            entity.HasKey(e => e.HashtagNumber).HasName("PK_hashtag_1");
 
-            entity.ToTable("DetailSpot明細景點");
-        });
+            entity.ToTable("HashtagMain");
 
-        modelBuilder.Entity<Entourage>(entity =>
-        {
-            entity.ToTable("Entourage");
-
-            entity.Property(e => e.EntourageId).HasColumnName("EntourageID");
-            entity.Property(e => e.Country).HasMaxLength(50);
-            entity.Property(e => e.Email).HasMaxLength(50);
-            entity.Property(e => e.FirstName)
+            entity.Property(e => e.HashtagName)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.LastName)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.MemberId).HasColumnName("MemberID");
-            entity.Property(e => e.Phone).HasMaxLength(50);
-
-            entity.HasOne(d => d.Member).WithMany(p => p.Entourages)
-                .HasForeignKey(d => d.MemberId)
-                .HasConstraintName("FK_Entourage_Member");
-        });
-
-        modelBuilder.Entity<Hashtag>(entity =>
-        {
-            entity.HasKey(e => e.Hashtag編號);
-
-            entity.ToTable("hashtag");
-
-            entity.Property(e => e.Hashtag編號).HasColumnName("hashtag編號");
-            entity.Property(e => e.Hashtag名稱)
-                .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("hashtag名稱");
         });
 
         modelBuilder.Entity<Image>(entity =>
@@ -236,7 +207,6 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("Image");
 
             entity.Property(e => e.ImageName).HasMaxLength(50);
-            entity.Property(e => e.ImagePath).HasColumnType("image");
         });
 
         modelBuilder.Entity<Itinerary>(entity =>
@@ -257,6 +227,10 @@ public partial class JapanTravelContext : DbContext
             entity.HasOne(d => d.AreaSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.AreaSystemId)
                 .HasConstraintName("FK_Itinerary行程_Area地區");
+
+            entity.HasOne(d => d.ItineraryPicSystem).WithMany(p => p.Itineraries)
+                .HasForeignKey(d => d.ItineraryPicSystemId)
+                .HasConstraintName("FK_Itinerary_Image");
 
             entity.HasOne(d => d.ThemeSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.ThemeSystemId)
@@ -325,48 +299,34 @@ public partial class JapanTravelContext : DbContext
                 .HasConstraintName("FK_ItineraryOrder_PaymentStatus");
         });
 
-        modelBuilder.Entity<ItinerarytoPic>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("ItinerarytoPic");
-
-            entity.HasOne(d => d.ItineraryPicSystem).WithMany()
-                .HasForeignKey(d => d.ItineraryPicSystemId)
-                .HasConstraintName("FK_ItinerarytoPic_Image");
-
-            entity.HasOne(d => d.ItinerarySystem).WithMany()
-                .HasForeignKey(d => d.ItinerarySystemId)
-                .HasConstraintName("FK_ItinerarytoPic_Itinerary");
-        });
-
         modelBuilder.Entity<Member>(entity =>
         {
             entity.ToTable("Member");
 
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
-            entity.Property(e => e.Country)
-                .HasMaxLength(10)
-                .IsFixedLength();
+            entity.Property(e => e.Birthday).HasColumnType("datetime");
+            entity.Property(e => e.CityId).HasColumnName("CityID");
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.FirstName)
+            entity.Property(e => e.MemberLevelId).HasColumnName("MemberLevelID");
+            entity.Property(e => e.MemberName)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.LastName).HasMaxLength(50);
-            entity.Property(e => e.MemberLevelId).HasColumnName("MemberLevelID");
-            entity.Property(e => e.MemberPhoto).HasColumnType("image");
             entity.Property(e => e.MemberStatusId).HasColumnName("MemberStatusID");
             entity.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(50);
-            entity.Property(e => e.Phone)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+            entity.Property(e => e.Photoimage).HasMaxLength(50);
+
+            entity.HasOne(d => d.City).WithMany(p => p.Members)
+                .HasForeignKey(d => d.CityId)
+                .HasConstraintName("FK_Member_City1");
 
             entity.HasOne(d => d.MemberLevel).WithMany(p => p.Members)
                 .HasForeignKey(d => d.MemberLevelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Member_MemberLevel");
 
             entity.HasOne(d => d.MemberStatus).WithMany(p => p.Members)
@@ -647,25 +607,6 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.TicketOrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TicketOrderItem_TicketOrder");
-        });
-
-        modelBuilder.Entity<文章hashtag中介表>(entity =>
-        {
-            entity.HasKey(e => e.文章hashtag編號);
-
-            entity.ToTable("文章hashtag中介表");
-
-            entity.Property(e => e.Hashtag編號).HasColumnName("hashtag編號");
-
-            entity.HasOne(d => d.Hashtag編號Navigation).WithMany(p => p.文章hashtag中介表s)
-                .HasForeignKey(d => d.Hashtag編號)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_文章hashtag中介表_hashtag");
-
-            entity.HasOne(d => d.文章編號Navigation).WithMany(p => p.文章hashtag中介表s)
-                .HasForeignKey(d => d.文章編號)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_文章hashtag中介表_Article文章");
         });
 
         OnModelCreatingPartial(modelBuilder);

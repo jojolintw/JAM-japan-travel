@@ -2,8 +2,6 @@
 @{
     ViewData["Title"] = "ItineraryCreate";
 }
-
-<h1>ItineraryCreate</h1>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +53,7 @@
     <div style="margin-bottom: 10px;">
         <div style="margin-bottom: 10px;">
             <label>圖片名稱</label>
-            <input type="textarea" name="" id="">
+            <input type="text" name="picName" value="" />
         </div>
         <div>
             <label style="vertical-align: top;">圖片描述</label>
@@ -66,7 +64,7 @@
     </div>
     <div>
         <input type="submit" value="送出" class="btn btn-primary" />
-        <a asp-action="Index">取消</a>
+        <a asp-action="List">取消</a>
     </div>
 </body>
 <script>

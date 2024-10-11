@@ -1,0 +1,98 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Itinerary>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>List</h1>
+
+<p>
+    <a asp-action="ItineraryCreate">建立行程</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                序號
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItineraryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItineraryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActivitySystemId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Stock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ThemeSystemId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AreaSystemId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItineraryDetail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItineraryBrief)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ItineraryNotes)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model) {
+                count++;
+        <tr>
+            <td>
+                @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItineraryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItineraryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivitySystemId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ThemeSystemId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AreaSystemId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItineraryDetail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItineraryBrief)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ItineraryNotes)
+            </td>
+            <td>
+                @Html.ActionLink("修改", "Edit", "Product", new { id = item.ItinerarySystemId }, null) |
+                @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id=item.ItinerarySystemId }, null)
+            </td>
+        </tr>
+            }       
+        }
+    </tbody>
+</table>

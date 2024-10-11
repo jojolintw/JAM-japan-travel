@@ -9,15 +9,13 @@ public partial class Member
 {
     public int MemberId { get; set; }
 
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
+    public string MemberName { get; set; }
 
     public bool? Gender { get; set; }
 
-    public DateOnly Birthday { get; set; }
+    public DateTime? Birthday { get; set; }
 
-    public string Country { get; set; }
+    public int? CityId { get; set; }
 
     public string Phone { get; set; }
 
@@ -25,13 +23,13 @@ public partial class Member
 
     public string Password { get; set; }
 
-    public byte[] MemberPhoto { get; set; }
+    public string Photoimage { get; set; }
 
-    public int? MemberLevelId { get; set; }
+    public int MemberLevelId { get; set; }
 
     public int MemberStatusId { get; set; }
 
-    public virtual ICollection<Entourage> Entourages { get; set; } = new List<Entourage>();
+    public virtual City City { get; set; }
 
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
 

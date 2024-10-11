@@ -1,4 +1,4 @@
-﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Admin管理員>
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Admin>
 
 @{
     ViewData["Title"] = "List";
@@ -24,12 +24,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Password)
             </th>
-            <th>
+@*             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Photo)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.AdminManageStatus)
             </th>
@@ -72,12 +72,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
-            <td>
+@*             <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Photo)
-            </td>
+            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.AdminManageStatus)
             </td>

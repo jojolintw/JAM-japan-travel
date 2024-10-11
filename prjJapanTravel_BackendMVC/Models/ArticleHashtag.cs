@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-public partial class DetailSpot明細景點
+public partial class ArticleHashtag
 {
-    public int 明細景點編號 { get; set; }
+    public int ArticleHashtagnumber { get; set; }
 
-    public int? 明細編號 { get; set; }
+    public int ArticleNumber { get; set; }
 
-    public int? 景點編號 { get; set; }
+    public int HashtagNumber { get; set; }
 }

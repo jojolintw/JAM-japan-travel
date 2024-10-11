@@ -9,9 +9,13 @@ public partial class Image
 {
     public int ItineraryPicSystemId { get; set; }
 
-    public byte[] ImagePath { get; set; }
+    public int? ItinerarySystemId { get; set; }
+
+    public string ImagePath { get; set; }
 
     public string ImageName { get; set; }
 
     public string ImageDetail { get; set; }
+
+    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
 }

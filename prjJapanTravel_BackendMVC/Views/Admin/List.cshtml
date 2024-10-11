@@ -4,13 +4,99 @@
     <a asp-action="Create">Create New</a>
 </p> *@
 
+
+ <form id="alterform">
+
+    <div style="padding:50px">
+        <div class="row">
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="AdminName" class="form-label" style="font-size:20px">管理員姓名</label>
+                    <input type="text" class="form-control" id="AdminName" aria-describedby="emailHelp" disabled="disabled">
+                    <div id="emailHelp" class="form-text"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="AdminAccount" class="form-label " style="font-size:20px">帳號</label>
+                    <input type="text" class="form-control" id="AdminAccount" aria-describedby="emailHelp" disabled="disabled">
+                    <div id="emailHelp" class="form-text"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="AdminPassword" class="form-label" style="font-size:20px">密碼</label>
+                    <input type="password" class="form-control" id="AdminPassword" disabled="disabled">
+                </div>
+                <button type="submit" class="btn btn-primary">送出並儲存</button>
+            </div>
+        
+            @* ================================================================================= *@
+            <div class="col-4" style="margin-left:75px;margin-top:30px;font-size:25px">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled"/>
+                    <label class="form-check-label" for="">
+                        管理員管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        會員管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        行程管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        航班管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        訂單管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        優惠券管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        評論管理權限
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="" disabled="disabled" />
+                    <label class="form-check-label" for="">
+                        部落格管理權限
+                    </label>
+                </div>
+            </div>
+            @* ============================================================================================= *@
+             <div class="col-3">
+                <img src="~/images/Admin/Noimage.png" class="img-thumbnail" alt="..." style="height:300px">        
+                <input type="file" class="form-control" style="margin-top:30px">
+            </div> 
+    </div>
+    </div>
+</form> 
+
+<hr />
 <div class="row" style="margin-left:50px">
     @foreach(var item in Model)
     {
         <div class="col-md-6 col-lg-3" id="divp @item.AdminId">
-            <div class="card" style="width: 300px;height:400px">
+            <div class="card" style="width: 300px;height:400px" data-adminid="@item.AdminId">
                 <input type="text" value="@item.AdminId" />
-                <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px">
+                <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px;padding:20px">
                 <div class="card-body">
                     <h5 class="card-title">@item.AdminName</h5>
                 </div>
@@ -22,6 +108,24 @@
 @section Scripts
 {
     <script>
+        const cards = document.querySelectorAll('.card');
+        const doman = "https://localhost:7146";
+        // 為每張卡片添加點擊事件
+        cards.forEach(card => {
+            card.addEventListener('click', async function () {
+                // 從 data-adminid 屬性中取得 AdminId
+                const adminId = this.getAttribute('data-adminid');
 
+                const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
+                {
+                    method:"Get"
+                })
+
+                const data = await response.json();
+                console.log(data.adminName);
+
+
+            });
+        });
     </script>
 } 

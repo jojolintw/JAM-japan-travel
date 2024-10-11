@@ -19,6 +19,8 @@ public partial class ArticleMain
 
     public DateOnly ArticleUpdatetime { get; set; }
 
+    public string ArticleContent { get; set; }
+
     public virtual ICollection<ArticleHashtag> ArticleHashtags { get; set; } = new List<ArticleHashtag>();
 
     public virtual ICollection<ArticlePic> ArticlePics { get; set; } = new List<ArticlePic>();

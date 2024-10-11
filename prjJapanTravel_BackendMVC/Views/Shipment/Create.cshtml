@@ -1,0 +1,58 @@
+﻿@model prjJapanTravel_BackendMVC.Models.Route
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>新增航線</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+         @*    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RouteId" class="control-label">航線編號</label>
+                <input asp-for="RouteId" class="form-control" readonly="readonly" value="" /> <!-- 設為唯讀 -->
+                <span asp-validation-for="RouteId" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="OriginPortId" class="control-label">出發港口</label>
+                <select asp-for="OriginPortId" class="form-control" asp-items="ViewBag.OriginPortList">
+                    <option value="">請選擇出發港口</option>
+                </select>
+                <span asp-validation-for="OriginPortId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationPortId" class="control-label">目的地港口</label>
+                <select asp-for="DestinationPortId" class="form-control" asp-items="ViewBag.DestinationPortList">
+                    <option value="">請選擇目的地港口</option>
+                </select>
+                <span asp-validation-for="DestinationPortId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label">價錢</label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RouteDescription" class="control-label">簡介</label>
+                <input asp-for="RouteDescription" class="form-control" />
+                <span asp-validation-for="RouteDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

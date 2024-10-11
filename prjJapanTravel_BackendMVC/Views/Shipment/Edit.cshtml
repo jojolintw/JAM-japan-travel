@@ -1,0 +1,37 @@
+﻿@model prjJapanTravel_BackendMVC.Models.Route
+
+@{
+    ViewData["Title"] = "Edit Route";
+}
+
+<h1>Edit Route</h1>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="RouteId"></label>
+        <input asp-for="RouteId" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OriginPortId"></label>
+        <select asp-for="OriginPortId" class="form-control" asp-items="ViewBag.OriginPortList"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DestinationPortId"></label>
+        <select asp-for="DestinationPortId" class="form-control" asp-items="ViewBag.DestinationPortList"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RouteDescription"></label>
+        <input asp-for="RouteDescription" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

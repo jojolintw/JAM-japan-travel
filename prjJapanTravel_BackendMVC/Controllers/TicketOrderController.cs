@@ -16,6 +16,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
             var datas = _context.TicketOrders.Select(m => m);
             return View(datas);
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
         public IActionResult Edit()
         {
             return View();

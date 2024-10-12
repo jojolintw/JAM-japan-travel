@@ -7,7 +7,7 @@
 <h1>行程訂單管理</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">新增訂單</a>
 </p>
 <table class="table">
     <thead>
@@ -151,9 +151,11 @@
                 @Html.DisplayFor(modelItem => item.RepresentativePhoneNumber)
             </td> *@
             <td>
-                @Html.ActionLink("修改", "Edit", new { id=item.ItineraryOrderId }, null)
-                    @Html.ActionLink("明細", "Details", new { id = item.ItineraryOrderId }, null)
-                    @Html.ActionLink("取消", "Cancel", new { id = item.ItineraryOrderId }, null)
+                    @Html.ActionLink("明細", "Details", "ItineraryOrder", new { id = item.ItineraryOrderId }, null)
+            </td>
+            <td>
+                    @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.ItineraryOrderId }, null)
+                    @Html.ActionLink("取消", "Cancel", "ItineraryOrder", new { id = item.ItineraryOrderId }, null)
             </td>
         </tr>
 }

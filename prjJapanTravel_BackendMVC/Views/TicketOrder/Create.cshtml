@@ -1,0 +1,128 @@
+﻿@model prjJapanTravel_BackendMVC.Models.TicketOrder
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>船票訂單新增作業</h1>
+
+<h4>TicketOrder</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @* <div class="form-group">
+                <label asp-for="TicketOrderId" class="control-label"></label>
+                <input asp-for="TicketOrderId" class="form-control" />
+                <span asp-validation-for="TicketOrderId" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="TicketOrderNumber" class="control-label">訂單編號</label>
+                <input asp-for="TicketOrderNumber" class="form-control" />
+                <span asp-validation-for="TicketOrderNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label">會員編號</label>
+                <input asp-for="MemberId" class="form-control" />
+                <span asp-validation-for="MemberId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderTime" class="control-label">下單時間</label>
+                <input asp-for="OrderTime" class="form-control" />
+                <span asp-validation-for="OrderTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentMethodId" class="control-label">付款方式編號</label>
+                <input asp-for="PaymentMethodId" class="form-control" />
+                <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentStatusId" class="control-label">付款狀態編號</label>
+                <input asp-for="PaymentStatusId" class="form-control" />
+                <span asp-validation-for="PaymentStatusId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentTime" class="control-label">付款時間</label>
+                <input asp-for="PaymentTime" class="form-control" />
+                <span asp-validation-for="PaymentTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OrderStatusId" class="control-label">訂單狀態編號</label>
+                <input asp-for="OrderStatusId" class="form-control" />
+                <span asp-validation-for="OrderStatusId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CouponId" class="control-label">優惠券編號</label>
+                <input asp-for="CouponId" class="form-control" />
+                <span asp-validation-for="CouponId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalAmount" class="control-label">總金額</label>
+                <input asp-for="TotalAmount" class="form-control" />
+                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="Remarks" class="control-label"></label>
+                <input asp-for="Remarks" class="form-control" />
+                <span asp-validation-for="Remarks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewRating" class="control-label"></label>
+                <input asp-for="ReviewRating" class="form-control" />
+                <span asp-validation-for="ReviewRating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewContent" class="control-label"></label>
+                <input asp-for="ReviewContent" class="form-control" />
+                <span asp-validation-for="ReviewContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewTime" class="control-label"></label>
+                <input asp-for="ReviewTime" class="form-control" />
+                <span asp-validation-for="ReviewTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewStatus" class="control-label"></label>
+                <input asp-for="ReviewStatus" class="form-control" />
+                <span asp-validation-for="ReviewStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentativeLastName" class="control-label"></label>
+                <input asp-for="RepresentativeLastName" class="form-control" />
+                <span asp-validation-for="RepresentativeLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentativeFirstName" class="control-label"></label>
+                <input asp-for="RepresentativeFirstName" class="form-control" />
+                <span asp-validation-for="RepresentativeFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentativeIdnumber" class="control-label"></label>
+                <input asp-for="RepresentativeIdnumber" class="form-control" />
+                <span asp-validation-for="RepresentativeIdnumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentativePassportNumber" class="control-label"></label>
+                <input asp-for="RepresentativePassportNumber" class="form-control" />
+                <span asp-validation-for="RepresentativePassportNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RepresentativePhoneNumber" class="control-label"></label>
+                <input asp-for="RepresentativePhoneNumber" class="form-control" />
+                <span asp-validation-for="RepresentativePhoneNumber" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <input type="submit" value="確認新增" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="List" class="btn btn-secondary">取消新增</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

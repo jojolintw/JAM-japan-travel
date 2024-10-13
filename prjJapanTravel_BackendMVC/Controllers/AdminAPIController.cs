@@ -6,9 +6,9 @@ using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class AdminAPIController : ControllerBase
+    //[Route("api/[controller]/[action]")]
+    //[ApiController]
+    public class AdminAPIController : Controller
     {
         public JapanTravelContext _context;
 
@@ -24,11 +24,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
             Admin ad = _context.Admins.FirstOrDefault(a => a.AdminId == adminId);
             return Ok(ad);
         }
-        //AdminAPIController/InsertAdmin
+        //AdminAPI/InsertAdmin
         [HttpPost]
-        public IActionResult InsertAdmin(InsertAdminViewModel newadmin)
+        public IActionResult InsertAdmin(Admin newadmin)
         {
-
+            _context.Admins.Add(newadmin);
+            _context.SaveChanges();
             return Ok();
         }
     }

@@ -13,7 +13,7 @@
                 <input type="text" id="AdminId" name="AdminId" class="form-control" value="" />
                 <div class="mb-3">
                     <label for="AdminName" class="form-label" style="font-size:20px">管理員姓名</label>
-                    <input type="text" id="AdminName" name="adminName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="AdminName" name="AdminName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
@@ -36,49 +36,49 @@
             @* ================================================================================= *@
             <div class="col-4"  style="margin-left:75px;margin-top:30px;font-size:25px">
                 <div class="form-check">
-                    <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         管理員管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="MemberManageStatus" name="MemberManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="MemberManageStatus" name="MemberManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         會員管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="IniteraryManageStatus" name="IniteraryManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="IniteraryManageStatus" name="IniteraryManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         行程管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="ShipmentManageStatus" name="ShipmentManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="ShipmentManageStatus" name="ShipmentManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         航班管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="OrderManageStatus" name="OrderManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="OrderManageStatus" name="OrderManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         訂單管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="CouponManageStatus" name="CouponManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="CouponManageStatus" name="CouponManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         優惠券管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="CommentManageStatus" name="CommentManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="CommentManageStatus" name="CommentManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         評論管理權限
                     </label>
                 </div>
                 <div class="form-check">
-                    <input id="BlogManageStatus" name="BlogManageStatus" class="form-check-input" type="checkbox" value="" disabled="disabled" />
+                    <input id="BlogManageStatus" name="BlogManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
                         部落格管理權限
                     </label>
@@ -160,7 +160,7 @@
                 // 從 data-adminid 屬性中取得 AdminId
                 const adminId = this.getAttribute('data-adminid');
 
-                const response = await fetch(`${doman}/api/AdminAPI/GetData/?adminId=${adminId}`,
+                const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
                 {
                     method:"Get"
                 })
@@ -190,6 +190,18 @@
                 }
             });
         });
+
+        allcheck.forEach(chb => {
+            chb.addEventListener('change', () => 
+            {
+                console.log(chb);
+                chb.value = chb.checked ? "true" : "false";
+            })
+        })
+        
+
+
+
         // =============新增管理員======================================================
         insertbtn.addEventListener('click', () => {
             alltext.forEach(input => {
@@ -211,42 +223,45 @@
 
         submitbtn.addEventListener('click', async () => {
 
-            allcheck.forEach(chk => {
-                if (chk.checked) {
-                    chk.value = true;
-                }
-                else 
-                {
-                    chk.value = false;
-                }
+            // allcheck.forEach((chk) => {
+            //     if (chk.checked) {
+            //         chk.value = true;
+            //     }
+            //     else {
+            //         chk.value = false;
+            //     }
+            // })
 
-            })
+            form = new FormData(adminform);
+            // const formDataObject = {};
+            // form.forEach((value, key) => {
+            //     formDataObject[key] = value;
+            // });
 
+            // console.log(formDataObject);
 
-
-            form = new FormData(adminform)
-            let para = { adminName: '123' }
-            const response = await fetch(`https://localhost:7146/api/AdminAPI/InsertAdmin`,
+            const response = await fetch(`https://localhost:7146/AdminAPI/InsertAdmin`,
                 {
                     method: "Post",
-                    body: JSON.stringify(form),
-                    headers: 
-                    {
-                       'Content-Type': 'application/json'
-                    }
+                    body: form
+                    // headers:
+                    // {
+                    //     'Content-Type': 'application/json'
+                    // }
                 })
             const data = await response.json();
+           
         })
 
 
 
 
 
-        document.getElementById('btntest').addEventListener('click', async () => {
+        // document.getElementById('btntest').addEventListener('click', async () => {
                
 
-            })
+        //     })
         
 
     </script>
-} 
+}

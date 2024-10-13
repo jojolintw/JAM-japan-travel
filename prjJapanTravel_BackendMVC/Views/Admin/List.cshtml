@@ -1,10 +1,5 @@
 ﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Admin>
 
-@* <p>
-    <a asp-action="Create">Create New</a>
-</p> *@
-
-
  <form id="adminform">
 
     <div style="padding:50px">
@@ -94,10 +89,11 @@
 </form> 
 <button id="btntest">測試</button>
 <hr />
-<div class="row" style="margin-left:50px">
+@* ================================================================================================================================= *@
+<div class="row" style="margin-left:50px" id="cardcontainer">
     @foreach(var item in Model)
     {
-        <div class="col-md-6 col-lg-3" id="divp @item.AdminId">
+        <div class="col-md-6 col-lg-3">
             <div class="card" style="width: 300px;height:400px" data-adminid="@item.AdminId">
                 <input type="text" value="@item.AdminId" />
                 @if (item.ImagePath != null)
@@ -118,13 +114,10 @@
 
 @section Scripts
 {
-    <script>
-        const allcards = document.querySelectorAll('.card');
+    <script>        
         const alltext = document.querySelectorAll('.form-control');
         const allcheck = document.querySelectorAll('.form-check-input');
         const allimage = document.querySelectorAll('.img-fluid');
-
-
         const doman = "https://localhost:7146";
 
         // ==================資料表欄位===================================================
@@ -144,10 +137,8 @@
         const insertbtn = document.getElementById('InsertAdmin');
         const alterbtn = document.getElementById('AlterAdmin');
         const submitbtn = document.getElementById('SubmitAdmin');
-
-
+        const cardcontainer = document.getElementById('cardcontainer');
         const adminform = document.getElementById('adminform');
-
         const AdminPhoto = document.getElementById('image');
         const Imglist = document.getElementById('imglist');
         const NoimageUrl = '/images/Admin/Noimage.png';
@@ -155,54 +146,56 @@
 
 
         // 為每張卡片添加點擊事件
-        allcards.forEach(card => {
-            card.addEventListener('click', async function () {
-                // 從 data-adminid 屬性中取得 AdminId
-                const adminId = this.getAttribute('data-adminid');
 
-                const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
-                {
-                    method:"Get"
-                })
+        function addCardEvent() 
+        {
+            const allcards = document.querySelectorAll('.card');
+            allcards.forEach(card => {
+                card.addEventListener('click', async function () {
 
-                const data = await response.json();
-                console.log(data);
-                AdminId.value = data.adminId;
-                AdminName.value = data.adminName;
-                Account.value = data.account;
-                Password.value = data.password;
-                AdminManageStatus.checked = data.adminManageStatus ? true : false;
-                MemberManageStatus.checked = data.memberManageStatus ? true : false;
-                IniteraryManageStatus.checked = data.initeraryManageStatus ? true : false;
-                ShipmentManageStatus.checked = data.shipmentManageStatus ? true : false;
-                OrderManageStatus.checked = data.orderManageStatus ? true : false;
-                CouponManageStatus.checked = data.couponManageStatus ? true : false;
-                CommentManageStatus.checked = data.commentManageStatus ? true : false;
-                BlogManageStatus.checked = data.blogManageStatus ? true : false;
-                if (data.imagePath == null) 
-                {
-                    AdminPhoto.src = NoimageUrl;
                     
-                }
-                else 
-                {
-                    AdminPhoto.src = `${imageUrl}${data.imagePath}`;
-                }
-            });
-        });
+                    // 從 data-adminid 屬性中取得 AdminId
+                    const adminId = this.getAttribute('data-adminid');
 
+                    const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
+                        {
+                            method: "Get"
+                        })
+
+                    const data = await response.json();
+                    AdminId.value = data.adminId;
+                    AdminName.value = data.adminName;
+                    Account.value = data.account;
+                    Password.value = data.password;
+                    AdminManageStatus.checked = data.adminManageStatus ? true : false;
+                    MemberManageStatus.checked = data.memberManageStatus ? true : false;
+                    IniteraryManageStatus.checked = data.initeraryManageStatus ? true : false;
+                    ShipmentManageStatus.checked = data.shipmentManageStatus ? true : false;
+                    OrderManageStatus.checked = data.orderManageStatus ? true : false;
+                    CouponManageStatus.checked = data.couponManageStatus ? true : false;
+                    CommentManageStatus.checked = data.commentManageStatus ? true : false;
+                    BlogManageStatus.checked = data.blogManageStatus ? true : false;
+                    if (data.imagePath == null) {
+                        AdminPhoto.src = NoimageUrl;
+
+                    }
+                    else {
+                        AdminPhoto.src = `${imageUrl}${data.imagePath}`;
+                    }
+                });
+            });
+        }
+        // =============CheckBox事件========================================
         allcheck.forEach(chb => {
             chb.addEventListener('change', () => 
             {
-                console.log(chb);
                 chb.value = chb.checked ? "true" : "false";
             })
         })
-        
 
 
-
-        // =============新增管理員======================================================
+        addCardEvent();
+        // =============新增按鈕======================================================
         insertbtn.addEventListener('click', () => {
             alltext.forEach(input => {
                 input.disabled = false;
@@ -216,52 +209,30 @@
             insertbtn.disabled = true;
             submitbtn.disabled = false;
         })
-        //==========修改==============================================================
+        //==========修改按鈕==============================================================
 
         //=========submit============================================================
-
-
         submitbtn.addEventListener('click', async () => {
-
-            // allcheck.forEach((chk) => {
-            //     if (chk.checked) {
-            //         chk.value = true;
-            //     }
-            //     else {
-            //         chk.value = false;
-            //     }
-            // })
-
             form = new FormData(adminform);
-            // const formDataObject = {};
-            // form.forEach((value, key) => {
-            //     formDataObject[key] = value;
-            // });
-
-            // console.log(formDataObject);
-
             const response = await fetch(`https://localhost:7146/AdminAPI/InsertAdmin`,
                 {
                     method: "Post",
                     body: form
-                    // headers:
-                    // {
-                    //     'Content-Type': 'application/json'
-                    // }
                 })
-            const data = await response.json();
-           
+            if(response.ok)
+            {
+                const alladmins = await response.json();
+                const elealladmins = alladmins.map(ad => {
+                    return (`<div class="col-md-6 col-lg-3">
+                                     <div class="card" style="width: 300px;height:400px" data-adminid="${ad.adminId}">
+                                     <input type="text" value="${ad.adminId}" />
+                                     <img class="img-fluid" src="/images/Admin/${ad.imagePath}" alt="" style="height:280px;padding:20px">
+                                     <div class="card-body">
+                                     <h5 class="card-title">${ad.adminName}</h5></div></div></div>`)
+                })
+                cardcontainer.innerHTML =elealladmins.join("");
+                addCardEvent();
+            }        
         })
-
-
-
-
-
-        // document.getElementById('btntest').addEventListener('click', async () => {
-               
-
-        //     })
-        
-
     </script>
 }

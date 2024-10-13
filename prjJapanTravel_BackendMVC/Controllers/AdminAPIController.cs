@@ -26,11 +26,25 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         //AdminAPI/InsertAdmin
         [HttpPost]
-        public IActionResult InsertAdmin(Admin newadmin)
+        public IActionResult InsertAdmin(InsertAdminViewModel inputAdmin)
         {
-            _context.Admins.Add(newadmin);
+            Admin admin = new Admin();
+            admin.AdminName = inputAdmin.AdminName;
+            admin.Account = inputAdmin.Account;
+            admin.Password = inputAdmin.Password;
+            admin.AdminManageStatus = inputAdmin.AdminManageStatus;
+            admin.MemberManageStatus = inputAdmin.MemberManageStatus;
+            admin.IniteraryManageStatus = inputAdmin.IniteraryManageStatus;
+            admin.ShipmentManageStatus = inputAdmin.ShipmentManageStatus;
+            admin.OrderManageStatus = inputAdmin.OrderManageStatus;
+            admin.CouponManageStatus = inputAdmin.CouponManageStatus;
+            admin.CommentManageStatus = inputAdmin.CommentManageStatus;
+            admin.BlogManageStatus = inputAdmin.BlogManageStatus;
+            
+            _context.Admins.Add(admin);
             _context.SaveChanges();
-            return Ok();
+            var alladmins = _context.Admins.Select(a => a);
+            return Ok(alladmins);
         }
     }
 }

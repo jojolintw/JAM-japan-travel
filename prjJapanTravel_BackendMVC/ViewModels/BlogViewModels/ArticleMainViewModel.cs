@@ -13,5 +13,8 @@
         public string 文章標題 { get; set; }
 
         public DateTime 文章更新時間 { get; set; }
+
+        public string 文章內容 { get; set; }
+
     }
 }

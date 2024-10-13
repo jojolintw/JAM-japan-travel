@@ -49,7 +49,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             return View(r); // 回傳到視圖並顯示錯誤
         }
-        public IActionResult Detail() { 
+        public IActionResult RDetail() { 
             return View();
         }
 

@@ -25,10 +25,10 @@
             <th>
                 票價
             </th>
-@*             <th>
+            @* <th>
                 簡介
-            </th>
- *@            <th></th>
+            </th> *@
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -50,9 +50,7 @@
                     <td>
                         @item.Price <!-- 顯示票價 -->
                     </td>
-                    // <td>
-                    //     @item.RouteDescription <!-- 顯示簡介 -->
-                    // </td>
+                    
                     <td>
                         @Html.ActionLink("詳細資料", "RDetail", "Shipment", new { id = item.RouteId }, null) |
                         @Html.ActionLink("修改", "Edit", "Shipment", new { id = item.RouteId }, null) |

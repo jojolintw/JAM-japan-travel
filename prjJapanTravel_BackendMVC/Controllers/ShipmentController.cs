@@ -37,8 +37,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View();
         }
         [HttpPost]
-        [HttpPost]
-        [HttpPost]
         public ActionResult Create(Models.Route r)
         {
             if (ModelState.IsValid)
@@ -50,6 +48,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             return View(r); // 回傳到視圖並顯示錯誤
+        }
+        public IActionResult Detail() { 
+            return View();
         }
 
         public ActionResult Delete(int? id)

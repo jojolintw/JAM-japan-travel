@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using prjJapanTravel_BackendMVC.Models;
+using prjJapanTravel_BackendMVC.ViewModels.AdminViewModels;
 using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
@@ -22,6 +23,13 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             Admin ad = _context.Admins.FirstOrDefault(a => a.AdminId == adminId);
             return Ok(ad);
+        }
+        //AdminAPIController/InsertAdmin
+        [HttpPost]
+        public IActionResult InsertAdmin(InsertAdminViewModel newadmin)
+        {
+
+            return Ok();
         }
     }
 }

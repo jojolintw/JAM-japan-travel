@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +25,6 @@
     <Folder Include="PartialClass\Shipment\" />
     <Folder Include="PartialClass\Product\" />
     <Folder Include="ViewModels\LoginViewModels\" />
-    <Folder Include="ViewModels\AdminViewModels\" />
     <Folder Include="ViewModels\MemberViewModels\" />
     <Folder Include="ViewModels\OrderViewModels\" />
     <Folder Include="ViewModels\ShipmentViewModels\" />

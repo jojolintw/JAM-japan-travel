@@ -43,7 +43,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             _context.TicketOrders.Add(to);
             _context.SaveChanges();
-            return View();
+            return RedirectToAction("List");
         }
         public IActionResult Edit()
         {

@@ -26,6 +26,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 .Include(o => o.Coupon)
                 .Select(m => new ItineraryOrderListViewModel()
             {
+                行程訂單編號 = m.ItineraryOrderId,
                 訂單編號 = m.ItineraryOrderNumber,
                 會員 = m.Member.MemberName,
                 //行程編號 = m.ItineraryDateSystemId,
@@ -52,20 +53,34 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return RedirectToAction("List");
         }
 
-        public IActionResult Edit()
+        public IActionResult Edit(int? id)
         {
-            return View();
+            var data = _context.ItineraryOrders
+                .Include(io => io.Member)
+                .FirstOrDefault(io => io.ItineraryOrderId == id);
+            if (data == null)
+                return RedirectToAction("List");
+
+            //ViewBag.MemberName = 
+
+            return View(data);
         }
 
         [HttpPost]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit()
         {
             return View();
         }
 
         public IActionResult Cancel(int? id)
         {
-            return View();
+            var data = _context.ItineraryOrders.FirstOrDefault(io => io.ItineraryOrderId == id);
+            if (data != null)
+            {
+                data.OrderStatusId = 3;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("List");
         }
     }
 }

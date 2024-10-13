@@ -19,8 +19,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             var datas = _context.ItineraryOrders
                 .Include(o => o.Member)
-                .Include(o => o.ItineraryDateSystem)
-                    //.ThenInclude(oi => oi.ItinerarySystemId)
+                //.Include(o => o.ItineraryDateSystem)
+                //    .ThenInclude(oi => oi.ItinerarySystemId)
                 .Include(o => o.PaymentMethod)
                 .Include(o => o.PaymentStatus)
                 .Include(o => o.Coupon)
@@ -28,8 +28,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 訂單編號 = m.ItineraryOrderNumber,
                 會員 = m.Member.MemberName,
-                行程編號 = m.ItineraryDateSystemId,
-                數量 = m.Quantity,
+                //行程編號 = m.ItineraryDateSystemId,
+                //數量 = m.Quantity,
                 下單時間 = m.OrderTime,
                 付款方式 = m.PaymentMethod.PaymentMethod1,
                 付款狀態 = m.PaymentStatus.PaymentStatus1,

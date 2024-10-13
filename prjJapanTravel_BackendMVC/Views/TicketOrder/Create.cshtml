@@ -18,47 +18,47 @@
                 <span asp-validation-for="TicketOrderId" class="text-danger"></span>
             </div> *@
             <div class="form-group">
-                <label asp-for="TicketOrderNumber" class="control-label"></label>
+                <label asp-for="TicketOrderNumber" class="control-label">訂單編號</label>
                 <input asp-for="TicketOrderNumber" class="form-control" />
                 <span asp-validation-for="TicketOrderNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MemberId" class="control-label"></label>
+                <label asp-for="MemberId" class="control-label">會員編號</label>
                 <input asp-for="MemberId" class="form-control" />
                 <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OrderTime" class="control-label"></label>
+                <label asp-for="OrderTime" class="control-label">下單時間</label>
                 <input asp-for="OrderTime" class="form-control" />
                 <span asp-validation-for="OrderTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentMethodId" class="control-label"></label>
+                <label asp-for="PaymentMethodId" class="control-label">付款方式編號</label>
                 <input asp-for="PaymentMethodId" class="form-control" />
                 <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentStatusId" class="control-label"></label>
+                <label asp-for="PaymentStatusId" class="control-label">付款狀態編號</label>
                 <input asp-for="PaymentStatusId" class="form-control" />
                 <span asp-validation-for="PaymentStatusId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentTime" class="control-label"></label>
+                <label asp-for="PaymentTime" class="control-label">付款時間</label>
                 <input asp-for="PaymentTime" class="form-control" />
                 <span asp-validation-for="PaymentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OrderStatusId" class="control-label"></label>
+                <label asp-for="OrderStatusId" class="control-label">訂單狀態編號</label>
                 <input asp-for="OrderStatusId" class="form-control" />
                 <span asp-validation-for="OrderStatusId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CouponId" class="control-label"></label>
+                <label asp-for="CouponId" class="control-label">優惠券編號</label>
                 <input asp-for="CouponId" class="form-control" />
                 <span asp-validation-for="CouponId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
+                <label asp-for="TotalAmount" class="control-label">總金額</label>
                 <input asp-for="TotalAmount" class="form-control" />
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
@@ -113,14 +113,14 @@
                 <span asp-validation-for="RepresentativePhoneNumber" class="text-danger"></span>
             </div> *@
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="List" value="確認新增" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="List">取消新增</a>
+    <a asp-action="List" class="btn btn-secondary">取消新增</a>
 </div>
 
 @section Scripts {

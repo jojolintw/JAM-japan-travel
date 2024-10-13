@@ -18,11 +18,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程系統編號 = n.ItinerarySystemId,
                 行程編號 = n.ItineraryId,
                 行程名稱 = n.ItineraryName,
-                體驗項目 = n.ActivitySystemId,
+                體驗項目 = n.ActivitySystem.ActivityName,
                 總團位 = n.Stock,
                 價格 = n.Price,
-                體驗主題 = n.ThemeSystemId,
-                地區 = n.AreaSystemId,
+                體驗主題 = n.ThemeSystem.ThemeName,
+                地區 = n.AreaSystem.AreaName,
                 行程圖片 = n.ItineraryPicSystemId,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
@@ -33,7 +33,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
         public IActionResult ItineraryCreate()
         {
-            return View();
+            CreateListViewModel c = new CreateListViewModel();
+            c.areaList = _JP.Areas.ToList();
+            c.activityList = _JP.Activities.ToList();
+            return View(c);
         }
 
         [HttpPost]
@@ -66,11 +69,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程系統編號 = n.ItinerarySystemId,
                 行程編號 = n.ItineraryId,
                 行程名稱 = n.ItineraryName,
-                體驗項目 = n.ActivitySystemId,
+                體驗項目編號 = n.ActivitySystemId,
+                體驗項目 = n.ActivitySystem.ActivityName,
                 總團位 = n.Stock,
                 價格 = n.Price,
-                體驗主題 = n.ThemeSystemId,
-                地區 = n.AreaSystemId,
+                體驗主題編號 = n.ThemeSystemId,
+                體驗主題 = n.ThemeSystem.ThemeName,
+                地區編號 = n.AreaSystemId,
+                地區 = n.AreaSystem.AreaName,
                 行程圖片 = n.ItineraryPicSystemId,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
@@ -89,11 +95,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             itinerary.ItineraryId = itiModel.行程編號;
             itinerary.ItineraryName = itiModel.行程名稱;
-            itinerary.ActivitySystemId = itiModel.體驗項目;
+            itinerary.ActivitySystemId = itiModel.體驗項目編號;
             itinerary.Stock = itiModel.總團位;
             itinerary.Price = itiModel.價格;
-            itinerary.ThemeSystemId = itiModel.體驗主題;
-            itinerary.AreaSystemId = itiModel.地區;
+            itinerary.ThemeSystemId = itiModel.體驗主題編號;
+            itinerary.AreaSystemId = itiModel.地區編號;
             itinerary.ItineraryPicSystemId = itiModel.行程圖片;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;

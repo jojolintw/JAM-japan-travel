@@ -10,15 +10,18 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
 
         public string 行程名稱 { get; set; }
 
-        public int? 體驗項目 { get; set; }
+        public int? 體驗項目編號 { get; set; }
+        public string 體驗項目 { get; set; }
 
         public int? 總團位 { get; set; }
 
         public decimal? 價格 { get; set; }
 
-        public int? 體驗主題 { get; set; }
+        public int? 體驗主題編號 { get; set; }
+        public string 體驗主題 { get; set; }
 
-        public int? 地區 { get; set; }
+        public int? 地區編號 { get; set; }
+        public string 地區 { get; set; }
 
         public int? 行程圖片 { get; set; }
 

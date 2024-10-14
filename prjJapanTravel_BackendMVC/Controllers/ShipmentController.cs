@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using prjJapanTravel_BackendMVC.Models;
+using prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -49,9 +50,43 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             return View(r); // 回傳到視圖並顯示錯誤
         }
-        public IActionResult RDetail() { 
-            return View();
+        public IActionResult RDetail(int id)
+        {
+            // 查詢 Route 資料
+            var routeData = (from route in _context.Routes
+                             join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
+                             join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
+                             where route.RouteId == id
+                             select new RouteDetailViewModel
+                             {
+                                 RouteId = route.RouteId,
+                                 OriginPortName = originPort.PortName,
+                                 DestinationPortName = destinationPort.PortName,
+                                 Price = route.Price,
+                                 RouteDescription = route.RouteDescription
+                             }).FirstOrDefault(); // 確保只拿一筆 Route 資料
+
+            // 查詢 Schedule 資料
+            var schedules = (from schedule in _context.Schedules
+                             where schedule.RouteId == id
+                             select schedule).ToList();
+
+            // 確保兩個資料來源都不為 null
+            if (routeData == null)
+            {
+                // 處理沒有資料的情況，可以顯示錯誤訊息或跳轉到其他頁面
+                return NotFound($"未找到 RouteId {id} 的資料");
+            }
+
+            // 將 Schedules 加入 ViewModel
+            routeData.Schedules = schedules;
+
+            // 傳遞 ViewModel 到 View
+            return View(routeData);
         }
+
+
+
 
         public ActionResult Delete(int? id)
         {

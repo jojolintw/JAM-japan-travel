@@ -56,6 +56,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
             var routeData = (from route in _context.Routes
                              join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
                              join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
+                             join image in _context.RouteImages on route.RouteId equals image.RouteId into routeImages
+                             from img in routeImages.DefaultIfEmpty() // 允許航線沒有圖片
                              where route.RouteId == id
                              select new RouteDetailViewModel
                              {
@@ -63,8 +65,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
                                  OriginPortName = originPort.PortName,
                                  DestinationPortName = destinationPort.PortName,
                                  Price = route.Price,
-                                 RouteDescription = route.RouteDescription
-                             }).FirstOrDefault(); // 確保只拿一筆 Route 資料
+                                 RouteDescription = route.RouteDescription,
+                                 Image = img != null ? img.Image : null, // 確保沒有圖片時處理 null
+                                 ImageDescription = img != null ? img.Description : "無圖片描述"
+                             }).FirstOrDefault();
+            // 確保只拿一筆 Route 資料
 
             // 查詢 Schedule 資料
             var schedules = (from schedule in _context.Schedules

@@ -12,7 +12,7 @@
 @if (Model.Schedules != null && Model.Schedules.Count > 0)
 {
     <p>
-        <a asp-action="Create">新增航線</a>
+        <a asp-action="SCreate">新增航線</a>
     </p>
     <table class="table">
         <thead>
@@ -39,8 +39,8 @@
                         <td>@item.Seats</td>
                         <td>@item.Capacity</td>
                         <td>
-                            @Html.ActionLink("修改", "Edit", "Shipment", new { id = item.ScheduleId }, null) |
-                            @Html.ActionLink("刪除", "Delete", "Shipment", new { id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
+                            @Html.ActionLink("修改", "SEdit", "Shipment", new { id = item.ScheduleId }, null) |
+                            @Html.ActionLink("刪除", "SDelete", "Shipment", new { id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
                         </td>
                     </tr>
                 }

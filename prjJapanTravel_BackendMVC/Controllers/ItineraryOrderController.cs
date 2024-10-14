@@ -61,15 +61,32 @@ namespace prjJapanTravel_BackendMVC.Controllers
             if (data == null)
                 return RedirectToAction("List");
 
-            //ViewBag.MemberName = 
+            //ViewBag.MemberName = ItineraryOrder
 
             return View(data);
         }
 
         [HttpPost]
-        public IActionResult Edit()
+        public IActionResult Edit(ItineraryOrderListViewModel vm)
         {
-            return View();
+            var data = _context.ItineraryOrders.FirstOrDefault(io => io.ItineraryOrderId == vm.行程訂單編號);
+            if(data ==null)
+                return RedirectToAction("List");
+            data.ItineraryOrderId = (int)vm.行程訂單編號;
+            data.ItineraryOrderNumber = vm.訂單狀態;
+            data.MemberId = (int)vm.會員編號;
+            data.ItineraryDateSystemId = (int)vm.行程編號;
+            data.Quantity = (int)vm.數量;
+            data.OrderTime = vm.下單時間;
+            data.PaymentMethodId = (int)vm.付款方式編號;
+            data.PaymentStatusId = (int)vm.付款狀態編號;
+            data.PaymentTime = vm.付款時間;
+            data.OrderStatusId = (int)vm.訂單狀態編號;
+            data.CouponId = (int)vm.優惠券編號;
+            data.TotalAmount = vm.總金額;
+
+            _context.SaveChanges();
+            return RedirectToAction("List");
         }
 
         public IActionResult Cancel(int? id)

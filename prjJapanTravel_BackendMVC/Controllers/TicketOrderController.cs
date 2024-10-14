@@ -21,6 +21,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 .Include(o => o.Coupon)
                 .Select(m => new TicketOrderListViewModel()
             {
+                船票訂單編號 = m.TicketOrderId,
                 訂單編號 = m.TicketOrderNumber,
                 會員 = m.Member.MemberName,
                 下單時間 = m.OrderTime,
@@ -45,20 +46,34 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _context.SaveChanges();
             return RedirectToAction("List");
         }
-        public IActionResult Edit()
+        public IActionResult Edit(int? id)
         {
-            return View();
+            var data = _context.TicketOrders
+                .Include(io => io.Member)
+                .FirstOrDefault(io => io.TicketOrderId== id);
+            if (data == null)
+                return RedirectToAction("List");
+
+            //ViewBag.MemberName = 
+
+            return View(data);
         }
 
         [HttpPost]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit()
         {
             return View();
         }
 
         public IActionResult Cancel(int? id)
         {
-            return View();
+            var data = _context.TicketOrders.FirstOrDefault(io => io.TicketOrderId== id);
+            if (data != null)
+            {
+                data.OrderStatusId = 3;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("List");
         }
     }
 }

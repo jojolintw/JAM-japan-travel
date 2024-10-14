@@ -144,7 +144,8 @@
             </td>
             <td>
                     @Html.ActionLink("修改", "Edit", "TicketOrder", new { id = item.船票訂單編號 }, null)
-                    @Html.ActionLink("取消", "Cancel", "TicketOrder", new { id = item.船票訂單編號 }, null)
+                    @Html.ActionLink("取消", "Cancel", "TicketOrder", new { id = item.船票訂單編號 }, 
+                                    new { onclick = "return confirm('確定要取消此訂單?')"})
             </td>
         </tr>
 }

@@ -11,10 +11,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
     public class AdminAPIController : Controller
     {
         public JapanTravelContext _context;
+        IWebHostEnvironment _environ;
 
-        public AdminAPIController(JapanTravelContext context) 
+        public AdminAPIController(JapanTravelContext context, IWebHostEnvironment environ) 
         {
             _context=context;
+            _environ = environ;
         }
 
 
@@ -26,7 +28,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         //AdminAPI/InsertAdmin
         [HttpPost]
-        public IActionResult InsertAdmin(Admin inputAdmin)
+        public IActionResult InsertAdmin(AdminViewModel inputAdmin)
         {
             Admin admin = new Admin();
             admin.AdminName = inputAdmin.AdminName;
@@ -47,7 +49,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return Json(alladmins);
         }
         [HttpPost]
-        public IActionResult AlterAdmin(Admin inputAdmin)
+        public IActionResult AlterAdmin(AdminViewModel inputAdmin)
         {
             Admin admin = _context.Admins.FirstOrDefault(a => a.AdminId == inputAdmin.AdminId);
             admin.AdminName = inputAdmin.AdminName;

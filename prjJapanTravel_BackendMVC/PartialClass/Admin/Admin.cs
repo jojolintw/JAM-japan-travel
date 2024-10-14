@@ -6,5 +6,6 @@ namespace prjJapanTravel_BackendMVC.Models
     [ModelMetadataType(typeof(AdminMetadata))]
     public partial class Admin
     {
+        
     }
 }

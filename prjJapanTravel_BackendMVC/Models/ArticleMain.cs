@@ -26,6 +26,4 @@ public partial class ArticleMain
     public virtual ICollection<ArticlePic> ArticlePics { get; set; } = new List<ArticlePic>();
 
     public virtual ArticleStatus ArticleStatusnumberNavigation { get; set; }
-
-    public virtual Member Member { get; set; }
 }

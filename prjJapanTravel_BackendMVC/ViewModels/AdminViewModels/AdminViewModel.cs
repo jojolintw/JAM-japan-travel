@@ -1,6 +1,6 @@
 ﻿namespace prjJapanTravel_BackendMVC.ViewModels.AdminViewModels
 {
-    public class InsertAdminViewModel
+    public class AdminViewModel
     {
 
         public string AdminName { get; set; }

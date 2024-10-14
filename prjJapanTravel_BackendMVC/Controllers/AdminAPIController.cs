@@ -6,9 +6,9 @@ using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    public class AdminAPIController : ControllerBase
+    //[Route("api/[controller]/[action]")]
+    //[ApiController]
+    public class AdminAPIController : Controller
     {
         public JapanTravelContext _context;
 
@@ -26,25 +26,45 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         //AdminAPI/InsertAdmin
         [HttpPost]
-        public IActionResult InsertAdmin(InsertAdminViewModel inputAdmin)
+        public IActionResult InsertAdmin(Admin inputAdmin)
         {
-            //Admin admin = new Admin();
-            //admin.AdminName = inputAdmin.AdminName;
-            //admin.Account = inputAdmin.Account;
-            //admin.Password = inputAdmin.Password;
-            //admin.AdminManageStatus = inputAdmin.AdminManageStatus;
-            //admin.MemberManageStatus = inputAdmin.MemberManageStatus;
-            //admin.IniteraryManageStatus = inputAdmin.IniteraryManageStatus;
-            //admin.ShipmentManageStatus = inputAdmin.ShipmentManageStatus;
-            //admin.OrderManageStatus = inputAdmin.OrderManageStatus;
-            //admin.CouponManageStatus = inputAdmin.CouponManageStatus;
-            //admin.CommentManageStatus = inputAdmin.CommentManageStatus;
-            //admin.BlogManageStatus = inputAdmin.BlogManageStatus;
-            
-            //_context.Admins.Add(admin);
-            //_context.SaveChanges();
+            Admin admin = new Admin();
+            admin.AdminName = inputAdmin.AdminName;
+            admin.Account = inputAdmin.Account;
+            admin.Password = inputAdmin.Password;
+            admin.AdminManageStatus = inputAdmin.AdminManageStatus;
+            admin.MemberManageStatus = inputAdmin.MemberManageStatus;
+            admin.IniteraryManageStatus = inputAdmin.IniteraryManageStatus;
+            admin.ShipmentManageStatus = inputAdmin.ShipmentManageStatus;
+            admin.OrderManageStatus = inputAdmin.OrderManageStatus;
+            admin.CouponManageStatus = inputAdmin.CouponManageStatus;
+            admin.CommentManageStatus = inputAdmin.CommentManageStatus;
+            admin.BlogManageStatus = inputAdmin.BlogManageStatus;
+
+            _context.Admins.Add(admin);
+            _context.SaveChanges();
             var alladmins = _context.Admins.Select(a => a);
-            return Ok(alladmins);
+            return Json(alladmins);
+        }
+        [HttpPost]
+        public IActionResult AlterAdmin(Admin inputAdmin)
+        {
+            Admin admin = _context.Admins.FirstOrDefault(a => a.AdminId == inputAdmin.AdminId);
+            admin.AdminName = inputAdmin.AdminName;
+            admin.Account = inputAdmin.Account;
+            admin.Password = inputAdmin.Password;
+            admin.AdminManageStatus = inputAdmin.AdminManageStatus;
+            admin.MemberManageStatus = inputAdmin.MemberManageStatus;
+            admin.IniteraryManageStatus = inputAdmin.IniteraryManageStatus;
+            admin.ShipmentManageStatus = inputAdmin.ShipmentManageStatus;
+            admin.OrderManageStatus = inputAdmin.OrderManageStatus;
+            admin.CouponManageStatus = inputAdmin.CouponManageStatus;
+            admin.CommentManageStatus = inputAdmin.CommentManageStatus;
+            admin.BlogManageStatus = inputAdmin.BlogManageStatus;
+
+            _context.SaveChanges();
+            var alladmins = _context.Admins.Select(a => a);
+            return Json(alladmins);
         }
     }
 }

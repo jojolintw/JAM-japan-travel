@@ -44,8 +44,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             admin.BlogManageStatus = inputAdmin.BlogManageStatus;
 
             if (inputAdmin.photo != null) 
-            { 
-                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/" + inputAdmin.photo.FileName, FileMode.Create));
+            {
+                string photoname = Guid.NewGuid() + ".jpg";
+                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/Admin/" + photoname, FileMode.Create));
                 admin.ImagePath = inputAdmin.photo.FileName;
             }
 
@@ -72,7 +73,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             if (inputAdmin.photo != null)
             {
-                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/Admin/" + inputAdmin.photo.FileName, FileMode.Create));
+                string photoname = Guid.NewGuid() + ".jpg";
+                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/Admin/" + photoname, FileMode.Create));
                 admin.ImagePath = inputAdmin.photo.FileName;
             }
 

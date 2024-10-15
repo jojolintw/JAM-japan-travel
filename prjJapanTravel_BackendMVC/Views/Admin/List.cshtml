@@ -172,10 +172,11 @@
 
         function addCardEvent() 
         {
+            
             const allcards = document.querySelectorAll('.card');
             allcards.forEach(card => {
                 card.addEventListener('click', async function () {
-                    
+                    reset();
                     // 從 data-adminid 屬性中取得 AdminId
                     const adminId = this.getAttribute('data-adminid');
 
@@ -216,10 +217,10 @@
             })
         })
         //============圖片預覽=====================================================
-        btnphoto.addEventListener('change', (event) => 
+        btnphoto.addEventListener('change', async (event) => 
         {
-            AdminPhoto.src = `${imageUrl}${event.target.files[0].name}`
 
+            
         })
         
         // =============新增按鈕======================================================
@@ -255,7 +256,7 @@
         })
         //=========submit============================================================
         submitbtn.addEventListener('click', async () => {
-            form = new FormData(adminform);
+            let form = new FormData(adminform);
             if (lastbtnclick.id == 'InsertAdmin') 
             {
                 const response = await fetch(`https://localhost:7146/AdminAPI/InsertAdmin`,

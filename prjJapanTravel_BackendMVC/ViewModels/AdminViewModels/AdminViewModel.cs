@@ -1,15 +1,13 @@
 ﻿namespace prjJapanTravel_BackendMVC.ViewModels.AdminViewModels
 {
-    public class InsertAdminViewModel
+    public class AdminViewModel
     {
-
+        public int AdminId { get; set; }
         public string AdminName { get; set; }
 
         public string Account { get; set; }
 
         public string Password { get; set; }
-
-        ////public string? ImagePath { get; set; }
 
         public bool AdminManageStatus { get; set; }
 
@@ -26,5 +24,6 @@
         public bool CommentManageStatus { get; set; }
 
         public bool BlogManageStatus { get; set; }
+        public IFormFile? photo { get; set; }
     }
 }

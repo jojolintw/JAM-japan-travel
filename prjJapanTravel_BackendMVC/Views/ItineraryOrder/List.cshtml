@@ -9,6 +9,10 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">新增訂單</a>
 </p>
+
+<input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" />
+<input type="text" id="Member" placeholder="會員" />
+
 <table class="table">
     <thead>
         <tr>
@@ -101,7 +105,7 @@
                     @Html.DisplayFor(modelItem => item.數量)
             </td> *@
             <td>
-                    @Html.DisplayFor(modelItem => item.下單時間)
+                @item.下單時間.ToString("yyyy-MM-dd HH:mm")
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.付款方式)
@@ -110,7 +114,9 @@
                     @Html.DisplayFor(modelItem => item.付款狀態)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.付款時間)
+                @(item.付款時間.HasValue
+                    ? item.付款時間.Value.ToString("yyyy-MM-dd HH:mm")
+                    : string.Empty)
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.訂單狀態)
@@ -118,8 +124,8 @@
             <td>
                     @Html.DisplayFor(modelItem => item.優惠券)
             </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.總金額)
+            <td style="text-align: right;">
+                @item.總金額.ToString("###,###,#0")
             </td>
             @* <td>
                 @Html.DisplayFor(modelItem => item.Remarks)

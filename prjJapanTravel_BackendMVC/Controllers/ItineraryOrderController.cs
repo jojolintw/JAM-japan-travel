@@ -18,14 +18,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult List()
         {
             var datas = _context.ItineraryOrders
-                .Include(o => o.Member)
-                .Include(o => o.ItineraryDateSystem)
-                    .ThenInclude(oi => oi.ItinerarySystem)
-                .Include(o => o.PaymentMethod)
-                .Include(o => o.PaymentStatus)
-                .Include(o => o.Coupon)
+                //.Include(o => o.Member)
+                //.Include(o => o.ItineraryDateSystem)
+                //    .ThenInclude(oi => oi.ItinerarySystem)
+                //.Include(o => o.PaymentMethod)
+                //.Include(o => o.PaymentStatus)
+                //.Include(o => o.Coupon)
                 .Select(m => new ItineraryOrderListViewModel()
-            {
+                {
                 行程訂單編號 = m.ItineraryOrderId,
                 訂單編號 = m.ItineraryOrderNumber,
                 會員 = m.Member.MemberName,
@@ -34,6 +34,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 下單時間 = m.OrderTime,
                 付款方式 = m.PaymentMethod.PaymentMethod1,
                 付款狀態 = m.PaymentStatus.PaymentStatus1,
+                付款時間 = m.PaymentTime,
                 訂單狀態 = m.OrderStatus.OrderStatus1,
                 優惠券 = m.Coupon.CouponName,
                 總金額 = m.TotalAmount
@@ -55,22 +56,28 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
         public IActionResult Edit(int? id)
         {
-            var data = _context.ItineraryOrders
-                .Where(i => i.ItineraryOrderId == id)
-                .Select(i => new ItineraryOrderListViewModel()
-            {
-                行程訂單編號 = i.ItineraryOrderId,
-                會員 = i.Member.MemberName,
-                行程編號 = i.ItineraryDateSystemId,
-                數量 = i.Quantity,
-                下單時間 = i.OrderTime,
-                付款方式 = i.PaymentMethod.PaymentMethod1,
-                付款狀態 = i.PaymentStatus.PaymentStatus1,
-                付款時間 = i.PaymentTime,
-                訂單狀態 = i.OrderStatus.OrderStatus1,
-                優惠券 = i.Coupon.CouponName,
-                總金額 = i.TotalAmount,
-            }).FirstOrDefault();
+            //var data = _context.ItineraryOrders
+            //    .Where(i => i.ItineraryOrderId == id)
+            //    .Select(i => new ItineraryOrderListViewModel()
+            //{
+            //    行程訂單編號 = i.ItineraryOrderId,
+            //    訂單編號 = i.ItineraryOrderNumber,
+            //    會員 = i.Member.MemberName,
+            //    行程編號 = i.ItineraryDateSystemId,
+            //    數量 = i.Quantity,
+            //    下單時間 = i.OrderTime,
+            //    付款方式 = i.PaymentMethod.PaymentMethod1,
+            //    付款狀態 = i.PaymentStatus.PaymentStatus1,
+            //    付款時間 = i.PaymentTime,
+            //    訂單狀態 = i.OrderStatus.OrderStatus1,
+            //    優惠券 = i.Coupon.CouponName,
+            //    總金額 = i.TotalAmount,
+            //}).FirstOrDefault();
+
+            var data = _context.ItineraryOrders.FirstOrDefault(io => io.ItineraryOrderId == id);
+            if(data==null)
+                return RedirectToAction("List");
+            ViewBag.Member = new SelectList(_context.Members.ToList(), "MemberId", "MemberName", data.MemberId);
             
 
             return View(data);
@@ -102,7 +109,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             data.PaymentTime = vm.付款時間;
             data.OrderStatus.OrderStatus1 = vm.訂單狀態;
             data.Coupon.CouponName = vm.優惠券;
-            data.TotalAmount = vm.總金額;
+            //data.TotalAmount = vm.總金額;
 
             _context.SaveChanges();
             return RedirectToAction("List");
@@ -117,6 +124,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction("List");
+        }
+        public IActionResult Detail(int? id)
+        {
+            return View();
         }
     }
 }

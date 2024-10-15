@@ -43,6 +43,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
             admin.CommentManageStatus = inputAdmin.CommentManageStatus;
             admin.BlogManageStatus = inputAdmin.BlogManageStatus;
 
+            if (inputAdmin.photo != null) 
+            { 
+                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/" + inputAdmin.photo.FileName, FileMode.Create));
+                admin.ImagePath = inputAdmin.photo.FileName;
+            }
+
             _context.Admins.Add(admin);
             _context.SaveChanges();
             var alladmins = _context.Admins.Select(a => a);
@@ -63,6 +69,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
             admin.CouponManageStatus = inputAdmin.CouponManageStatus;
             admin.CommentManageStatus = inputAdmin.CommentManageStatus;
             admin.BlogManageStatus = inputAdmin.BlogManageStatus;
+
+            if (inputAdmin.photo != null)
+            {
+                inputAdmin.photo.CopyTo(new FileStream(_environ.WebRootPath + "/images/Admin/" + inputAdmin.photo.FileName, FileMode.Create));
+                admin.ImagePath = inputAdmin.photo.FileName;
+            }
 
             _context.SaveChanges();
             var alladmins = _context.Admins.Select(a => a);

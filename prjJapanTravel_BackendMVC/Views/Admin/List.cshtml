@@ -26,6 +26,7 @@
                 <button type="button" id="AlterAdmin" class="btn btn-primary" disabled="disabled">修改管理員</button>
                 <button type="button" id="SubmitAdmin" class="btn btn-primary" disabled="disabled">儲存</button>
                 <button type="button" id="CancelAdmin" class="btn btn-primary">取消</button>
+                <button type="button" id="DeleteAdmin" class="btn btn-danger">刪除管理員</button>
             </div>
         
             @* ================================================================================= *@
@@ -82,7 +83,7 @@
             @* ============================================================================================= *@
              <div class="col-3">
                 <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
-                <input type="file" id="photo" name="photo" class="form-control" style="margin-top:30px" disabled="disabled">
+                <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" disabled="disabled">
             </div> 
     </div>
     </div>
@@ -137,6 +138,8 @@
         const alterbtn = document.getElementById('AlterAdmin');
         const submitbtn = document.getElementById('SubmitAdmin');
         const cancelbtn = document.getElementById('CancelAdmin');
+        const btnphoto = document.getElementById('btnphoto');
+        const deletebtn = document.getElementById('DeleteAdmin');
         const cardcontainer = document.getElementById('cardcontainer');
         const adminform = document.getElementById('adminform');
         const AdminPhoto = document.getElementById('image');
@@ -144,6 +147,26 @@
         const NoimageUrl = '/images/Admin/Noimage.png';
         const imageUrl = '/images/Admin/';
         let lastbtnclick = null;  
+
+
+        function reset() 
+        {
+            insertbtn.disabled = false;
+            alterbtn.disabled = true;
+            submitbtn.disabled = true;
+            alltext.forEach(input => {
+                input.disabled = true;
+                input.value = '';
+            })
+            allcheck.forEach(check => {
+                check.disabled = true;
+                check.checked = false;
+            })
+            AdminPhoto.src = NoimageUrl;
+        }
+
+
+
 
         // 為每張卡片添加點擊事件
 
@@ -184,6 +207,7 @@
                 });
             });
         }
+        addCardEvent();
         // =============CheckBox事件========================================
         allcheck.forEach(chb => {
             chb.addEventListener('change', () => 
@@ -191,9 +215,13 @@
                 chb.value = chb.checked ? "true" : "false";
             })
         })
+        //============圖片預覽=====================================================
+        btnphoto.addEventListener('change', (event) => 
+        {
+            AdminPhoto.src = `${imageUrl}${event.target.files[0].name}`
 
-
-        addCardEvent();
+        })
+        
         // =============新增按鈕======================================================
         insertbtn.addEventListener('click', (event) => {
             lastbtnclick = event.target;
@@ -223,18 +251,7 @@
         //================取消=======================================================
         cancelbtn.addEventListener('click', () => 
         {
-            insertbtn.disabled = false;
-            alterbtn.disabled = true;
-            submitbtn.disabled = true;
-            alltext.forEach(input => {
-                input.disabled = true;
-                input.value = '';
-            })
-            allcheck.forEach(check => {
-                check.disabled = true;
-                check.checked = false;
-            })
-            AdminPhoto.src = NoimageUrl;
+            reset();
         })
         //=========submit============================================================
         submitbtn.addEventListener('click', async () => {
@@ -259,6 +276,7 @@
                     cardcontainer.innerHTML = elealladmins.join("");
                     addCardEvent();
                 }
+                insertbtn.disabled = false;
             }
             else if (lastbtnclick.id == 'AlterAdmin') {
                 const response = await fetch(`https://localhost:7146/AdminAPI/AlterAdmin`,
@@ -279,7 +297,14 @@
                     cardcontainer.innerHTML = elealladmins.join("");
                     addCardEvent();
                 }
-            } 
+            }
+            submitbtn.disabled = true;
+            reset();
+        })
+        //================刪除管理員=================================================
+        deletebtn.addEventListener('click', () => {
+            confirm('刪除確認');
+            alert('已刪除');
         })
     </script>
 }

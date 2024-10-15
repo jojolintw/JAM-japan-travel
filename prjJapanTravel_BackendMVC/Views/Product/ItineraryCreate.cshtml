@@ -13,25 +13,26 @@
 
 </head>
 <body>
+    <form asp-action="ItineraryCreate" enctype="multipart/form-data">
     <nav style="background-color: lightblue; height: 100px; margin-top: 0; margin-bottom: 10px;">
-        <h1 style="text-align: center; margin: 0; padding-top: 30px;">新增體驗行程</h1>
+    <h1 style="text-align: center; margin: 0; padding-top: 30px;">新增體驗行程</h1>
     </nav>
     <div style="margin-bottom: 10px;">
         <label for="text">行程編號</label>
-        <input type="text">
+        <input type="text" name="行程編號">
 
         <label for="text">行程名稱</label>
-        <input type="text">
+        <input type="text" name="行程名稱">
 
         <label for="text">總團位</label>
-        <input type="text" style="width: 100px;">
+        <input type="text" name="總團位" style="width: 100px;">
 
         <label for="text">價格</label>
-        <input type="text" style="width: 100px;">
+        <input type="text" name="價格" style="width: 100px;">
     </div>
     <div style="margin-bottom: 10px;">
         <label>地區</label>
-        <select name="area" id="">
+        <select name="AreaSystem.AreaSystemId" id="">
             <option value="">請選擇區域</option>
             @foreach (var item in Model.areaList){
                 <option value="@item.AreaSystemId">@item.AreaName</option>
@@ -41,7 +42,7 @@
     <div style="margin-bottom: 10px;">
         <label for="exampleDataList" class="form-label">體驗</label>
         @* <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="請輸入體驗關鍵字"> *@
-        <select name="activity">
+        <select name="ActivitySystem.ActivitySystemId">
             <option value="">請選擇體驗項目</option>
             @foreach(var item in Model.activityList)
             {
@@ -51,30 +52,39 @@
     </div>
     <div style="margin-bottom: 10px;">
         <label>出發日期</label>
-        <input type="date" name="" id="">
+        <input type="date" name="ItineraryDates">
     </div>
     <div style="margin-bottom: 10px;">
         <label>圖片上傳</label>
-        <input type="file" onchange="openFile(event)">
+        <input type="file" name="ItineraryPicSystem.ImagePath" onchange="openFile(event)">
         <label>圖片預覽</label>
         <img id="output" height="200" style="display:none">
     </div>
     <div style="margin-bottom: 10px;">
         <div style="margin-bottom: 10px;">
             <label>圖片名稱</label>
-            <input type="text" name="picName" value="" />
+            <input id="ItineraryPicSystem.ImageName" type="text" name="picName" value="" />
         </div>
         <div>
             <label style="vertical-align: top;">圖片描述</label>
-            <textarea rows="7" cols="99"></textarea>
+            <textarea id="ItineraryPicSystem.ImageDetail" rows="7" cols="99"></textarea>
         </div>
     </div>
     <div class="form-group">
+        <div style="margin-bottom: 10px;">
+            <label>行程簡介</label>
+            <input type="text" name="行程簡介" value="" />
+        </div>
+        <div>
+            <label style="vertical-align: top;">行程詳情</label>
+            <textarea name="行程詳情" rows="7" cols="99"></textarea>
+        </div>
     </div>
     <div>
         <input type="submit" value="送出" class="btn btn-primary" />
         <a asp-action="List">取消</a>
     </div>
+    </form>
     
 </body>
 
@@ -87,13 +97,11 @@
     var input = event.target; //取得上傳檔案
     var reader = new FileReader(); //建立FileReader物件
 
-    reader.readAsDataURL(input.files[0]); //以.readAsDataURL將上傳檔案轉換為base64字串
-
-    reader.onload = function()
-    { //FileReader取得上傳檔案後執行以下內容
-    var dataURL = reader.result; //設定變數dataURL為上傳圖檔的base64字串
-    $('#output').attr('src', dataURL).show(); //將img的src設定為dataURL並顯示
-    };
-    }</script>
+    reader.onload = function() {
+        var dataURL = reader.result;
+        $('#output').attr('src', dataURL).show();};
+        reader.readAsDataURL(input.files[0]);
+    }
+     </script>
 
 }

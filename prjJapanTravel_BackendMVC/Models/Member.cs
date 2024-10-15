@@ -29,8 +29,6 @@ public partial class Member
 
     public int MemberStatusId { get; set; }
 
-    public virtual ICollection<ArticleMain> ArticleMains { get; set; } = new List<ArticleMain>();
-
     public virtual City City { get; set; }
 
     public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();

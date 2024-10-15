@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
 
@@ -23,7 +25,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 價格 = n.Price,
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
-                行程圖片 = n.ItineraryPicSystemId,
+                行程圖片 = n.ItineraryPicSystem.ImagePath,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -40,9 +42,47 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ItineraryCreate(Itinerary iti)
+        public IActionResult ItineraryCreate( ItineraryListViewModel itimodel, IFormFile ItineraryPic)
         {
-            _JP.Itineraries.Add(iti);
+            var itinerary = new Itinerary();
+            var itineraryImage = new Image();
+
+            itinerary.ItineraryId = itimodel.行程編號;
+            itinerary.ItineraryName = itimodel.行程名稱;
+            itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
+            itinerary.Stock = itimodel.總團位;
+            itinerary.Price = itimodel.價格;
+            //itinerary.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
+            itinerary.AreaSystemId = itimodel.AreaSystem.AreaSystemId;
+            itinerary.ItineraryDates = itimodel.ItineraryDates;
+            itinerary.ItineraryDetail = itimodel.行程詳情;
+            itinerary.ItineraryBrief = itimodel.行程簡介;
+            itinerary.ItineraryNotes = itimodel.行程注意事項;
+            if (ItineraryPic != null && ItineraryPic.Length > 0)
+            {
+                // 產生唯一的檔名
+                string photoName = Guid.NewGuid().ToString() + ".jpg";
+
+                // 定義儲存圖片的實際伺服器路徑
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Product", photoName);
+
+                // 使用 FileStream 將圖片寫入指定資料夾
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ItineraryPic.CopyTo(stream);
+                }
+
+                // 將圖片相關資訊存入資料庫
+                itineraryImage.ImageName = itimodel.ItineraryPicSystem.ImageName;
+                itineraryImage.ImagePath = $"/images/Product/{photoName}";  // 存相對路徑
+                itineraryImage.ImageDetail = itimodel.ItineraryPicSystem.ImageDetail;
+
+                _JP.Images.Add(itineraryImage);
+            }
+            itinerary.ItineraryPicSystemId = itineraryImage.ItineraryPicSystemId;
+
+            _JP.Itineraries.Add(itinerary);
+            _JP.SaveChanges();
             return RedirectToAction("List");
         }
 
@@ -77,7 +117,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
-                行程圖片 = n.ItineraryPicSystemId,
+                行程圖片 = n.ItineraryPicSystem.ImagePath,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -100,7 +140,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.Price = itiModel.價格;
             itinerary.ThemeSystemId = itiModel.體驗主題編號;
             itinerary.AreaSystemId = itiModel.地區編號;
-            itinerary.ItineraryPicSystemId = itiModel.行程圖片;
+            itinerary.ItineraryPicSystemId = itiModel.行程圖片編號;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;

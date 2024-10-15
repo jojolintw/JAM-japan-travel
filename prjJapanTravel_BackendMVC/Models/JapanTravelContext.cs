@@ -149,11 +149,6 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.ArticleStatusnumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ArticleMain_ArticleStatus");
-
-            entity.HasOne(d => d.Member).WithMany(p => p.ArticleMains)
-                .HasForeignKey(d => d.MemberId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ArticleMain_Member");
         });
 
         modelBuilder.Entity<ArticlePic>(entity =>

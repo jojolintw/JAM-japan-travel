@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.BlogViewModels;
 using prjJapanTravel_BackendMVC.ViewModels.MemberViewModels;
@@ -20,7 +21,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult List()
         {
-            var articledatas = _context.ArticleMains.Select(m => new ArticleMainViewModel
+            var articledatas = _context.ArticleMains
+                .Include(m => m.ArticleHashtags)
+                .ThenInclude(h => h.HashtagNumberNavigation).Select(m => new ArticleMainViewModel
             {
                 文章編號 = m.ArticleNumber,
                 會員編號 = m.MemberId,
@@ -29,8 +32,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 文章標題 = m.ArticleTitle,
                 文章最後更新時間 = (m.ArticleUpdatetime).ToDateTime(TimeOnly.MinValue),  //DateTime = DateOnly
                 文章內容 =m.ArticleContent,
+                文章使用的Hashtag = GetHashtags(m.ArticleHashtags),
             });
             return View(articledatas);
+        }
+
+        private static string GetHashtags(ICollection<ArticleHashtag> hashtags)
+        {
+            return string.Join(", ", hashtags.Select(h => h.HashtagNumberNavigation.HashtagName));
         }
     }
 }

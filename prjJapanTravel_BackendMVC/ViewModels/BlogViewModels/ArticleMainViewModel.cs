@@ -15,6 +15,8 @@
         public DateTime 文章最後更新時間 { get; set; }
 
         public string 文章內容 { get; set; }
+        public string 文章使用的Hashtag { get; set; }
+
 
     }
 }

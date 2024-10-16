@@ -12,5 +12,6 @@
         public string 密碼 { get; set; }
         public string 會員等級 { get; set; }
         public string 會員狀態 { get; set; }
+        public string 頭像路徑 { get; set; }
     }
 }

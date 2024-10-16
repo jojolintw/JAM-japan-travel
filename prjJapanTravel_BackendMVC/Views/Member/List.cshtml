@@ -4,84 +4,70 @@
     ViewData["Title"] = "List";
 }
 
-<h1>List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+
+<table class="table table-dark table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.會員編號)
+                <p>頭像</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.會員姓名)
+                <p>姓名</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.性別)
+                <p>性別</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.生日)
+                <p>生日</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.城市)
+                <p>城市</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.電話)
+                <p>電話</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                <p>Email</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.密碼)
+                <p>會員等級</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.會員等級)
+                <p>會員狀態</p>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.會員狀態)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+            
+        @foreach (var item in Model) {
         <tr>
+                <td>
+                    <p><img src="~/images/Member/@item.頭像路徑" /></p>
+                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.會員編號)
+                    <p>@item.會員姓名</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.會員姓名)
+                    <p>@(item.性別 ? "男" : "女")</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.性別)
+                    <p>  @item.生日.ToString("yyyy年 MM月 dd日")</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.生日)
+                    <p>@item.城市</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.城市)
+                    <p>@item.電話</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.電話)
+                    <p>@item.Email</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                    <p> @item.會員等級</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.密碼)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.會員等級)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.會員狀態)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    <p>@item.會員狀態</p>
             </td>
         </tr>
 }

@@ -17,5 +17,5 @@ public partial class Image
 
     public string ImageDetail { get; set; }
 
-    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
+    public virtual Itinerary ItinerarySystem { get; set; }
 }

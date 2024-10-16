@@ -1,22 +1,27 @@
 ﻿@model prjJapanTravel_BackendMVC.Models.Schedule
 
 @{
-    ViewData["Title"] = "SCreate";
+    ViewData["Title"] = "SEdit";
 }
 
-<h1>新增航班</h1>
+<h1>航班修改</h1>
 
 <h4>航班資料</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SCreate">
+        <form asp-action="SEdit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- 使用 HiddenFor 來確保 RouteId 正確綁定 -->
-    <input type="hidden" asp-for="RouteId" value="@ViewBag.RouteId" />
-
-
+            <div class="form-group">
+                <label asp-for="ScheduleId" class="control-label"></label>
+                <input asp-for="ScheduleId" class="form-control" />
+                <span asp-validation-for="ScheduleId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RouteId" class="control-label"></label>
+                <input asp-for="RouteId" class="form-control" />
+                <span asp-validation-for="RouteId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="DepartureTime" class="control-label"></label>
                 <input asp-for="DepartureTime" class="form-control" />
@@ -38,14 +43,14 @@
                 <span asp-validation-for="Capacity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="儲存" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">取消並回到上一頁</a>
+    <a asp-action="Index">取消</a>
 </div>
 
 @section Scripts {

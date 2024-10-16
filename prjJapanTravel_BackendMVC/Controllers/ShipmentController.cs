@@ -162,24 +162,82 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 傳遞 ViewModel 到 View
             return View(routeData);
         }
-        public ActionResult SCreate()
+        public IActionResult SCreate(int id)
         {
-            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            // 確認 routeId 有值
+            if (id == 0)
+            {
+                return NotFound("無效的 RouteId.");
+            }
+
+            // 將 RouteId 傳遞給 ViewBag 或 Model
+            ViewBag.RouteId = id;
+
+            // 如果你有用 ViewModel 來綁定，直接將 RouteId 傳入 ViewModel
             return View();
         }
+
         [HttpPost]
-        public ActionResult SCreate(Models.Route r)
+        public ActionResult SCreate(Schedule s)
+        {
+            // 在這裡設置一個斷點或記錄日誌來確認 RouteId 的值
+            if (s.RouteId == 0)
+            {
+                // 如果 RouteId 仍然是 0，顯示錯誤訊息
+                ModelState.AddModelError("", "RouteId 無效。");
+                return View(s);
+            }
+
+            // 保存 Schedule 到資料庫
+            _context.Schedules.Add(s);
+            _context.SaveChanges();
+
+            return RedirectToAction("RDetail", new { id = s.RouteId });
+        }
+
+        public ActionResult SEdit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound(); // 返回 404 找不到頁面
+            }
+
+            // 根據 id 查詢對應的 Route
+            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
+
+            if (schedule == null)
+            {
+                return NotFound(); // 如果找不到對應的 Route，返回 404
+            }
+
+            // 將出發港口和目的地港口的選項列表傳給視圖
+            return View(schedule); // 返回編輯頁面，並將 route 資料傳遞給視圖
+        }
+        [HttpPost]
+        public ActionResult SEdit(int id, Models.Schedule updatedSchedule)
         {
             if (ModelState.IsValid)
             {
-                _context.Routes.Add(r);  // 新增資料
-                _context.SaveChanges(); // 儲存變更
-                return RedirectToAction("Index");  // 回到列表頁面
+                try
+                {
+                    // 更新資料庫中的資料
+                    _context.Update(updatedSchedule);
+                    _context.SaveChanges(); // 儲存變更到資料庫
+                }
+                catch (Exception ex)
+                {
+                    // 如果發生例外，可以記錄例外或顯示錯誤信息
+                    ModelState.AddModelError("", "更新失敗: " + ex.Message);
+                    return View(updatedSchedule); // 返回編輯頁面，並顯示錯誤信息
+                }
+
+                // 更新成功後，重定向回到列表頁面
+                return RedirectToAction("RDetail");
             }
-            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            return View(r); // 回傳到視圖並顯示錯誤
+
+            // 如果 ModelState 無效，則重新顯示編輯頁面
+            return View(updatedSchedule);
         }
+
     }
 }

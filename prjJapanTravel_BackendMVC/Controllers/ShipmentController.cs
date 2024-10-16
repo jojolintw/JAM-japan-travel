@@ -50,49 +50,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             return View(r); // 回傳到視圖並顯示錯誤
         }
-        public IActionResult RDetail(int id)
-        {
-            // 查詢 Route 資料
-            var routeData = (from route in _context.Routes
-                             join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
-                             join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
-                             join image in _context.RouteImages on route.RouteId equals image.RouteId into routeImages
-                             from img in routeImages.DefaultIfEmpty() // 允許航線沒有圖片
-                             where route.RouteId == id
-                             select new RouteDetailViewModel
-                             {
-                                 RouteId = route.RouteId,
-                                 OriginPortName = originPort.PortName,
-                                 DestinationPortName = destinationPort.PortName,
-                                 Price = route.Price,
-                                 RouteDescription = route.RouteDescription,
-                                 Image = img != null ? img.Image : null, // 確保沒有圖片時處理 null
-                                 ImageDescription = img != null ? img.Description : "無圖片描述"
-                             }).FirstOrDefault();
-            // 確保只拿一筆 Route 資料
-
-            // 查詢 Schedule 資料
-            var schedules = (from schedule in _context.Schedules
-                             where schedule.RouteId == id
-                             select schedule).ToList();
-
-            // 確保兩個資料來源都不為 null
-            if (routeData == null)
-            {
-                // 處理沒有資料的情況，可以顯示錯誤訊息或跳轉到其他頁面
-                return NotFound($"未找到 RouteId {id} 的資料");
-            }
-
-            // 將 Schedules 加入 ViewModel
-            routeData.Schedules = schedules;
-
-            // 傳遞 ViewModel 到 View
-            return View(routeData);
-        }
-
-
-
-
+        
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -165,6 +123,63 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(updatedRoute);
         }
 
+        public IActionResult RDetail(int id)
+        {
+            // 查詢 Route 資料
+            var routeData = (from route in _context.Routes
+                             join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
+                             join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
+                             join image in _context.RouteImages on route.RouteId equals image.RouteId into routeImages
+                             from img in routeImages.DefaultIfEmpty() // 允許航線沒有圖片
+                             where route.RouteId == id
+                             select new RouteDetailViewModel
+                             {
+                                 RouteId = route.RouteId,
+                                 OriginPortName = originPort.PortName,
+                                 DestinationPortName = destinationPort.PortName,
+                                 Price = route.Price,
+                                 RouteDescription = route.RouteDescription,
+                                 Image = img != null ? img.Image : null, // 確保沒有圖片時處理 null
+                                 ImageDescription = img != null ? img.Description : "無圖片描述"
+                             }).FirstOrDefault();
+            // 確保只拿一筆 Route 資料
 
+            // 查詢 Schedule 資料
+            var schedules = (from schedule in _context.Schedules
+                             where schedule.RouteId == id
+                             select schedule).ToList();
+
+            // 確保兩個資料來源都不為 null
+            if (routeData == null)
+            {
+                // 處理沒有資料的情況，可以顯示錯誤訊息或跳轉到其他頁面
+                return NotFound($"未找到 RouteId {id} 的資料");
+            }
+
+            // 將 Schedules 加入 ViewModel
+            routeData.Schedules = schedules;
+
+            // 傳遞 ViewModel 到 View
+            return View(routeData);
+        }
+        public ActionResult SCreate()
+        {
+            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SCreate(Models.Route r)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Routes.Add(r);  // 新增資料
+                _context.SaveChanges(); // 儲存變更
+                return RedirectToAction("Index");  // 回到列表頁面
+            }
+            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            return View(r); // 回傳到視圖並顯示錯誤
+        }
     }
 }

@@ -7,6 +7,25 @@
 <p>價格: @Model.Price</p>
 <p>航線描述: @Model.RouteDescription</p>
 
+@if (Model.Image != null)
+{
+    <h3>圖片</h3>
+    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Image)" alt="Route Image" style="max-width: 300px;" />
+}
+else
+{
+    <p>無圖片</p>
+}
+
+<!-- 顯示圖片描述 -->
+@if (!string.IsNullOrEmpty(Model.ImageDescription))
+{
+    <p>圖片描述: @Model.ImageDescription</p>
+}
+else
+{
+    <p>無圖片描述</p>
+}
 <!-- 第二部分：列出所有相關的 Schedule 資料 -->
 <h3>航班資訊</h3>
 @if (Model.Schedules != null && Model.Schedules.Count > 0)

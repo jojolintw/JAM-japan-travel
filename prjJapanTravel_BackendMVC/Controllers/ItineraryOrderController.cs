@@ -38,12 +38,30 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.MemberList = new SelectList(_context.Members.ToList(), "MemberId", "MemberName");
+            ViewBag.PaymentMethodList = new SelectList(_context.PaymentMethods.ToList(), "PaymentMethodId", "PaymentMethod1");
+            ViewBag.PaymentStatusList = new SelectList(_context.PaymentStatuses.ToList(), "PaymentStatusId", "PaymentStatus1");
+            ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList(), "OrderStatusId", "OrderStatus1");
+            ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName");
+
+
             return View();
         }
         [HttpPost]
         public IActionResult Create(ItineraryOrder io)
         {
-            _context.ItineraryOrders.Add(io);
+            io.ItineraryOrderNumber = io.MemberId.ToString() + DateTime.Now.ToString("yyMMddHHmmss");
+            io.OrderTime = DateTime.Now;
+            //var itinerarySystem = _context.Itineraries
+            //    .FirstOrDefault(i => i.ItinerarySystemId == io.ItineraryDateSystem.ItinerarySystemId);
+            //io.TotalAmount = (decimal)io.ItineraryDateSystem.ItinerarySystem.Price * io.Quantity;
+
+            if (itinerarySystem != null && itinerarySystem.ItinerarySystem != null)
+            {
+                // 計算總金額
+                io.TotalAmount = itinerarySystem.ItinerarySystem.Price * io.Quantity;
+            }
+                _context.ItineraryOrders.Add(io);
             _context.SaveChanges();
             return RedirectToAction("List");
         }

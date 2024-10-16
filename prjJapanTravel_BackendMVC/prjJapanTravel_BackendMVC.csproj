@@ -28,7 +28,6 @@
     <Folder Include="ViewModels\MemberViewModels\" />
     <Folder Include="ViewModels\ShipmentViewModels\" />
     <Folder Include="ViewModels\OrderViewModels\" />
-    <Folder Include="ViewModels\ProductViewModels\" />
     <Folder Include="wwwroot\images\Admin\" />
     <Folder Include="wwwroot\images\Blog\" />
     <Folder Include="wwwroot\images\Blog\" />

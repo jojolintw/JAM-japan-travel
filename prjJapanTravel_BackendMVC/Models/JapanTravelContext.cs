@@ -230,6 +230,10 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("Image");
 
             entity.Property(e => e.ImageName).HasMaxLength(50);
+
+            entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.Images)
+                .HasForeignKey(d => d.ItinerarySystemId)
+                .HasConstraintName("FK_Image_Itinerary");
         });
 
         modelBuilder.Entity<Itinerary>(entity =>
@@ -251,10 +255,6 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.AreaSystemId)
                 .HasConstraintName("FK_Itinerary行程_Area地區");
 
-            entity.HasOne(d => d.ItineraryPicSystem).WithMany(p => p.Itineraries)
-                .HasForeignKey(d => d.ItineraryPicSystemId)
-                .HasConstraintName("FK_Itinerary_Image");
-
             entity.HasOne(d => d.ThemeSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.ThemeSystemId)
                 .HasConstraintName("FK_Itinerary行程_Theme主題1");
@@ -270,7 +270,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.ItineraryDates)
                 .HasForeignKey(d => d.ItinerarySystemId)
-                .HasConstraintName("FK_ItineraryTime行程批次_Itinerary行程");
+                .HasConstraintName("FK_ItineraryDate_Itinerary");
         });
 
         modelBuilder.Entity<ItineraryOrder>(entity =>

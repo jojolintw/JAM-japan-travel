@@ -13,95 +13,133 @@
 
 </head>
 <body>
-    <form asp-action="ItineraryCreate" enctype="multipart/form-data">
-    <nav style="background-color: lightblue; height: 100px; margin-top: 0; margin-bottom: 10px;">
-    <h1 style="text-align: center; margin: 0; padding-top: 30px;">新增體驗行程</h1>
-    </nav>
-    <div style="margin-bottom: 10px;">
-        <label for="text">行程編號</label>
-        <input type="text" name="行程編號">
-
-        <label for="text">行程名稱</label>
-        <input type="text" name="行程名稱">
-
-        <label for="text">總團位</label>
-        <input type="text" name="總團位" style="width: 100px;">
-
-        <label for="text">價格</label>
-        <input type="text" name="價格" style="width: 100px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label>地區</label>
-        <select name="AreaSystem.AreaSystemId" id="">
-            <option value="">請選擇區域</option>
-            @foreach (var item in Model.areaList){
-                <option value="@item.AreaSystemId">@item.AreaName</option>
-            }
-        </select>
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label for="exampleDataList" class="form-label">體驗</label>
-        @* <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="請輸入體驗關鍵字"> *@
-        <select name="ActivitySystem.ActivitySystemId">
-            <option value="">請選擇體驗項目</option>
-            @foreach(var item in Model.activityList)
-            {
-                <option value="@item.ActivitySystemId">@item.ActivityName</option>
-            }
-        </select>
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label>出發日期</label>
-        <input type="date" name="ItineraryDates">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label>圖片上傳</label>
-        <input type="file" name="ItineraryPicSystem.ImagePath" onchange="openFile(event)">
-        <label>圖片預覽</label>
-        <img id="output" height="200" style="display:none">
-    </div>
-    <div style="margin-bottom: 10px;">
+    @using (Html.BeginForm("ItineraryCreate", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <nav style="background-color: lightblue; height: 100px; margin-top: 0; margin-bottom: 10px;">
+            <h1 style="text-align: center; margin: 0; padding-top: 30px;">新增體驗行程</h1>
+        </nav>
         <div style="margin-bottom: 10px;">
-            <label>圖片名稱</label>
-            <input id="ItineraryPicSystem.ImageName" type="text" name="picName" value="" />
+            <label for="text">行程編號</label>
+            <input type="text" name="行程編號">
+
+            <label for="text">行程名稱</label>
+            <input type="text" name="行程名稱">
+
+            <label for="text">總團位</label>
+            <input type="text" name="總團位" style="width: 100px;">
+
+            <label for="text">價格</label>
+            <input type="text" name="價格" style="width: 100px;">
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>地區</label>
+            <select name="AreaSystem.AreaSystemId" id="">
+                <option value="">請選擇區域</option>
+                @foreach (var item in Model.areaList)
+                {
+                    <option value="@item.AreaSystemId">@item.AreaName</option>
+                }
+            </select>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="exampleDataList" class="form-label">體驗</label>
+            @* <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="請輸入體驗關鍵字"> *@
+            <select name="ActivitySystem.ActivitySystemId">
+                <option value="">請選擇體驗項目</option>
+                @foreach (var item in Model.activityList)
+                {
+                    <option value="@item.ActivitySystemId">@item.ActivityName</option>
+                }
+            </select>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>請選擇出發日期</label>
+            <input type="date" id="departureDateInput">
+            <button type="button" onclick="addDepartureDate()">添加日期</button>
+            <label>出發日期</label>
+            <table id="departureDateTable">
+                <tbody>
+                    <!-- 新增的日期會被插入到這裡 -->
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label>上傳圖片</label>
+            <input type="file" id="fileInput" name="ItineraryPics" multiple="multiple" />
         </div>
         <div>
-            <label style="vertical-align: top;">圖片描述</label>
-            <textarea id="ItineraryPicSystem.ImageDetail" rows="7" cols="99"></textarea>
+            <label>圖片預覽</label>
+            <img id="output" height="200" style="display:none">
         </div>
-    </div>
-    <div class="form-group">
+        <br />
         <div style="margin-bottom: 10px;">
-            <label>行程簡介</label>
-            <input type="text" name="行程簡介" value="" />
+            <div style="margin-bottom: 10px;">
+                <label>圖片名稱</label>
+                <input type="text" name="行程圖片[0].ImageName" />
+            </div>
+            <div>
+                <label style="vertical-align: top;">圖片描述</label>
+                <textarea id="行程圖片[0].ImageDetail" rows="7" cols="99"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div style="margin-bottom: 10px;">
+                <label>行程簡介</label>
+                <input type="text" name="行程簡介" value="" />
+            </div>
+            <div>
+                <label style="vertical-align: top;">行程詳情</label>
+                <textarea name="行程詳情" rows="7" cols="99"></textarea>
+            </div>
+            <div>
+                <label style="vertical-align: top;">行程注意事項</label>
+                <textarea name="行程注意事項" rows="7" cols="99"></textarea>
+            </div>
         </div>
         <div>
-            <label style="vertical-align: top;">行程詳情</label>
-            <textarea name="行程詳情" rows="7" cols="99"></textarea>
+            <input type="submit" value="送出" class="btn btn-primary" />
+            <a asp-action="List">取消</a>
         </div>
-    </div>
-    <div>
-        <input type="submit" value="送出" class="btn btn-primary" />
-        <a asp-action="List">取消</a>
-    </div>
-    </form>
-    
+    }
 </body>
 
 </html>
 @section Scripts
 {
     <script>
-    function openFile(event)
-    {
-    var input = event.target; //取得上傳檔案
-    var reader = new FileReader(); //建立FileReader物件
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            var output = document.getElementById('output');
+            var files = event.target.files;
 
-    reader.onload = function() {
-        var dataURL = reader.result;
-        $('#output').attr('src', dataURL).show();};
-        reader.readAsDataURL(input.files[0]);
-    }
+            if (files && files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    output.src = e.target.result;
+                    output.style.display = 'block';  // 顯示圖片
+                };
+
+                reader.readAsDataURL(files[0]);  // 讀取第一個文件並預覽
+            }
+        });
+        function addDepartureDate() {
+            var dateInput = document.getElementById("departureDateInput");
+            var selectedDate = dateInput.value;
+            if (selectedDate) {
+                var table = document.getElementById("departureDateTable").getElementsByTagName('tbody')[0];
+                var newRow = table.insertRow(-1); // 在表格末尾插入新行
+                var cell = newRow.insertCell(0); // 插入新儲存格
+                cell.textContent = selectedDate; // 設定儲存格的文本為選擇的日期
+
+                // 創建隱藏輸入欄位以傳遞每個日期
+                var index = table.rows.length - 1; // 當前行數作為索引
+                var hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = "行程日期[" + index + "].DepartureDate"; // 確保索引正確
+                hiddenInput.value = selectedDate;
+                document.forms[0].appendChild(hiddenInput); // 將隱藏欄位添加到表單中
+            }
+        }
      </script>
 
 }

@@ -22,9 +22,9 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
 
         public int? 地區編號 { get; set; }
         public string 地區 { get; set; }
-
-        public int? 行程圖片編號 { get; set; }
-        public string 行程圖片 { get; set; }
+        public List<ItineraryDate> 行程日期 { get; set; }
+        public List<ImageViewModel> 行程圖片 { get; set; }
+        public List<IFormFile> ItineraryPics { get; set; }
         public string 行程詳情 { get; set; }
 
         public string 行程簡介 { get; set; }

@@ -41,6 +41,9 @@
                 @Html.DisplayNameFor(model => model.地區)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.行程日期)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.行程圖片)
             </th>
             <th></th>
@@ -74,7 +77,24 @@
                 @Html.DisplayFor(modelItem => item.地區)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.行程圖片)
+                @if (item.行程日期 != null && item.行程日期.Any())
+                {
+                    foreach (var date in item.行程日期)
+                    {
+                        <span>@date.DepartureDate</span>
+                        <br />
+                    }
+                }
+                else
+                {
+                    <span>無出發日期</span>
+                }
+            </td>
+            <td>
+                @foreach (var img in item.行程圖片)
+                {
+                    <img src="@img.ImagePath" alt="@img.ImageName" width="100" height="100" />
+                }
             </td>
             <td>
                 @Html.ActionLink("行程詳情", "Details", "Product", new { id=item.行程系統編號 }) |

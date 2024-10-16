@@ -239,5 +239,25 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(updatedSchedule);
         }
 
+        public ActionResult SDelete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound(); // 返回 404 找不到頁面
+            }
+
+            var sch = _context.Schedules.FirstOrDefault(r => r.RouteId == id);
+
+            if (sch == null)
+            {
+                return NotFound(); // 如果找不到路由，返回 404
+            }
+
+            // 刪除路由
+            _context.Schedules.Remove(sch);
+            _context.SaveChanges(); // 儲存變更到資料庫
+
+            return RedirectToAction("Index"); // 刪除後返回列表頁面
+        }
     }
 }

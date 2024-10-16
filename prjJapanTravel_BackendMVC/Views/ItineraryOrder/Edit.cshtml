@@ -1,5 +1,4 @@
-﻿@* @model prjJapanTravel_BackendMVC.Models.ItineraryOrder *@
-@model prjJapanTravel_BackendMVC.ViewModels.OrderViewModels.ItineraryOrderListViewModel
+﻿@model prjJapanTravel_BackendMVC.ViewModels.OrderViewModels.ItineraryOrderListViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -41,12 +40,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="付款方式編號" class="control-label"></label>
-                <input asp-for="付款方式編號" class="form-control" />
+                <select asp-for="付款方式編號" class="form-control" asp-items="ViewBag.PaymentMethodList">
+                    <option value="">-- 請選擇付款方式 --</option>
+                </select>
                 <span asp-validation-for="付款方式編號" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="付款狀態編號" class="control-label"></label>
-                <input asp-for="付款狀態編號" class="form-control" />
+                <select asp-for="付款狀態編號" class="form-control" asp-items="ViewBag.PaymentStatusList">
+                    <option value="">-- 請選擇付款狀態 --</option>
+                </select>
                 <span asp-validation-for="付款狀態編號" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -55,13 +58,15 @@
                 <span asp-validation-for="付款時間" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="訂單狀態編號" class="control-label"></label>
-                <input asp-for="訂單狀態編號" class="form-control" />
+                <label asp-for="訂單狀態" class="control-label"></label>
+                <select asp-for="訂單狀態編號" class="form-control" asp-items="ViewBag.OrderStatusList">
+                    <option value="">-- 請選擇訂單狀態 --</option>
+                </select>
                 <span asp-validation-for="訂單狀態編號" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="優惠券編號" class="control-label"></label>
-                <input asp-for="優惠券編號" class="form-control" readonly/>
+                <input asp-for="優惠券編號" class="form-control" readonly />
                 <span asp-validation-for="優惠券編號" class="text-danger"></span>
             </div>
             <div class="form-group">

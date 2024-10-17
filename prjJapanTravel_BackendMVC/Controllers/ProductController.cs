@@ -89,6 +89,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     var file = ItineraryPics[i];
                     if (file.Length > 0)
                     {
+                        ImageViewModel imageView = new ImageViewModel();
                         // 生成唯一的檔名
                         string photoname = Guid.NewGuid() + ".jpg";
 
@@ -102,16 +103,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         // 獲取圖片名稱和描述
                         //var imageViewModel = itimodel.行程圖片[i];
 
-                        // 新增圖片資料到 Image 表
-                        ImageViewModel image = new ImageViewModel()
+                        
+                        Image image = new Image()
                         {
-                            ItinerarySystemId =itimodel.ItinerarySystemId,
-                            ImageName = image.ImageName,  // 確保圖片名稱對應
+                            ItinerarySystemId = itinerary.ItinerarySystemId,
+                            ImageName = imageView.ImageName,  // 確保圖片名稱對應
                             ImagePath = $"/images/Product/{photoname}",  // 相對路徑
-                            ImageDetail = image.ImageDetail  // 圖片描述
+                            ImageDetail = imageView.ImageDetail  // 圖片描述
                         };
 
-                        _JP.Images.Add(itineraryImage);  // 添加圖片資料到資料庫
+                        _JP.Images.Add(image);  // 添加圖片資料到資料庫
                     }
                 }
             }

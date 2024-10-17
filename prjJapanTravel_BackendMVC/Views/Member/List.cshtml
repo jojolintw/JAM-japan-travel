@@ -38,35 +38,71 @@
                 <button type="button" id="btnAlter" class="btn btn-primary" disabled="disabled">修改會員</button>
                 <button type="button" id="btnSubmit" class="btn btn-primary" disabled="disabled">儲存</button>
                 <button type="button" id="btnCancel" class="btn btn-primary">取消</button>
-                <button type="button" id="btnDelete" class="btn btn-danger" disabled="disabled">刪除管理員</button>
+                <button type="button" id="btnDelete" class="btn btn-danger" disabled="disabled">刪除會員</button>
             </div>
 
             @* ================================================================================================================== *@
-            <div class="col-4" style="margin-left:75px;margin-top:30px;font-size:25px">
+            <div class="col-3" style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="d-flex">
                     <div class="form-check me-3">
-                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" checked>
+                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" checked/>
                         <label class="form-check-label" for="sexm">
                             男
                         </label>
                     </div>
                     <div class="form-check ml-5">
-                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0">
+                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0"/>
                         <label class="form-check-label" for="sexfm">
                             女
                         </label>
                     </div>
                 </div>
-                <div class="ml">
-                    <label class="form-check-label" for="">
-                        生日
-                    </label>
-                    <input type="date" value=""/>
+                <div class="mt-5">
+                    <div class="mb-3">
+                        <label for="Birthday" class="form-label " style="font-size:20px">生日</label>
+                        <input type="date" id="Birthday" name="Birthday" class="form-control" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text"></div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <div class="mb-3">
+                        <label for="selectareas" class="form-label " style="font-size:20px">地區</label>
+                        <select id="selectareas" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="selectlevel" class="form-label " style="font-size:20px">會員等級</label>
+                        <select id="selectlevel" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="selectstatus" class="form-label " style="font-size:20px">會員狀態</label>
+                        <div class="d-flex">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="radio" name="status" value="0" checked />
+                                <label class="form-check-label">
+                                    未驗證
+                                </label>
+                            </div>
+                            <div class="form-check ml-4">
+                                <input class="form-check-input" type="radio" name="status" value="1" />
+                                <label class="form-check-label">
+                                    已驗證
+                                </label>
+                            </div>
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="status" value="2" />
+                                <label class="form-check-label">
+                                    停權
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             @* ============================================================================================= *@
-            <div class="col-3">
-                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">
+            <div class="col-4" style="margin-left:50px">
+                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:500px">
                 <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div>
         </div>
@@ -74,11 +110,6 @@
 </form>
 <hr />
 @* ================================================================================================================================= *@
-
-
-
-
-
 
 <table class="table table-dark table-hover">
     <thead>
@@ -147,3 +178,39 @@
 }
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+        const doman = "https://localhost:7146";
+        const selectareas = document.getElementById('selectareas');
+        const selectlevel = document.getElementById('selectlevel');
+        const radiostatus = document.getElementById('radiostatus');
+
+        // ==============================================================================================
+        window.onload = async () => {
+            const responsecities = await fetch(`${doman}/api/MemberApi/GetAreaList`,
+                {
+                    method: "Get"
+                })
+            const citylist = await responsecities.json();
+            const elecitylist = citylist.map(city => {
+                return (`<option value="${city['cityId']}">${city['city1']}</option>`)
+            })
+            selectareas.innerHTML = elecitylist.join("");
+            //=================================================================================================
+            const responselevels = await fetch(`${doman}/api/MemberApi/GetLevelList`,
+                {
+                    method: "Get"
+                })
+            const levellist = await responselevels.json();
+            const elelevellist = levellist.map(level => {
+                 return (`<option value="${level['memberLevelId']}">${level['memberLevelName']}</option>`)
+            })
+            selectlevel.innerHTML = elelevellist.join("");
+        }
+    </script>
+
+
+
+}

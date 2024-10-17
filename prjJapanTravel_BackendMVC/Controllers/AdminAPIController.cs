@@ -12,8 +12,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
     //[ApiController]
     public class AdminAPIController : Controller
     {
-        public JapanTravelContext _context;
-        IWebHostEnvironment _environ;
+        public readonly JapanTravelContext _context;
+        public readonly IWebHostEnvironment _environ;
 
         public AdminAPIController(JapanTravelContext context, IWebHostEnvironment environ) 
         {

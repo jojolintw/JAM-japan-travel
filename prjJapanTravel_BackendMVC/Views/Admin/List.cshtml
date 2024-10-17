@@ -34,7 +34,7 @@
             </div>
         
             @* ================================================================================= *@
-            <div class="col-4"  style="margin-left:75px;margin-top:30px;font-size:25px">
+            <div class="col-4"  style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="form-check">
                     <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
@@ -85,7 +85,7 @@
                 </div>
             </div>
             @* ============================================================================================= *@
-             <div class="col-3">
+             <div class="col-3" style="margin-left:50px">
                 <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
                 <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div> 
@@ -169,6 +169,7 @@
                 check.checked = false;
             })
             AdminPhoto.src = NoimageUrl;
+            txtKeyworddisabled = false; 
         }
 
 

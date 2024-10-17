@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels;
 
@@ -268,5 +269,20 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return RedirectToAction("RDetail", new { id = schedule.RouteId }); // 刪除後返回詳細頁面
         }
 
+        ///////////////////////////////////
+        public IActionResult ICreate(int id)
+        {
+            ViewBag.RouteId = id;
+            return View();
     }
+
+    [HttpPost]
+    public ActionResult ICreate(RouteImage i)
+    {
+        _context.RouteImages.Add(i);
+        _context.SaveChanges();
+
+        return RedirectToAction("RDetail", new { id = i.RouteId });
+    }
+}
 }

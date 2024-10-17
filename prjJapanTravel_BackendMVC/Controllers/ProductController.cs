@@ -19,7 +19,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult List()
         {
-            var datas = _JP.Itineraries.Select(n => new ItineraryListViewModel()
+            var datas = _JP.Itineraries.Select(n => new ItineraryViewModel()
             {
                 行程系統編號 = n.ItinerarySystemId,
                 行程編號 = n.ItineraryId,
@@ -54,7 +54,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ItineraryCreate(ItineraryListViewModel itimodel)
+        public IActionResult ItineraryCreate(ItineraryViewModel itimodel)
         {
             Itinerary itinerary = new Itinerary();
             
@@ -138,7 +138,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult ItineraryEdit(int? id)
         {
-            var data = _JP.Itineraries.Where(n => n.ItinerarySystemId == id).Select(n => new ItineraryListViewModel()
+            var data = _JP.Itineraries.Where(n => n.ItinerarySystemId == id).Select(n => new ItineraryViewModel()
             {
                 行程系統編號 = n.ItinerarySystemId,
                 行程編號 = n.ItineraryId,
@@ -159,7 +159,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(data);
         }
         [HttpPost]
-        public IActionResult ItineraryEdit(ItineraryListViewModel itiModel)
+        public IActionResult ItineraryEdit(ItineraryViewModel itiModel)
         {
             var itinerary = _JP.Itineraries.FirstOrDefault(n => n.ItinerarySystemId == itiModel.行程系統編號);
             if (itinerary == null)

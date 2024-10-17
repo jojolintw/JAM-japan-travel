@@ -13,16 +13,20 @@
                     <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                 </div>
                 <input type="Text" id="Keyword" name="Keyword" class="form-control" value="" placeholder="請輸入關鍵字" />
-                <input type="text" id="MemberId" name="AdminId" class="form-control" value="" />
+                <input type="text" id="MemberId" name="MemberId" class="form-control" value="" />
                 <div class="mb-3">
-                    <label for="AdminName" class="form-label" style="font-size:20px">管理員姓名</label>
-                    <input type="text" id="AdminName" name="AdminName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                    <label for="MemberName" class="form-label" style="font-size:20px">會員姓名</label>
+                    <input type="text" id="MemberName" name="MemberName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
-
                 <div class="mb-3">
-                    <label for="Account" class="form-label " style="font-size:20px">帳號</label>
-                    <input type="text" id="Account" name="Account" class="form-control" id="AdminAccount" aria-describedby="emailHelp" disabled="disabled">
+                    <label for="Phone" class="form-label " style="font-size:20px">手機號碼</label>
+                    <input type="text" id="Phone" name="Phone" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                    <div id="emailHelp" class="form-text"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="Email" class="form-label " style="font-size:20px">Email</label>
+                    <input type="text" id="Email" name="Email" class="form-control"  aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
@@ -30,62 +34,28 @@
                     <label for="Password" class="form-label" style="font-size:20px">密碼</label>
                     <input type="text" id="Password" name="Password" class="form-control" disabled="disabled">
                 </div>
-                <button type="button" id="InsertAdmin" class="btn btn-primary">新增管理員</button>
-                <button type="button" id="AlterAdmin" class="btn btn-primary" disabled="disabled">修改管理員</button>
-                <button type="button" id="SubmitAdmin" class="btn btn-primary" disabled="disabled">儲存</button>
-                <button type="button" id="CancelAdmin" class="btn btn-primary">取消</button>
-                <button type="button" id="DeleteAdmin" class="btn btn-danger" disabled="disabled">刪除管理員</button>
+                <button type="button" id="btnInsert" class="btn btn-primary">新增會員</button>
+                <button type="button" id="btnAlter" class="btn btn-primary" disabled="disabled">修改會員</button>
+                <button type="button" id="btnSubmit" class="btn btn-primary" disabled="disabled">儲存</button>
+                <button type="button" id="btnCancel" class="btn btn-primary">取消</button>
+                <button type="button" id="btnDelete" class="btn btn-danger" disabled="disabled">刪除管理員</button>
             </div>
 
-            @* ================================================================================= *@
+            @* ================================================================================================================== *@
             <div class="col-4" style="margin-left:75px;margin-top:30px;font-size:25px">
-                <div class="form-check">
-                    <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        管理員管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="MemberManageStatus" name="MemberManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        會員管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="IniteraryManageStatus" name="IniteraryManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        行程管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="ShipmentManageStatus" name="ShipmentManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        航班管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="OrderManageStatus" name="OrderManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        訂單管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="CouponManageStatus" name="CouponManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        優惠券管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="CommentManageStatus" name="CommentManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        評論管理權限
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input id="BlogManageStatus" name="BlogManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
-                    <label class="form-check-label" for="">
-                        部落格管理權限
-                    </label>
+                <div class="d-flex">
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" checked>
+                        <label class="form-check-label" for="sexm">
+                            男
+                        </label>
+                    </div>
+                    <div class="form-check ml-5">
+                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0">
+                        <label class="form-check-label" for="sexfm">
+                            女
+                        </label>
+                    </div>
                 </div>
             </div>
             @* ============================================================================================= *@

@@ -56,12 +56,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
             //    .FirstOrDefault(i => i.ItinerarySystemId == io.ItineraryDateSystem.ItinerarySystemId);
             //io.TotalAmount = (decimal)io.ItineraryDateSystem.ItinerarySystem.Price * io.Quantity;
 
-            if (itinerarySystem != null && itinerarySystem.ItinerarySystem != null)
-            {
-                // 計算總金額
-                io.TotalAmount = itinerarySystem.ItinerarySystem.Price * io.Quantity;
-            }
-                _context.ItineraryOrders.Add(io);
+            //if (itinerarySystem != null && itinerarySystem.ItinerarySystem != null)
+            //{
+            //    // 計算總金額
+            //    io.TotalAmount = itinerarySystem.ItinerarySystem.Price * io.Quantity;
+            //}
+            _context.ItineraryOrders.Add(io);
             _context.SaveChanges();
             return RedirectToAction("List");
         }
@@ -113,13 +113,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult Edit(ItineraryOrderListViewModel vm)
         {
             var data = _context.ItineraryOrders
-                //.Include(io => io.Member)
-                //.Include(io => io.PaymentMethod)
-                //.Include(io => io.PaymentStatus)
-                //.Include(io => io.OrderStatus)
-                //.Include(io => io.Coupon)
-                //.Include(io => io.ItineraryDateSystem)
-                //    .ThenInclude(io => io.ItinerarySystem)
                 .FirstOrDefault(io => io.ItineraryOrderId == vm.行程訂單編號);
             if (data == null)
                 return RedirectToAction("List");
@@ -153,9 +146,25 @@ namespace prjJapanTravel_BackendMVC.Controllers
             }
             return RedirectToAction("List");
         }
-        public IActionResult Detail(int? id)
+        public IActionResult Details(int? id)
         {
-            return View();
+            var datas = _context.ItineraryOrders
+                .Where(i => i.ItineraryOrderId == id)
+                .Select(i => new ItineraryOrderDetailViewModel()
+                {
+                    會員 = i.Member.MemberName,
+                    訂單編號 = i.ItineraryOrderNumber,
+                    行程名稱 = i.ItineraryDateSystem.ItinerarySystem.ItineraryName,
+                    日期 = i.ItineraryDateSystem.DepartureDate,
+                    行程須知 = i.ItineraryDateSystem.ItinerarySystem.ItineraryDetail,
+                    數量 = i.Quantity,
+                    單價 = (decimal)i.ItineraryDateSystem.ItinerarySystem.Price,
+                    總金額 = (decimal)i.ItineraryDateSystem.ItinerarySystem.Price * i.Quantity 
+                            - (i.Coupon.Discount != null ? i.Coupon.Discount : 0),
+                    優惠券名稱 = i.Coupon.CouponName != null ? i.Coupon.CouponName : "未使用優惠券",
+                    優惠金額 = i.Coupon.Discount != null ? i.Coupon.Discount : 0,
+                }).ToList();
+            return View(datas);
         }
     }
 }

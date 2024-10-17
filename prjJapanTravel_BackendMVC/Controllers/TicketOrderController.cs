@@ -34,11 +34,21 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult Create()
         {
+            ViewBag.MemberList = new SelectList(_context.Members.ToList(), "MemberId", "MemberName");
+            ViewBag.PaymentMethodList = new SelectList(_context.PaymentMethods.ToList(), "PaymentMethodId", "PaymentMethod1");
+            ViewBag.PaymentStatusList = new SelectList(_context.PaymentStatuses.ToList(), "PaymentStatusId", "PaymentStatus1");
+            ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList(), "OrderStatusId", "OrderStatus1");
+            ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName");
+
+
             return View();
         }
         [HttpPost]
         public IActionResult Create(TicketOrder to)
         {
+            to.TicketOrderNumber = to.MemberId.ToString() + DateTime.Now.ToString("yyMMddHHmmss");
+            to.OrderTime = DateTime.Now;
+
             _context.TicketOrders.Add(to);
             _context.SaveChanges();
             return RedirectToAction("List");
@@ -114,6 +124,27 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction("List");
+        }
+
+        public IActionResult Details(int? id)
+        {
+            var datas = _context.TicketOrderItems
+                .Where(t => t.TicketOrderId == id)
+                .Select(t => new TicketOrderDetailViewModel()
+                {
+                    會員 = t.TicketOrder.Member.MemberName,
+                    訂單編號 = t.TicketOrder.TicketOrderNumber,
+                    出發地點 = t.Schedule.Route.OriginPort.PortName,
+                    抵達地點 = t.Schedule.Route.DestinationPort.PortName,
+                    航線描述 = t.Schedule.Route.RouteDescription,
+                    數量 = t.Quantity,
+                    單價 = (decimal) t.Schedule.Route.Price,
+                    總金額 = (decimal)t.Schedule.Route.Price * t.Quantity
+                            - (t.TicketOrder.Coupon.Discount != null ? t.TicketOrder.Coupon.Discount : 0),
+                    優惠券名稱 = t.TicketOrder.Coupon.CouponName != null ? t.TicketOrder.Coupon.CouponName : "未使用優惠券",
+                    優惠金額 = t.TicketOrder.Coupon.Discount != null ? t.TicketOrder.Coupon.Discount : 0,
+                }).ToList();
+            return View(datas);
         }
     }
 }

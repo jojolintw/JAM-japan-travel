@@ -24,7 +24,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     訂單編號 = m.ItineraryOrderNumber,
                     會員 = m.Member.MemberName,
                     行程名稱 = m.ItineraryDateSystem.ItinerarySystem.ItineraryName,
-                    //數量 = m.Quantity,
                     下單時間 = m.OrderTime,
                     付款方式 = m.PaymentMethod.PaymentMethod1,
                     付款狀態 = m.PaymentStatus.PaymentStatus1,
@@ -52,15 +51,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             io.ItineraryOrderNumber = io.MemberId.ToString() + DateTime.Now.ToString("yyMMddHHmmss");
             io.OrderTime = DateTime.Now;
-            //var itinerarySystem = _context.Itineraries
-            //    .FirstOrDefault(i => i.ItinerarySystemId == io.ItineraryDateSystem.ItinerarySystemId);
-            //io.TotalAmount = (decimal)io.ItineraryDateSystem.ItinerarySystem.Price * io.Quantity;
-
-            //if (itinerarySystem != null && itinerarySystem.ItinerarySystem != null)
-            //{
-            //    // 計算總金額
-            //    io.TotalAmount = itinerarySystem.ItinerarySystem.Price * io.Quantity;
-            //}
             _context.ItineraryOrders.Add(io);
             _context.SaveChanges();
             return RedirectToAction("List");
@@ -118,7 +108,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return RedirectToAction("List");
             data.ItineraryOrderId = (int)vm.行程訂單編號;
             data.ItineraryOrderNumber = vm.訂單編號;
-            data.MemberId = (int)vm.會員編號;
+            //data.MemberId = (int)vm.會員編號;
             data.ItineraryDateSystemId = (int)vm.行程編號;
             data.Quantity = (int)vm.數量;
             data.OrderTime = vm.下單時間;

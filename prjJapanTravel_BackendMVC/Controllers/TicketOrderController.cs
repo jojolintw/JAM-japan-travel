@@ -85,10 +85,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 , "PaymentMethodId", "PaymentMethod1", data.付款方式編號);
             ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList()
                 , "OrderStatusId", "OrderStatus1", data.訂單狀態編號);
-            //ViewBag.CouponList = new SelectList(_context.Coupons.ToList()
-            //    , "CouponId", "CouponName", data.優惠券編號);
-            //ViewBag.MemberList = new SelectList(_context.Members.ToList()
-            //    , "MemberId", "MemberName", data.會員編號);
 
             return View(data);
         }

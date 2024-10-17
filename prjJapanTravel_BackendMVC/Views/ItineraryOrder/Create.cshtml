@@ -4,12 +4,11 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>行程訂單新增作業</h1>
+<h1 style="margin-left:30%">行程訂單新增作業</h1>
 
-<h4>ItineraryOrder</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4" style="margin-left:25%">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -34,7 +33,7 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentMethodId" class="control-label">付款方式編號</label>
+                <label asp-for="PaymentMethodId" class="control-label">付款方式</label>
                 <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodList">
                     <option value="">-- 請選擇付款方式 --</option>
                 </select>
@@ -42,7 +41,7 @@
                 <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PaymentStatusId" class="control-label">付款狀態編號</label>
+                <label asp-for="PaymentStatusId" class="control-label">付款狀態</label>
                 <select asp-for="PaymentStatusId" class="form-control" asp-items="ViewBag.PaymentStatusList">
                     <option value="">-- 請選擇付款狀態 --</option>
                 </select>
@@ -55,7 +54,7 @@
                 <span asp-validation-for="PaymentTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OrderStatusId" class="control-label">訂單狀態編號</label>
+                <label asp-for="OrderStatusId" class="control-label">訂單狀態</label>
                 <select asp-for="OrderStatusId" class="form-control" asp-items="ViewBag.OrderStatusList">
                     <option value="">-- 請選擇訂單狀態 --</option>
                 </select>
@@ -63,7 +62,7 @@
                 <span asp-validation-for="OrderStatusId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CouponId" class="control-label">優惠券編號</label>
+                <label asp-for="CouponId" class="control-label">優惠券</label>
                 <select asp-for="CouponId" class="form-control" asp-items="ViewBag.CouponList">
                     <option value="">-- 請選擇優惠券 --</option>
                 </select>
@@ -89,4 +88,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        //計算總金額
+        //1.行程編號=>行程名稱 非同步(ajax) dateSystem => price
+        //2.javascript 獲取編號對應的價格
+        //3.計算單價*數量-優惠券
+        //4.submit儲存至database
+
+
+    </script>
 }

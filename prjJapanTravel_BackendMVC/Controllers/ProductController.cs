@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
+using NuGet.Protocol.Resources;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
 using System.Collections.Generic;
@@ -29,7 +30,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
                 行程日期 = n.ItineraryDates.Where(date=>date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
-                行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).ToList(),
+                行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).Select(img => new Image
+                   {
+                    ItineraryPicSystemId = img.ItineraryPicSystemId,
+                    ItinerarySystemId = img.ItinerarySystemId,
+                    ImagePath = img.ImagePath,
+                    ImageName = img.ImageName,
+                    ImageDetail = img.ImageDetail
+                   }).ToList(),
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -46,7 +54,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ItineraryCreate( ItineraryListViewModel itimodel, List<IFormFile> ItineraryPics)
+        public IActionResult ItineraryCreate(ItineraryListViewModel itimodel)
         {
             Itinerary itinerary = new Itinerary();
             
@@ -78,41 +86,37 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _JP.SaveChanges(); // 將所有出發日期保存到資料庫
             }
 
-            if (itimodel.ItineraryPics != null && ItineraryPics.Count > 0)
+            if (itimodel.imageViewModel != null && itimodel.imageViewModel.Count > 0)
             {
-                for (int i = 0; i < ItineraryPics.Count; i++)
+                foreach (var img in itimodel.imageViewModel)
                 {
-                    var file = ItineraryPics[i];
-                    if (file.Length > 0)
+                    if (img.ImageFile != null && img.ImageFile.Length > 0)
                     {
-                       
-                        // 生成唯一的檔名
+                        // 生成唯一的圖片名稱
                         string photoname = Guid.NewGuid() + ".jpg";
 
-                        // 圖片的實際伺服器路徑
-                        var filePath = _enviroment.WebRootPath + "/images/Admin/" + photoname;
+                        // 設置圖片的保存路徑
+                         var filePath = _enviroment.WebRootPath + "/images/Admin/" + photoname;
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            file.CopyTo(stream);
+                            img.ImageFile.CopyTo(stream);
                         }
 
-                        
-
-                        
-                        Image image = new Image()
+                        // 創建 Image 物件並保存到資料庫
+                        Image image = new Image
                         {
                             ItinerarySystemId = itinerary.ItinerarySystemId,
-                            ImageName = itimodel.行程圖片[i].ImageName,  // 確保圖片名稱對應
-                            ImagePath = photoname,  // 相對路徑
-                            ImageDetail = itimodel.行程圖片[i].ImageDetail  // 圖片描述
+                            ImageName = img.ImageName, // 從 ViewModel 獲取圖片名稱
+                            ImagePath = photoname,  // 保存相對路徑
+                            ImageDetail = img.ImageDetail // 圖片描述
                         };
 
-                        _JP.Images.Add(image);  // 添加圖片資料到資料庫
+                        _JP.Images.Add(image);
                         _JP.SaveChanges();
                     }
                 }
             }
-           
+
             return RedirectToAction("List");
         }
 

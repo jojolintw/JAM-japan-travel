@@ -14,7 +14,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- 使用 HiddenFor 來確保 RouteId 正確綁定 -->
-    <input type="hidden" asp-for="RouteId" value="@ViewBag.RouteId" />
+            <div class="form-group">
+                <label asp-for="RouteId" class="control-label"></label>
+                <input asp-for="RouteId" class="form-control" value="@ViewBag.RouteId" />
+                <span asp-validation-for="RouteId" class="text-danger"></span>
+            </div>
 
 
             <div class="form-group">

@@ -12,27 +12,31 @@
     </div>
 
     <!-- 圖片區塊，設置為浮動在右側 -->
-    <div style="width: 35%; float: right;">
-        @if (Model.Image != null)
+    <div style="width: 100%; overflow: auto;">
+        <p>
+            <a asp-action="ICreate">新增圖片</a>
+        </p>
+
+        @if (Model.Images != null && Model.Images.Count > 0)
         {
             <h3>圖片</h3>
-            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Image)" alt="Route Image" style="max-width: 300px;" />
+            @for (int i = 0; i < Model.Images.Count; i++)
+            {
+                <div style="display: inline-block; margin-right: 10px; text-align: center;">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Images[i])" alt="Route Image" style="width: 200px; height: auto;" />
+                    <p>圖片描述: @(string.IsNullOrEmpty(Model.ImageDescriptions[i]) ? "無圖片描述" : Model.ImageDescriptions[i])</p>
+                </div>
+            }
         }
         else
         {
             <p>無圖片</p>
         }
-
-        <!-- 顯示圖片描述 -->
-        @if (!string.IsNullOrEmpty(Model.ImageDescription))
-        {
-            <p>圖片描述: @Model.ImageDescription</p>
-        }
-        else
-        {
-            <p>無圖片描述</p>
-        }
     </div>
+
+
+
+
 </div>
 
 <!-- 清除浮動 -->

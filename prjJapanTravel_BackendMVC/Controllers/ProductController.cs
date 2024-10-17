@@ -29,11 +29,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
                 行程日期 = n.ItineraryDates.Where(date=>date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
-                行程圖片 = n.Images.Select(img => new ImageViewModel
-                {
-                    ImagePath = img.ImagePath,
-                    ImageName = img.ImageName
-                }).ToList(),
+                行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).ToList(),
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -89,30 +85,30 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     var file = ItineraryPics[i];
                     if (file.Length > 0)
                     {
-                        ImageViewModel imageView = new ImageViewModel();
+                       
                         // 生成唯一的檔名
                         string photoname = Guid.NewGuid() + ".jpg";
 
                         // 圖片的實際伺服器路徑
-                        var filePath = Path.Combine(_enviroment.WebRootPath, "images/Product", photoname);
+                        var filePath = _enviroment.WebRootPath + "/images/Admin/" + photoname;
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             file.CopyTo(stream);
                         }
 
-                        // 獲取圖片名稱和描述
-                        //var imageViewModel = itimodel.行程圖片[i];
+                        
 
                         
                         Image image = new Image()
                         {
                             ItinerarySystemId = itinerary.ItinerarySystemId,
-                            ImageName = imageView.ImageName,  // 確保圖片名稱對應
-                            ImagePath = $"/images/Product/{photoname}",  // 相對路徑
-                            ImageDetail = imageView.ImageDetail  // 圖片描述
+                            ImageName = itimodel.行程圖片[i].ImageName,  // 確保圖片名稱對應
+                            ImagePath = photoname,  // 相對路徑
+                            ImageDetail = itimodel.行程圖片[i].ImageDetail  // 圖片描述
                         };
 
                         _JP.Images.Add(image);  // 添加圖片資料到資料庫
+                        _JP.SaveChanges();
                     }
                 }
             }

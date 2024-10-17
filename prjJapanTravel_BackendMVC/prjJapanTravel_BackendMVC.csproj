@@ -22,7 +22,6 @@
     <Folder Include="PartialClass\Admin\" />
     <Folder Include="PartialClass\Blog\" />
     <Folder Include="PartialClass\Order\" />
-    <Folder Include="PartialClass\Product\" />
     <Folder Include="PartialClass\Shipment\" />
     <Folder Include="ViewModels\LoginViewModels\" />
     <Folder Include="ViewModels\MemberViewModels\" />

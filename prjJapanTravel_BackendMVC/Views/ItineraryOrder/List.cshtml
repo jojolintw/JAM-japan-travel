@@ -6,19 +6,19 @@
 
 <h1>行程訂單管理</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">新增訂單</a>
+<p style="margin:12px">
+    <a asp-action="Create" class="btn btn-outline-primary">新增訂單</a>
+    <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a>
 </p>
 
-<input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" />
-<input type="text" id="Member" placeholder="會員" />
+<div style="margin:12px 12px">
+    <input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" />
+    <input type="text" id="Member" placeholder="會員" />
+</div>
 
-<table class="table">
+<table class="table table-hover">
     <thead>
-        <tr>
-            @* <th>
-                @Html.DisplayNameFor(model => model.行程訂單編號)
-            </th > *@
+        <tr style="font-size:20px">
             <th>
                 @Html.DisplayNameFor(model => model.訂單編號)
             </th>
@@ -28,9 +28,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.行程名稱)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.數量)
-            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.下單時間)
             </th>
@@ -52,48 +49,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.總金額)
             </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.Remarks)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReviewRating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReveiwContent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReviewTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReviewStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepresentativeLastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepresentativeFirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepresentativeIdnumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepresentativePassportNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RepresentativePhoneNumber)
-            </th> *@
-            <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.行程訂單編號)
-            </td> *@
-            <td> 
-                    @Html.DisplayFor(modelItem => item.訂單編號)
+            <td>
+                @Html.ActionLink( item.訂單編號.ToString(), "Details", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.會員)
@@ -101,9 +64,6 @@
             <td>
                     @Html.Raw(item.行程名稱.Length > 15 ? item.行程名稱.Substring(0, 15) + "..." : item.行程名稱)
             </td>
-            @* <td>
-                    @Html.DisplayFor(modelItem => item.數量)
-            </td> *@
             <td>
                 @item.下單時間.ToString("yyyy-MM-dd HH:mm")
             </td>
@@ -126,39 +86,6 @@
             </td>
             <td style="text-align: right;">
                 @item.總金額.ToString("###,###,#0")
-            </td>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.Remarks)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReviewRating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReveiwContent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReviewTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReviewStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RepresentativeLastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RepresentativeFirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RepresentativeIdnumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RepresentativePassportNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RepresentativePhoneNumber)
-            </td> *@
-            <td>
-                    @Html.ActionLink("明細", "Details", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
             </td>
             <td>
                     @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, null)

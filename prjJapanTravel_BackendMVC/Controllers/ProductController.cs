@@ -25,7 +25,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 價格 = n.Price,
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
-                行程圖片 = n.ItineraryPicSystem.ImagePath,
+                //行程圖片 = n.ItineraryPicSystem.ImagePath,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -79,7 +79,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
                 _JP.Images.Add(itineraryImage);
             }
-            itinerary.ItineraryPicSystemId = itineraryImage.ItineraryPicSystemId;
+            //itinerary.ItineraryPicSystemId = itineraryImage.ItineraryPicSystemId;
 
             _JP.Itineraries.Add(itinerary);
             _JP.SaveChanges();
@@ -117,7 +117,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗主題 = n.ThemeSystem.ThemeName,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
-                行程圖片 = n.ItineraryPicSystem.ImagePath,
+                //行程圖片 = n.ItineraryPicSystem.ImagePath,
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -140,7 +140,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.Price = itiModel.價格;
             itinerary.ThemeSystemId = itiModel.體驗主題編號;
             itinerary.AreaSystemId = itiModel.地區編號;
-            itinerary.ItineraryPicSystemId = itiModel.行程圖片編號;
+            //itinerary.ItineraryPicSystemId = itiModel.行程圖片編號;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;

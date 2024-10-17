@@ -4,7 +4,7 @@
     {
         public int 會員編號 { get; set; }
         public string 會員姓名 { get; set; }
-        public bool 性別 { get; set; }
+        public string 性別 { get; set; }
         public DateTime 生日 { get; set; }
         public string 城市 { get; set; }
         public string 電話 { get; set; }

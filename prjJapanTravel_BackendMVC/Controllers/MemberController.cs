@@ -19,7 +19,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 會員編號 = m.MemberId,
                 會員姓名 = m.MemberName,
-                性別 = (bool) m.Gender,
+                性別 = (bool) m.Gender?"男":"女",
                 生日 = Convert.ToDateTime(m.Birthday),
                 城市 = m.City.City1,
                 電話 = m.Phone,

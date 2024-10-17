@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
+using System.Collections.Generic;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
     public class ProductController : Controller
     {
         private JapanTravelContext _JP;
-        public ProductController(JapanTravelContext JP)
+        IWebHostEnvironment _enviroment;
+        public ProductController(JapanTravelContext context, IWebHostEnvironment environment)
         {
-            _JP = JP;
+            _JP = context;
+            _enviroment = environment;
         }
         public IActionResult List()
         {
@@ -87,27 +90,25 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     if (file.Length > 0)
                     {
                         // 生成唯一的檔名
-                        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string photoname = Guid.NewGuid() + ".jpg";
 
                         // 圖片的實際伺服器路徑
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Product", uniqueFileName);
-
-                        // 儲存圖片到指定路徑
+                        var filePath = Path.Combine(_enviroment.WebRootPath, "images/Product", photoname);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             file.CopyTo(stream);
                         }
 
                         // 獲取圖片名稱和描述
-                        var imageViewModel = itimodel.行程圖片[i];
+                        //var imageViewModel = itimodel.行程圖片[i];
 
                         // 新增圖片資料到 Image 表
-                        Image itineraryImage = new Image()
+                        ImageViewModel image = new ImageViewModel()
                         {
-                            ItinerarySystemId = itinerary.ItinerarySystemId,
-                            ImageName = imageViewModel.ImageName,  // 確保圖片名稱對應
-                            ImagePath = $"/images/Product/{uniqueFileName}",  // 相對路徑
-                            ImageDetail = imageViewModel.ImageDetail  // 圖片描述
+                            ItinerarySystemId =itimodel.ItinerarySystemId,
+                            ImageName = image.ImageName,  // 確保圖片名稱對應
+                            ImagePath = $"/images/Product/{photoname}",  // 相對路徑
+                            ImageDetail = image.ImageDetail  // 圖片描述
                         };
 
                         _JP.Images.Add(itineraryImage);  // 添加圖片資料到資料庫

@@ -25,6 +25,8 @@
             <th>
                 票價
             </th>
+                            <th>操作</th>
+
             @* <th>
                 簡介
             </th> *@
@@ -62,3 +64,8 @@
         }
     </tbody>
 </table>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

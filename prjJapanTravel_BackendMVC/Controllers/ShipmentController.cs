@@ -123,7 +123,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 如果 ModelState 無效，則重新顯示編輯頁面
             return View(updatedRoute);
         }
-
+        //--------------------------------------------------------------------------
         public IActionResult RDetail(int id)
         {
             // 查詢 Route 資料
@@ -161,91 +161,47 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(routeData);
         }
 
-        public IActionResult SCreate(int id)
+        [HttpGet]
+        [Route("Shipment/{routeId}/SCreate")]
+        public IActionResult SCreate(int routeId)
         {
-            // 確認 routeId 有值
-            //if (id == 0)
-            //{
-            //    return NotFound("無效的 RouteId.");
-            //}
+            ViewBag.RouteId = routeId; // 傳遞 RouteId 給視圖
 
-            // 將 RouteId 傳遞給 ViewBag 或 Model
-            ViewBag.RouteId = id;
-
-            // 如果你有用 ViewModel 來綁定，直接將 RouteId 傳入 ViewModel
             return View();
         }
 
         [HttpPost]
-        public ActionResult SCreate(Schedule s)
-        {
-            // 在這裡設置一個斷點或記錄日誌來確認 RouteId 的值
-            if (s.RouteId == 0)
-            {
-                // 如果 RouteId 仍然是 0，顯示錯誤訊息
-                ModelState.AddModelError("", "RouteId 無效。");
-                return View(s);
-            }
-
-            // 保存 Schedule 到資料庫
-            _context.Schedules.Add(s);
-            _context.SaveChanges();
-
-            return RedirectToAction("RDetail", new { id = s.RouteId });
-        }
-
-        public ActionResult SEdit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound(); // 返回 404 找不到頁面
-            }
-
-            // 根據 id 查詢對應的 Route
-            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
-
-            if (schedule == null)
-            {
-                return NotFound(); // 如果找不到對應的 Route，返回 404
-            }
-
-            // 將出發港口和目的地港口的選項列表傳給視圖
-            return View(schedule); // 返回編輯頁面，並將 route 資料傳遞給視圖
-        }
-        [HttpPost]
-        public ActionResult SEdit(int id, Schedule updatedSchedule)
+        [Route("Shipment/{routeId}/SCreate")]
+        public IActionResult SCreate(int routeId, Schedule newSchedule)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    // 確保資料庫中有該筆資料
-                    var existingSchedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
-                    if (existingSchedule == null)
-                    {
-                        return NotFound(); // 如果 Schedule 不存在
-                    }
+                newSchedule.RouteId = routeId; // 設定 RouteId
+                _context.Schedules.Add(newSchedule);
+                _context.SaveChanges();
 
-                    // 更新資料庫中的資料
-                    existingSchedule.DepartureTime = updatedSchedule.DepartureTime;
-                    existingSchedule.ArrivalTime = updatedSchedule.ArrivalTime;
-                    existingSchedule.Seats = updatedSchedule.Seats;
-                    existingSchedule.Capacity = updatedSchedule.Capacity;
-
-                    _context.SaveChanges(); // 儲存變更到資料庫
-                }
-                catch (Exception ex)
-                {
-                    // 如果發生例外，可以記錄例外或顯示錯誤信息
-                    ModelState.AddModelError("", "更新失敗: " + ex.Message);
-                    return View(updatedSchedule); // 返回編輯頁面，並顯示錯誤信息
-                }
-
-                return RedirectToAction("RDetail", new { id = updatedSchedule.RouteId });
+                return RedirectToAction("RDetail", new { id = routeId }); // 新增成功後，返回 Route 詳細頁
             }
 
-            return View(updatedSchedule);
+            return View(newSchedule); // 如果驗證失敗，重新顯示新增頁面
         }
+
+        [HttpGet]
+        [Route("Shipment/{routeId}/SEdit/{scheduleId}")]
+        public IActionResult SEdit(int routeId, int scheduleId)
+        {
+            // 根據 routeId 和 scheduleId 查詢對應的 Schedule
+            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == scheduleId && s.RouteId == routeId);
+
+            if (schedule == null)
+            {
+                return NotFound(); // 如果找不到資料，返回 404
+            }
+
+            return View(schedule); // 將資料傳遞到視圖
+        }
+
+        
 
         public ActionResult SDelete(int? id)
         {
@@ -254,35 +210,74 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return NotFound(); // 返回 404 找不到頁面
             }
 
-            // 根據 ScheduleId 查詢對應的 Schedule
-            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
+            // 正確地使用 ScheduleId 來查詢
+            var sch = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
 
-            if (schedule == null)
+            if (sch == null)
             {
                 return NotFound(); // 如果找不到對應的 Schedule，返回 404
             }
 
             // 刪除 Schedule
-            _context.Schedules.Remove(schedule);
+            _context.Schedules.Remove(sch);
             _context.SaveChanges(); // 儲存變更到資料庫
 
-            return RedirectToAction("RDetail", new { id = schedule.RouteId }); // 刪除後返回詳細頁面
+            // 刪除後重定向回到該 Route 的詳細頁
+            return RedirectToAction("RDetail", new { id = sch.RouteId });
         }
 
-        ///////////////////////////////////
-        public IActionResult ICreate(int id)
+
+
+        //--------------------------------------------------------------------------
+
+        public IActionResult ICreate(int routeId, int? routeImageId)
         {
-            ViewBag.RouteId = id;
-            return View();
-    }
+            // 傳遞 RouteId 到 ViewBag 或直接使用 ViewModel
+            ViewBag.RouteId = routeId;
 
-    [HttpPost]
-    public ActionResult ICreate(RouteImage i)
-    {
-        _context.RouteImages.Add(i);
-        _context.SaveChanges();
+            // 如果需要初始化其他數據，可以在這裡做
+            var model = new RouteDetailViewModel
+            {
+                RouteId = routeId,
+                // 其他初始化資料
+            };
 
-        return RedirectToAction("RDetail", new { id = i.RouteId });
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult ICreate(RouteDetailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // 檢查是否有檔案上傳
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.ImageFile.CopyTo(memoryStream); // 將檔案複製到記憶體流
+                        model.Image = memoryStream.ToArray(); // 將記憶體流轉換為 byte[]
+                    }
+                }
+
+                // 儲存圖片到資料庫
+                var routeImage = new RouteImage
+                {
+                    RouteId = model.RouteId,
+                    Image = model.Image,
+                    Description = model.ImageDescription
+                };
+
+                _context.RouteImages.Add(routeImage);
+                _context.SaveChanges();
+
+                return RedirectToAction("RDetail", new { id = model.RouteId });
+            }
+
+            // 如果 ModelState 無效，則返回原視圖並顯示錯誤
+            return View(model);
+        }
+
+
+
     }
-}
 }

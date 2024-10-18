@@ -1,10 +1,10 @@
-﻿@model IEnumerable<prjJapanTravel_BackendMVC.ViewModels.MemberViewModels.MemberListViewModel>
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.ViewModels.MemberViewModels.MemberViewModel>
 
 @{
     ViewData["Title"] = "List";
 }
 
-<form id="adminform">
+<form id="memberform">
 
     <div style="padding:50px">
         <div class="row">
@@ -13,15 +13,15 @@
                     <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                 </div>
                 <input type="Text" id="Keyword" name="Keyword" class="form-control" value="" placeholder="請輸入關鍵字" />
-                <input type="text" id="MemberId" name="MemberId" class="form-control" value="" disabled="disabled" />
+                <input type="text" id="MemberId" name="會員編號" class="form-control" value="" disabled="disabled" />
                 <div class="mb-3">
                     <label for="MemberName" class="form-label" style="font-size:20px">會員姓名</label>
-                    <input type="text" id="MemberName" name="MemberName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="MemberName" name="會員姓名" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
                 <div class="mb-3">
                     <label for="Phone" class="form-label " style="font-size:20px">手機號碼</label>
-                    <input type="text" id="Phone" name="Phone" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="Phone" name="手機號碼" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
                 <div class="mb-3">
@@ -32,7 +32,7 @@
 
                 <div class="mb-3">
                     <label for="Password" class="form-label" style="font-size:20px">密碼</label>
-                    <input type="text" id="Password" name="Password" class="form-control" disabled="disabled">
+                    <input type="text" id="Password" name="密碼" class="form-control" disabled="disabled">
                 </div>
                 <button type="button" id="btnInsert" class="btn btn-primary">新增會員</button>
                 <button type="button" id="btnAlter" class="btn btn-primary" disabled="disabled">修改會員</button>
@@ -45,13 +45,13 @@
             <div class="col-3" style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="d-flex">
                     <div class="form-check me-3">
-                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" disabled="disabled" checked />
+                        <input class="form-check-input" type="radio" name="性別" id="sexm" value="1" disabled="disabled" checked />
                         <label class="form-check-label" for="sexm">
                             男
                         </label>
                     </div>
                     <div class="form-check ml-5">
-                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0" disabled="disabled" />
+                        <input class="form-check-input" type="radio" name="性別" id="sexfm" value="0" disabled="disabled" />
                         <label class="form-check-label" for="sexfm">
                             女
                         </label>
@@ -60,38 +60,38 @@
                 <div class="mt-5">
                     <div class="mb-3">
                         <label for="Birthday" class="form-label " style="font-size:20px">生日</label>
-                        <input type="date" id="Birthday" name="Birthday" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                        <input type="date" id="Birthday" name="生日" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                         <div id="emailHelp" class="form-text"></div>
                     </div>
                 </div>
                 <div class="mt-5">
                     <div class="mb-3">
-                        <label for="selectareas" class="form-label " style="font-size:20px">地區</label>
-                        <select id="selectareas" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
+                        <label for="selectareas" class="form-label " style="font-size:20px">城市</label>
+                        <select id="selectareas" name="城市" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="selectlevel" class="form-label " style="font-size:20px">會員等級</label>
-                        <select id="selectlevel" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
+                        <select id="selectlevel" name="會員等級" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="selectstatus" class="form-label " style="font-size:20px">會員狀態</label>
                         <div class="d-flex">
                             <div class="form-check me-3">
-                                <input class="form-check-input" id="noverified" type="radio" name="status" value="0" disabled="disabled" checked />
+                                <input class="form-check-input" id="noverified" type="radio" name="會員狀態" value="0" disabled="disabled" checked />
                                 <label class="form-check-label">
                                     未驗證
                                 </label>
                             </div>
                             <div class="form-check ml-4">
-                                <input class="form-check-input" id="verified" type="radio" name="status" value="1" disabled="disabled" />
+                                <input class="form-check-input" id="verified" type="radio" name="會員狀態" value="1" disabled="disabled" />
                                 <label class="form-check-label">
                                     已驗證
                                 </label>
                             </div>
                             <div class="form-check ml-5">
-                                <input class="form-check-input" id="suspension" type="radio" name="status" value="2" disabled="disabled" />
+                                <input class="form-check-input" id="suspension" type="radio" name="會員狀態" value="2" disabled="disabled" />
                                 <label class="form-check-label">
                                     停權
                                 </label>
@@ -165,7 +165,7 @@
                     <p>@item.城市</p>
                 </td>
                 <td>
-                    <p>@item.電話</p>
+                    <p>@item.手機號碼</p>
                 </td>
                 <td>
                     <p>@item.Email</p>
@@ -204,9 +204,15 @@
         const verified = document.getElementById('verified');
         const suspension = document.getElementById('suspension');
         //==========btn===============================================================================================
+        const btnphoto = document.getElementById('btnphoto');
         const btnInsert = document.getElementById('btnInsert');
+        const btnAlter = document.getElementById('btnAlter');
+        const btnSubmit = document.getElementById('btnSubmit');
         const btnCancel = document.getElementById('btnCancel');
         // ==============================================================================================
+        let lastbtnclick = null;
+        // ==============================================================================================
+
         function reset() {
             MemberId.value = '';
             MemberName.value = '';
@@ -230,37 +236,35 @@
             })
             noverified.checked = true;
             //=============================================================================================
-            MemberName.disable = true;
-            Phone.disable = true;
-            Email.disable = true;
-            Password.disable = true;
-            sexm.disable = true;
-            sexfm.disable = true;
-            Birthday.disabled = 'disabled';
-            selectareas.disabled = 'disabled';
-            selectlevel.disabled = 'disabled';
+            MemberName.disabled = true;
+            Phone.disabled = true;
+            Email.disabled = true;
+            Password.disabled = true;
+            sexm.disabled = true;
+            sexfm.disabled = true;
+            Birthday.disabled = true;
+            selectareas.disabled = true;
+            selectlevel.disabled = true;
             noverified.disabled = true;
             verified.disabled = true;
             suspension.disabled = true;
+            btnphoto.disabled = true;
         }
-        function enable()
-        {
-            MemberName.disable = false;
-            Phone.disable = false;
-            Email.disable = false;
-            Password.disable = false;
-            sexm.disable = false;
-            sexfm.disable = false;
-            Birthday.disabled = '';
-            selectareas.disabled = '';
-            selectlevel.disabled = '';
+        function enable() {
+            MemberName.disabled = false;
+            Phone.disabled = false;
+            Email.disabled = false;
+            Password.disabled = false;
+            sexm.disabled = false;
+            sexfm.disabled = false;
+            Birthday.disabled = false;
+            selectareas.disabled = false;
+            selectlevel.disabled = false;
             noverified.disabled = false;
             verified.disabled = false;
             suspension.disabled = false;
+            btnphoto.disabled = false;
         }
-
-
-
         function addrowEvent() {
             allrows.forEach((row) => {
                 row.addEventListener('click', async () => {
@@ -308,7 +312,7 @@
             })
         }
         window.onload = async () => {
-            const responsecities = await fetch(`${doman}/api/MemberApi/GetAreaList`,
+            const responsecities = await fetch(`${doman}/MemberApi/GetAreaList`,
                 {
                     method: "Get"
                 })
@@ -318,7 +322,7 @@
             })
             selectareas.innerHTML = elecitylist.join("");
             //=================================================================================================
-            const responselevels = await fetch(`${doman}/api/MemberApi/GetLevelList`,
+            const responselevels = await fetch(`${doman}/MemberApi/GetLevelList`,
                 {
                     method: "Get"
                 })
@@ -331,10 +335,39 @@
             addrowEvent();
         }
         //=================新增按鈕============================================================
-        btnInsert.addEventListener('click', () => {
+        btnInsert.addEventListener('click', (event) => {
+            lastbtnclick = event.target;
+
             btnInsert.disable = true;
+            btnSubmit.disabled = false;
+
             reset();
             enable();
+        })
+        //==============Submit====================================================================
+        btnSubmit.addEventListener('click', async () => {
+            let form = new FormData(memberform);   
+
+            if (lastbtnclick.id == 'btnInsert') {
+
+                const response = await fetch(`${doman}/MemberApi/InsertMember`,
+                    {
+                        method: "POST",
+                        body: form,
+                    })
+
+
+
+
+
+
+
+
+
+            }
+            else if (lastbtnclick.id == 'btnAlter') {
+
+            }
         })
         //======================取消============================================================a
         btnCancel.addEventListener('click', () => {

@@ -15,14 +15,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
         public IActionResult List()
         {
-            var memberdatas = _context.Members.Select(m =>new MemberListViewModel
+            var memberdatas = _context.Members.Select(m =>new MemberViewModel
             {
                 會員編號 = m.MemberId,
                 會員姓名 = m.MemberName,
                 性別 = (bool) m.Gender?"男":"女",
                 生日 = Convert.ToDateTime(m.Birthday),
                 城市 = m.City.City1,
-                電話 = m.Phone,
+                手機號碼 = m.Phone,
                 Email = m.Email,
                 密碼 = m.Password,
                 會員等級 = m.MemberLevel.MemberLevelName,

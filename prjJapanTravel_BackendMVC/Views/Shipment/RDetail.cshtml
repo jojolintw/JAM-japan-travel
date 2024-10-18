@@ -15,7 +15,7 @@
     <div style="width: 100%; overflow: auto;">
         <h3>圖片</h3>
         <p>
-            <a asp-action="ICreate">新增圖片</a>
+            <a asp-action="ICreate" asp-route-routeId="@Model.RouteId" class="btn btn-primary">新增圖片</a>
         </p>
         @if (Model.Images != null && Model.Images.Count > 0)
         {

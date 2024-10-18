@@ -23,7 +23,7 @@ public partial class Member
 
     public string Password { get; set; }
 
-    public string Photoimage { get; set; }
+    public string ImagePath { get; set; }
 
     public int MemberLevelId { get; set; }
 

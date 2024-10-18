@@ -5,7 +5,11 @@
     <div style="padding:50px">
         <div class="row">
             <div class="col-4">
-                <input type="text" id="AdminId" name="AdminId" class="form-control" value="" />
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
+                </div>
+                <input type="Text" id="Keyword" name="Keyword" class="form-control" value="" placeholder="請輸入關鍵字" />
+                <input type="hidden" id="AdminId" name="AdminId" class="form-control" value="" />
                 <div class="mb-3">
                     <label for="AdminName" class="form-label" style="font-size:20px">管理員姓名</label>
                     <input type="text" id="AdminName" name="AdminName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
@@ -14,7 +18,7 @@
 
                 <div class="mb-3">
                     <label for="Account" class="form-label " style="font-size:20px">帳號</label>
-                    <input type="text" id="Account" name="Account" class="form-control" id="AdminAccount" aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="Account" name="Account" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
@@ -26,11 +30,11 @@
                 <button type="button" id="AlterAdmin" class="btn btn-primary" disabled="disabled">修改管理員</button>
                 <button type="button" id="SubmitAdmin" class="btn btn-primary" disabled="disabled">儲存</button>
                 <button type="button" id="CancelAdmin" class="btn btn-primary">取消</button>
-                <button type="button" id="DeleteAdmin" class="btn btn-danger">刪除管理員</button>
+                <button type="button" id="DeleteAdmin" class="btn btn-danger" disabled="disabled">刪除管理員</button>
             </div>
         
             @* ================================================================================= *@
-            <div class="col-4"  style="margin-left:75px;margin-top:30px;font-size:25px">
+            <div class="col-4"  style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="form-check">
                     <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
@@ -81,9 +85,9 @@
                 </div>
             </div>
             @* ============================================================================================= *@
-             <div class="col-3">
+             <div class="col-3" style="margin-left:50px">
                 <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
-                <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" disabled="disabled">
+                <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div> 
     </div>
     </div>
@@ -140,6 +144,7 @@
         const cancelbtn = document.getElementById('CancelAdmin');
         const btnphoto = document.getElementById('btnphoto');
         const deletebtn = document.getElementById('DeleteAdmin');
+        const txtKeyword = document.getElementById('Keyword');
         const cardcontainer = document.getElementById('cardcontainer');
         const adminform = document.getElementById('adminform');
         const AdminPhoto = document.getElementById('image');
@@ -154,6 +159,7 @@
             insertbtn.disabled = false;
             alterbtn.disabled = true;
             submitbtn.disabled = true;
+            deletebtn.disabled = true;
             alltext.forEach(input => {
                 input.disabled = true;
                 input.value = '';
@@ -163,6 +169,7 @@
                 check.checked = false;
             })
             AdminPhoto.src = NoimageUrl;
+            txtKeyworddisabled = false; 
         }
 
 
@@ -186,6 +193,7 @@
                         })
 
                     const data = await response.json();
+                    console.log(data);
                     AdminId.value = data.adminId;
                     AdminName.value = data.adminName;
                     Account.value = data.account;
@@ -205,6 +213,7 @@
                         AdminPhoto.src = `${imageUrl}${data.imagePath}`;
                     }
                     alterbtn.disabled = false;
+                    deletebtn.disabled = false;
                 });
             });
         }
@@ -219,7 +228,22 @@
         //============圖片預覽=====================================================
         btnphoto.addEventListener('change', async (event) => 
         {
-
+            const file = event.target.files[0];
+            const allowtype = 'image.*';
+            if (file.type.match(allowtype)) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    let dataURL = reader.result;
+                    AdminPhoto.src = `${dataURL}`;
+                }
+                reader.readAsDataURL(file);
+                submitbtn.disabled = false;
+            }
+            else 
+            {
+                alert('圖片格式錯誤');
+                submitbtn.disabled = true;
+            }
             
         })
         
@@ -266,6 +290,7 @@
                     })
                 if (response.ok) {
                     const alladmins = await response.json();
+ 
                     const elealladmins = alladmins.map(ad => {
                         return (`<div class="col-md-6 col-lg-3">
                                      <div class="card" style="width: 300px;height:400px" data-adminid="${ad.adminId}">
@@ -303,9 +328,58 @@
             reset();
         })
         //================刪除管理員=================================================
-        deletebtn.addEventListener('click', () => {
-            confirm('刪除確認');
-            alert('已刪除');
+        deletebtn.addEventListener('click', async () => {
+            const adminId = AdminId.value;
+            if (confirm('刪除確認')) {
+                const response = await fetch(`https://localhost:7146/AdminAPI/DeleteAdmin/${adminId}`,
+                {
+                    method:"Get",
+                })
+                if (response.ok) {
+                    alert('資料已刪除');
+                    const alladmins = await response.json();
+                    const elealladmins = alladmins.map(ad => {
+                        return (`<div class="col-md-6 col-lg-3">
+                                                     <div class="card" style="width: 300px;height:400px" data-adminid="${ad.adminId}">
+                                                     <input type="text" value="${ad.adminId}" />
+                                                     <img class="img-fluid" src="/images/Admin/${ad.imagePath}" alt="" style="height:280px;padding:20px"  onerror="this.onerror=null; this.src='/images/Admin/Noimage.png';">
+                                                     <div class="card-body">
+                                                     <h5 class="card-title">${ad.adminName}</h5></div></div></div>`)
+                    })
+                    cardcontainer.innerHTML = elealladmins.join("");
+                    addCardEvent();
+                }
+                else 
+                {
+                    alert('刪除失敗');
+                }
+                reset();
+            }
         })
+        //=================Keyword=======================================================
+        Keyword.addEventListener('keydown', async (event) => 
+        {
+            const Keyword = txtKeyword.value;
+            if (event.keyCode == 13 && Keyword.value != '') {
+                const response = await fetch(`https://localhost:7146/AdminAPI/Search/?keyword=${Keyword}`, {
+                    method: "Get",
+                })
+                if (response.ok) {
+                    const alladmins = await response.json();
+                    const elealladmins = alladmins.map(ad => {
+                        return (`<div class="col-md-6 col-lg-3">
+                                                                     <div class="card" style="width: 300px;height:400px" data-adminid="${ad.adminId}">
+                                                                     <input type="text" value="${ad.adminId}" />
+                                                                     <img class="img-fluid" src="/images/Admin/${ad.imagePath}" alt="" style="height:280px;padding:20px"  onerror="this.onerror=null; this.src='/images/Admin/Noimage.png';">
+                                                                     <div class="card-body">
+                                                                     <h5 class="card-title">${ad.adminName}</h5></div></div></div>`)
+                    })
+                    cardcontainer.innerHTML = elealladmins.join("");
+                    addCardEvent();
+                }
+            }
+               
+        })
+
     </script>
 }

@@ -17,15 +17,17 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             var memberdatas = _context.Members.Select(m =>new MemberListViewModel
             {
+                會員編號 = m.MemberId,
                 會員姓名 = m.MemberName,
-                性別 = (bool) m.Gender,
+                性別 = (bool) m.Gender?"男":"女",
                 生日 = Convert.ToDateTime(m.Birthday),
                 城市 = m.City.City1,
                 電話 = m.Phone,
                 Email = m.Email,
                 密碼 = m.Password,
                 會員等級 = m.MemberLevel.MemberLevelName,
-                會員狀態 = m.MemberStatus.MemberStatusName
+                會員狀態 = m.MemberStatus.MemberStatusName,
+                頭像路徑 = m.ImagePath
             });
             return View(memberdatas);
         }

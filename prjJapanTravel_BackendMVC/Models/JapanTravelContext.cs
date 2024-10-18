@@ -332,6 +332,9 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(50)
+                .HasColumnName("imagePath");
             entity.Property(e => e.MemberLevelId).HasColumnName("MemberLevelID");
             entity.Property(e => e.MemberName)
                 .IsRequired()
@@ -341,7 +344,6 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.Phone).HasMaxLength(50);
-            entity.Property(e => e.Photoimage).HasMaxLength(50);
 
             entity.HasOne(d => d.City).WithMany(p => p.Members)
                 .HasForeignKey(d => d.CityId)

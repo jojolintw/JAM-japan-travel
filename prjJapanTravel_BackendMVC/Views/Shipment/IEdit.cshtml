@@ -1,0 +1,69 @@
+﻿@model prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels.RouteDetailViewModel
+
+@{
+    ViewData["Title"] = "IEdit";
+}
+
+<h1>Edit Image</h1>
+
+<h4>RouteDetailViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="IEdit" method="post" enctype="multipart/form-data">
+            <!-- 重要: enctype 必須為 multipart/form-data 來支持文件上傳 -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="RouteId" class="control-label"></label>
+                <input readonly asp-for="RouteId" class="form-control" />
+                <span asp-validation-for="RouteId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" hidden>
+                <label asp-for="RouteImageId" class="control-label"></label>
+                <input asp-for="RouteImageId" class="form-control" />
+                <span asp-validation-for="RouteImageId" class="text-danger"></span>
+            </div>
+
+            <!-- 顯示當前圖片 -->
+            <div class="form-group">
+                <label>Current Image:</label>
+                @if (Model.Image != null)
+                {
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Image)" alt="Route Image" style="width: 200px; height: auto;" />
+                }
+                else
+                {
+                    <p>No image available.</p>
+                }
+            </div>
+
+            <!-- 允許上傳新圖片 -->
+            <div class="form-group">
+                <label for="newImage">Upload new image:</label>
+                <input type="file" name="newImage" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageDescription" class="control-label"></label>
+                <input asp-for="ImageDescription" class="form-control" />
+                <span asp-validation-for="ImageDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="RDetail" asp-route-routeId="@Model.RouteId">Back to Route Detail</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

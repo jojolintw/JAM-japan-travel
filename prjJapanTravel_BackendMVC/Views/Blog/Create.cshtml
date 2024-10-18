@@ -27,9 +27,12 @@
 
             <div class="form-group">
                 <label asp-for="ArticleStatusnumber" class="control-label">文章狀態</label>
-                <input asp-for="ArticleStatusnumber" class="form-control" />
+                <select asp-for="ArticleStatusnumber" class="form-control" asp-items="ViewBag.HashtagList">
+                    <option value="">-- 請選擇文章狀態 --</option>
+                </select>
                 <span asp-validation-for="ArticleStatusnumber" class="text-danger"></span>
             </div>
+
 
             <div class="form-group">
                 <label asp-for="ArticleTitle" class="control-label">文章標題</label>

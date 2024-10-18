@@ -8,6 +8,13 @@
 <h1>文章一覽表</h1>
 
 <p>
+    @using (Html.BeginForm())
+    {
+        @:關鍵字:  @Html.TextBox("txtKeyword") <input type="submit" value="關鍵字查詢" />
+    }
+</p>
+
+<p>
     <a asp-action="Create" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">新增文章</a>
 </p>
 <table class="table table-striped">
@@ -72,7 +79,8 @@
                     </td>
             <td>
                         @Html.ActionLink("修改", "Edit", "Blog", new { id = item.文章編號 }, null) |
-                        @Html.ActionLink("刪除", "Delete", "Blog", new { id = item.文章編號 }, null)
+                        @Html.ActionLink("刪除", "Delete", "Blog", new { id = item.文章編號 }
+                        , new { onclick = "return confirm('確定要刪除此文章嗎?')" })
             </td>
         </tr>
 }

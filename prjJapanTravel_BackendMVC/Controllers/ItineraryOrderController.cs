@@ -72,6 +72,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName");
             ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
 
+            //var itineraries = _context.Itineraries
+            //.Select(it => new
+            //{
+            //    ItinerarySystemId = it.ItinerarySystemId,
+            //    ItineraryName = it.ItineraryName,
+            //    Price = it.Price // 假設這是行程的價格屬性
+            //}).ToList();
+
+            //ViewBag.ItineraryList = itineraries; // 不再使用 SelectList
+
 
             return View();
         }
@@ -116,6 +126,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         .Select(m =>m.MemberName)
                         .FirstOrDefault(),
                     行程編號 = i.ItineraryDateSystemId,
+                    行程名稱 = _context.Itineraries
+                        .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
+                        .Select(it=>it.ItineraryName).
+                        FirstOrDefault(),
                     //行程名稱 = _context.Itineraries
                     //    .Include("Itinerary")
                     //    .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
@@ -141,6 +155,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 , "PaymentMethodId", "PaymentMethod1", data.付款方式編號);
             ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList()
                 , "OrderStatusId", "OrderStatus1", data.訂單狀態編號);
+            ViewBag.ItineraryNameList = new SelectList(_context.Itineraries.ToList()
+                , "ItinerarySystemId", "ItineraryName",data.行程名稱);
 
             return View(data);
         }

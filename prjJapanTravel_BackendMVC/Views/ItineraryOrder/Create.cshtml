@@ -22,13 +22,30 @@
                 </select>
                 <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ItinerarySystemId" class="control-label">行程名稱</label>
-                <select asp-for="ItinerarySystemId" class="form-control" asp-items="ViewBag.ItineraryList" onchange="fetchItineraryDates(this.value)">
+
+
+
+            @* 只使用選擇器而不綁定到模型 *@
+            <div class="form-group">  
+                <label class="control-label">行程名稱</label>
+                <select id="ItinerarySystemId" class="form-control" onchange="fetchItineraryDates(this.value)">
                     <option value="">-- 請選擇行程 --</option>
+                    @foreach (var itinerary in ViewBag.ItineraryList)
+                    {
+                        <option value="@itinerary.Value" >@itinerary.Text</option>
+                    }
                 </select>
-                <span asp-validation-for="ItinerarySystemId" class="text-danger"></span>
+                <span class="text-danger"></span>
             </div>
+
+
+            @* <select id="ItinerarySystemId" class="form-control" onchange="fetchItineraryDates(this.value)">
+                <option value="">-- 請選擇行程 --</option>
+                @foreach (var itinerary in ViewBag.ItineraryList)
+                {
+                    <option value="@itinerary.ItinerarySystemId" data-price="@itinerary.Price">@itinerary.ItineraryName</option>
+                }
+            </select> *@
 
 
             <div class="form-group">
@@ -83,7 +100,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="TotalAmount" class="control-label">總金額</label>
-                <input asp-for="TotalAmount" class="form-control" />
+                <input asp-for="TotalAmount" id="TotalAmount" class="form-control"/>
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -101,7 +118,8 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-                function fetchItineraryDates(ItinerarySystemId) {
+                function fetchItineraryDates(ItinerarySystemId) 
+                {
                     if (ItinerarySystemId) {
                         $.ajax({
                             url: '@Url.Action("GetItineraryDates", "ItineraryOrder")',
@@ -119,10 +137,24 @@
                     error: function () {
                         alert('無法獲取日期，請稍後再試。');
                     }
-                });
-            } else {
-                $('#ItineraryDateSystemId').empty().append('<option value="">-- 請選擇行程日期 --</option>');
-            }
-        }
+                            });
+                    } else {
+                        $('#ItineraryDateSystemId').empty().append('<option value="">-- 請選擇行程日期 --</option>');
+                    }
+                }
+
+
+
+                    // function updateTotalAmount() {
+                    // var selectedOption = $('#ItinerarySystemId option:selected');
+                    // var price = parseFloat(selectedOption.data('Price')) || 0; // 取得行程的價格
+                    // var quantity = parseInt($('#Quantity').val()) || 0; // 取得數量
+                    // var totalAmount = price * quantity; // 計算總金額
+                    // $('#TotalAmount').val(totalAmount.toFixed(2)); // 顯示總金額，保留兩位小數
+                    // }
+
+                    // // 當數量改變或行程改變時更新總金額
+                    // $('#Quantity').on('input', updateTotalAmount);
+                    // $('#ItinerarySystemId').change(updateTotalAmount);
     </script>
 }

@@ -51,7 +51,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
             return View(r); // 回傳到視圖並顯示錯誤
         }
-        
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -141,10 +141,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
                                  RouteDescription = route.RouteDescription,
                                  Images = (from img in _context.RouteImages
                                            where img.RouteId == route.RouteId
-                                           select img.Image).ToList(), // 加載多張圖片
+                                           select img.RouteImage1).ToList(), // 加載多張圖片
                                  ImageDescriptions = (from img in _context.RouteImages
                                                       where img.RouteId == route.RouteId
-                                                      select img.Description).ToList() // 加載圖片描述
+                                                      select img.RouteImageDescription).ToList() // 加載圖片描述
                              }).FirstOrDefault();
 
             if (routeData == null)
@@ -235,7 +235,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(model); // 如果模型不合法，返回原始視圖
         }
 
-        
+
 
         public ActionResult SDelete(int? id)
         {
@@ -283,6 +283,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
         [Route("Shipment/{routeId}/ICreate")]
         public IActionResult ICreate(int routeId, RouteDetailViewModel model)
         {
+            // 確保 RouteId 在 ViewModel 中
+            model.RouteId = routeId;
+
             if (ModelState.IsValid)
             {
                 // 檢查是否有檔案上傳
@@ -295,25 +298,27 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         model.Image = memoryStream.ToArray(); // 將記憶體流轉換為 byte[]
                     }
 
-                // 儲存圖片到資料庫
-                var routeImage = new RouteImage
-                {
-                    RouteId = model.RouteId,
-                    Image = model.Image,
-                    Description = model.ImageDescription
-                };
+                    // 儲存圖片到資料庫
+                    var routeImage = new RouteImage
+                    {
+                        RouteId = model.RouteId,
+                        RouteImage1 = model.Image,
+                        RouteImageDescription = model.ImageDescription
+                    };
 
-                _context.RouteImages.Add(routeImage);
-                _context.SaveChanges();
+                    _context.RouteImages.Add(routeImage);
+                    _context.SaveChanges();
 
-                return RedirectToAction("RDetail", new { id = model.RouteId });
+                    return RedirectToAction("RDetail", new { id = model.RouteId });
+                }
+
+                // 如果沒有上傳圖片，您可以選擇在這裡添加錯誤訊息
+                ModelState.AddModelError("", "請選擇一張圖片上傳。");
             }
 
-            // 如果模型驗證失敗，返回新增頁面並顯示錯誤
+            // 如果模型驗證失敗或未上傳圖片，返回新增頁面並顯示錯誤
             return View(model);
         }
-
-
 
     }
 }

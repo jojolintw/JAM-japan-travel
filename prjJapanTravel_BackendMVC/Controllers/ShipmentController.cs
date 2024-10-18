@@ -131,37 +131,37 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         //---------------------Details------------------------------------------
 
-        public async Task<IActionResult> Details(int id)
-        {
-            if (id == 0)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int id)
+        //{
+        //    if (id == 0)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var route = await _context.Routes
-                .Include(r => r.OriginPort)
-                .Include(r => r.DestinationPort)
-                .Include(r => r.RouteImages) // 包含圖片
-                .FirstOrDefaultAsync(r => r.RouteId == id);
+        //    var route = await _context.Routes
+        //        .Include(r => r.OriginPort)
+        //        .Include(r => r.DestinationPort)
+        //        .Include(r => r.RouteImages) // 包含圖片
+        //        .FirstOrDefaultAsync(r => r.RouteId == id);
 
-            if (route == null)
-            {
-                return NotFound();
-            }
+        //    if (route == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var schedules = await _context.Schedules
-                .Where(s => s.RouteId == id)
-                .ToListAsync();
+        //    var schedules = await _context.Schedules
+        //        .Where(s => s.RouteId == id)
+        //        .ToListAsync();
 
-            var viewModel = new RouteDetailsViewModel
-            {
-                Route = route,
-                Schedules = schedules,
-                RouteImages = route.RouteImages // 添加圖片資料到 ViewModel
-            };
+        //    var viewModel = new RouteDetailsViewModel
+        //    {
+        //        Route = route,
+        //        Schedules = schedules,
+        //        RouteImages = route.RouteImages // 添加圖片資料到 ViewModel
+        //    };
 
-            return View(viewModel);
-        }
+        //    return View(viewModel);
+        //}
         // 顯示所有航線圖片
         public async Task<IActionResult> RouteImages(int routeId)
         {
@@ -183,18 +183,97 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         // 刪除排班
-        [HttpPost]
-        public async Task<IActionResult> DeleteSchedule(int id)
+        //[HttpPost]
+        //public async Task<IActionResult> DeleteSchedule(int id)
+        //{
+        //    var schedule = await _context.Schedules.FindAsync(id);
+        //    if (schedule != null)
+        //    {
+        //        _context.Schedules.Remove(schedule);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    return RedirectToAction("Details", new { id = schedule.RouteId }); // 返回 Details 頁面
+        //}
+        //// 新增排班
+        //[HttpGet]
+        //public IActionResult CreateSchedule(int routeId)
+        //{
+        //    var schedule = new Schedule { RouteId = routeId };
+        //    return View(schedule);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateSchedule(Schedule schedule)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Schedules.Add(schedule);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
+        //    }
+        //    return View(schedule);
+        //}
+
+        //// 編輯排班
+        //[HttpGet]
+        //public async Task<IActionResult> EditSchedule(int id)
+        //{
+        //    var schedule = await _context.Schedules.FindAsync(id);
+        //    if (schedule == null) return NotFound();
+        //    return View(schedule);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> EditSchedule(Schedule schedule)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Schedules.Update(schedule);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
+        //    }
+        //    return View(schedule);
+        //}
+        // Details 頁面
+        public async Task<IActionResult> Details(int id)
         {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule != null)
+            var route = await _context.Routes
+                .Include(r => r.OriginPort)
+                .Include(r => r.DestinationPort)
+                .Include(r => r.Schedules)
+                .Include(r => r.RouteImages)
+                .FirstOrDefaultAsync(r => r.RouteId == id);
+
+            if (route == null) return NotFound();
+
+            var viewModel = new RouteDetailsViewModel
             {
-                _context.Schedules.Remove(schedule);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Details", new { id = schedule.RouteId }); // 返回 Details 頁面
+                RouteId = route.RouteId,
+                OriginPortName = route.OriginPort.PortName,
+                DestinationPortName = route.DestinationPort.PortName,
+                Price = route.Price,
+                RouteDescription = route.RouteDescription,
+                Schedules = route.Schedules.Select(s => new ScheduleViewModel
+                {
+                    ScheduleId = s.ScheduleId,
+                    DepartureTime = s.DepartureTime,
+                    ArrivalTime = s.ArrivalTime,
+                    Seats = s.Seats,
+                    Capacity = s.Capacity
+                }).ToList(),
+                RouteImages = route.RouteImages.Select(i => new RouteImageViewModel
+                {
+                    RouteImageId = i.RouteImageId,
+                    RouteImageBase64 = Convert.ToBase64String(i.RouteImage1), // 轉換二進制圖片為Base64字串
+                    RouteImageDescription = i.RouteImageDescription
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
-        // 新增排班
+
+
+        // 新增 Schedule
         [HttpGet]
         public IActionResult CreateSchedule(int routeId)
         {
@@ -209,12 +288,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 _context.Schedules.Add(schedule);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
+                return RedirectToAction("Details", new { id = schedule.RouteId });
             }
             return View(schedule);
         }
 
-        // 編輯排班
+        // 編輯 Schedule
         [HttpGet]
         public async Task<IActionResult> EditSchedule(int id)
         {
@@ -230,9 +309,76 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 _context.Schedules.Update(schedule);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
+                return RedirectToAction("Details", new { id = schedule.RouteId });
             }
             return View(schedule);
+        }
+
+        // 刪除 Schedule
+        [HttpPost]
+        public async Task<IActionResult> DeleteSchedule(int id)
+        {
+            var schedule = await _context.Schedules.FindAsync(id);
+            if (schedule != null)
+            {
+                _context.Schedules.Remove(schedule);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", new { id = schedule.RouteId });
+        }
+
+        // 新增 RouteImage
+        [HttpGet]
+        public IActionResult CreateRouteImage(int routeId)
+        {
+            var image = new RouteImage { RouteId = routeId };
+            return View(image);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRouteImage(RouteImage image)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.RouteImages.Add(image);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { id = image.RouteId });
+            }
+            return View(image);
+        }
+
+        // 編輯 RouteImage
+        [HttpGet]
+        public async Task<IActionResult> EditRouteImage(int id)
+        {
+            var image = await _context.RouteImages.FindAsync(id);
+            if (image == null) return NotFound();
+            return View(image);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditRouteImage(RouteImage image)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.RouteImages.Update(image);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", new { id = image.RouteId });
+            }
+            return View(image);
+        }
+
+        // 刪除 RouteImage
+        [HttpPost]
+        public async Task<IActionResult> DeleteRouteImage(int id)
+        {
+            var image = await _context.RouteImages.FindAsync(id);
+            if (image != null)
+            {
+                _context.RouteImages.Remove(image);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Details", new { id = image.RouteId });
         }
 
 

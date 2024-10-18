@@ -4,16 +4,25 @@
     ViewData["Title"] = "List";
 }
 
-<h1>行程訂單管理</h1>
+<h1>👣行程訂單管理</h1>
 
 <p style="margin:12px">
     <a asp-action="Create" class="btn btn-outline-primary">新增訂單</a>
-    <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a>
+    @* <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a> *@
 </p>
 
 <div style="margin:12px 12px">
-    <input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" />
-    <input type="text" id="Member" placeholder="會員" />
+    @* <input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" oninput="search()"/>
+    <input type="text" id="Member" placeholder="會員" oninput="search()"/> *@
+    @using (Html.BeginForm())
+    {
+        @Html.TextBox("txtKeyword", null, new
+            {
+                @placeholder = "輸入訂單編號或會員名稱",
+                @style = "text-align:center; font-size:16px;"
+            })
+        <input type="submit" value="查詢" class="btn btn-outline-primary" />
+    }
 </div>
 
 <table class="table table-hover">
@@ -89,10 +98,29 @@
             </td>
             <td>
                     @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
-                    @Html.ActionLink("取消", "Cancel", "ItineraryOrder", new { id = item.行程訂單編號 }, 
-                                    new { onclick= "return confirm('確定要取消此訂單?')"})
+                    @* @Html.ActionLink("刪除", "Delete", "ItineraryOrder", new { id = item.行程訂單編號 }, 
+                                    new { onclick= "return confirm('確定要刪除此訂單?')"}) *@
+                    <a asp-action ="Delete" class="text-danger" onclick="confirmDelete(@item.行程訂單編號)">刪除</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<script>
+    
+    
+    function confirmDelete(orderId) {
+        const password = prompt("請輸入密碼：");
+
+        // 假設密碼是 "yourPassword"，根據實際情況修改
+        const correctPassword = "123";
+
+        if (password === correctPassword) {
+            // 密碼正確，重定向到刪除操作
+            window.location.href = '/ItineraryOrder/Delete/' + orderId;
+        } else {
+            alert("密碼錯誤");
+        }
+    }
+</script>

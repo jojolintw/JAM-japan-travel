@@ -47,7 +47,7 @@ namespace prjJapanTravel_BackendMVC.ViewModels.OrderViewModels
         public string 付款方式 { get; set; }
         public string 付款狀態 { get; set; }
         public string 訂單狀態 { get; set; }
-        public string 優惠券 { get; set; }
+        public string? 優惠券 { get; set; }
 
 
         public virtual Coupon Coupon { get; set; }

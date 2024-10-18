@@ -14,23 +14,52 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             _context = context;
         }
-        public IActionResult List()
+        public IActionResult List(KeywordViewModel vm)
         {
-            var datas = _context.TicketOrders
-                .Select(m => new TicketOrderListViewModel()
-                {
-                    船票訂單編號 = m.TicketOrderId,
-                    訂單編號 = m.TicketOrderNumber,
-                    會員 = m.Member.MemberName,
-                    下單時間 = m.OrderTime,
-                    付款方式 = m.PaymentMethod.PaymentMethod1,
-                    付款狀態 = m.PaymentStatus.PaymentStatus1,
-                    付款時間 = m.PaymentTime,
-                    訂單狀態 = m.OrderStatus.OrderStatus1,
-                    優惠券 = m.Coupon.CouponName,
-                    總金額 = m.TotalAmount
-                });
-            return View(datas);
+            string keyword = vm.txtKeyword;
+
+            if (string.IsNullOrEmpty(keyword))
+            {
+
+                var datas = _context.TicketOrders
+                    .Select(m => new TicketOrderListViewModel()
+                    {
+                        船票訂單編號 = m.TicketOrderId,
+                        訂單編號 = m.TicketOrderNumber,
+                        會員 = m.Member.MemberName,
+                        下單時間 = m.OrderTime,
+                        付款方式 = m.PaymentMethod.PaymentMethod1,
+                        付款狀態 = m.PaymentStatus.PaymentStatus1,
+                        付款時間 = m.PaymentTime,
+                        訂單狀態 = m.OrderStatus.OrderStatus1,
+                        優惠券 = m.Coupon.CouponName,
+                        總金額 = m.TotalAmount
+                    });
+                return View(datas);
+            }
+            else
+            {
+                var datas = _context.TicketOrders
+                    .Where(m=>m.TicketOrderNumber.Contains(keyword)
+                        || m.Member.MemberName.Contains(keyword))
+                    .Select(m => new TicketOrderListViewModel()
+                    {
+                        船票訂單編號 = m.TicketOrderId,
+                        訂單編號 = m.TicketOrderNumber,
+                        會員 = m.Member.MemberName,
+                        下單時間 = m.OrderTime,
+                        付款方式 = m.PaymentMethod.PaymentMethod1,
+                        付款狀態 = m.PaymentStatus.PaymentStatus1,
+                        付款時間 = m.PaymentTime,
+                        訂單狀態 = m.OrderStatus.OrderStatus1,
+                        優惠券 = m.Coupon.CouponName,
+                        總金額 = m.TotalAmount
+                    });
+                return View(datas);
+            }
+
+
+            
         }
         public IActionResult Create()
         {
@@ -99,7 +128,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             data.TicketOrderId = (int)vm.船票訂單編號;
             data.TicketOrderNumber = vm.訂單編號;
             //data.MemberId = (int)vm.會員編號;
-            data.OrderTime = vm.下單時間;
+            //data.OrderTime = vm.下單時間;
             data.PaymentMethodId = (int)vm.付款方式編號;
             data.PaymentStatusId = (int)vm.付款狀態編號;
             data.PaymentTime = vm.付款時間;
@@ -140,6 +169,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     優惠券名稱 = t.TicketOrder.Coupon.CouponName != null ? t.TicketOrder.Coupon.CouponName : "未使用優惠券",
                     優惠金額 = t.TicketOrder.Coupon.Discount != null ? t.TicketOrder.Coupon.Discount : 0,
                 }).ToList();
+            if (!datas.Any())
+            {
+                return View(datas);
+            }
+            ViewBag.MemberName = datas.First().會員;
+            ViewBag.OrderNumber = datas.First().訂單編號;
+            
+
             return View(datas);
         }
     }

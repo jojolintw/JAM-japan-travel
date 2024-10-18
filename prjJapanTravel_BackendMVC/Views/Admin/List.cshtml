@@ -186,14 +186,13 @@
                     reset();
                     // 從 data-adminid 屬性中取得 AdminId
                     const adminId = this.getAttribute('data-adminid');
-
                     const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
                         {
                             method: "Get"
                         })
 
                     const data = await response.json();
-                    console.log(data);
+
                     AdminId.value = data.adminId;
                     AdminName.value = data.adminName;
                     Account.value = data.account;

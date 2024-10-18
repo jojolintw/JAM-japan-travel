@@ -13,7 +13,7 @@
                     <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                 </div>
                 <input type="Text" id="Keyword" name="Keyword" class="form-control" value="" placeholder="請輸入關鍵字" />
-                <input type="text" id="MemberId" name="MemberId" class="form-control" value="" />
+                <input type="text" id="MemberId" name="MemberId" class="form-control" value="" disabled="disabled" />
                 <div class="mb-3">
                     <label for="MemberName" class="form-label" style="font-size:20px">會員姓名</label>
                     <input type="text" id="MemberName" name="MemberName" class="form-control" aria-describedby="emailHelp" disabled="disabled">
@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="Email" class="form-label " style="font-size:20px">Email</label>
-                    <input type="text" id="Email" name="Email" class="form-control"  aria-describedby="emailHelp" disabled="disabled">
+                    <input type="text" id="Email" name="Email" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                     <div id="emailHelp" class="form-text"></div>
                 </div>
 
@@ -45,13 +45,13 @@
             <div class="col-3" style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="d-flex">
                     <div class="form-check me-3">
-                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" checked/>
+                        <input class="form-check-input" type="radio" name="sex" id="sexm" value="1" disabled="disabled" checked />
                         <label class="form-check-label" for="sexm">
                             男
                         </label>
                     </div>
                     <div class="form-check ml-5">
-                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0"/>
+                        <input class="form-check-input" type="radio" name="sex" id="sexfm" value="0" disabled="disabled" />
                         <label class="form-check-label" for="sexfm">
                             女
                         </label>
@@ -60,38 +60,38 @@
                 <div class="mt-5">
                     <div class="mb-3">
                         <label for="Birthday" class="form-label " style="font-size:20px">生日</label>
-                        <input type="date" id="Birthday" name="Birthday" class="form-control" aria-describedby="emailHelp">
+                        <input type="date" id="Birthday" name="Birthday" class="form-control" aria-describedby="emailHelp" disabled="disabled">
                         <div id="emailHelp" class="form-text"></div>
                     </div>
                 </div>
                 <div class="mt-5">
                     <div class="mb-3">
                         <label for="selectareas" class="form-label " style="font-size:20px">地區</label>
-                        <select id="selectareas" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                        <select id="selectareas" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="selectlevel" class="form-label " style="font-size:20px">會員等級</label>
-                        <select id="selectlevel" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                        <select id="selectlevel" class="form-select form-select-lg mb-3" aria-label="Large select example" disabled="disabled">
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="selectstatus" class="form-label " style="font-size:20px">會員狀態</label>
                         <div class="d-flex">
                             <div class="form-check me-3">
-                                <input class="form-check-input" type="radio" name="status" value="0" checked />
+                                <input class="form-check-input" id="noverified" type="radio" name="status" value="0" disabled="disabled" checked />
                                 <label class="form-check-label">
                                     未驗證
                                 </label>
                             </div>
                             <div class="form-check ml-4">
-                                <input class="form-check-input" type="radio" name="status" value="1" />
+                                <input class="form-check-input" id="verified" type="radio" name="status" value="1" disabled="disabled" />
                                 <label class="form-check-label">
                                     已驗證
                                 </label>
                             </div>
                             <div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="status" value="2" />
+                                <input class="form-check-input" id="suspension" type="radio" name="status" value="2" disabled="disabled" />
                                 <label class="form-check-label">
                                     停權
                                 </label>
@@ -144,38 +144,41 @@
         </tr>
     </thead>
     <tbody>
-            
-        @foreach (var item in Model) {
-        <tr>
+
+        @foreach (var item in Model)
+        {
+
+            <tr class="newrow" data-memberid="@item.會員編號">
                 <td>
                     <p><img src="~/images/Member/@item.頭像路徑" /></p>
                 </td>
-            <td>
+                <td>
                     <p>@item.會員姓名</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>@item.性別</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>  @item.生日.ToString("yyyy年 MM月 dd日")</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>@item.城市</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>@item.電話</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>@item.Email</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p> @item.會員等級</p>
-            </td>
-            <td>
+                </td>
+                <td>
                     <p>@item.會員狀態</p>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+
+        }
     </tbody>
 </table>
 
@@ -185,9 +188,125 @@
         const doman = "https://localhost:7146";
         const selectareas = document.getElementById('selectareas');
         const selectlevel = document.getElementById('selectlevel');
-        const radiostatus = document.getElementById('radiostatus');
+        const allrows = document.querySelectorAll('.newrow');
 
+        //========所有控制項=====================================================================================================
+        const MemberId = document.getElementById('MemberId');
+        const MemberName = document.getElementById('MemberName');
+        const Phone = document.getElementById('Phone');
+        const Email = document.getElementById('Email');
+        const Password = document.getElementById('Password');
+        const sexm = document.getElementById('sexm');
+        const sexfm = document.getElementById('sexfm');
+        const Birthday = document.getElementById('Birthday');
+        //============================================================================================================
+        const noverified = document.getElementById('noverified');
+        const verified = document.getElementById('verified');
+        const suspension = document.getElementById('suspension');
+        //==========btn===============================================================================================
+        const btnInsert = document.getElementById('btnInsert');
+        const btnCancel = document.getElementById('btnCancel');
         // ==============================================================================================
+        function reset() {
+            MemberId.value = '';
+            MemberName.value = '';
+            Phone.value = '';
+            Email.value = '';
+            Password.value = '';
+            sexm.checked = true;
+            Birthday.value = '';
+
+            const selectcities = document.querySelectorAll('.selectcities');
+            selectcities.forEach(op => {
+                if (op.value == 1) {
+                    op.selected = true;
+                }
+            })
+            const selectlevels = document.querySelectorAll('.selectlevels');
+            selectlevels.forEach(op => {
+                if (op.value == 1) {
+                    op.selected = true;
+                }
+            })
+            noverified.checked = true;
+            //=============================================================================================
+            MemberName.disable = true;
+            Phone.disable = true;
+            Email.disable = true;
+            Password.disable = true;
+            sexm.disable = true;
+            sexfm.disable = true;
+            Birthday.disabled = 'disabled';
+            selectareas.disabled = 'disabled';
+            selectlevel.disabled = 'disabled';
+            noverified.disabled = true;
+            verified.disabled = true;
+            suspension.disabled = true;
+        }
+        function enable()
+        {
+            MemberName.disable = false;
+            Phone.disable = false;
+            Email.disable = false;
+            Password.disable = false;
+            sexm.disable = false;
+            sexfm.disable = false;
+            Birthday.disabled = '';
+            selectareas.disabled = '';
+            selectlevel.disabled = '';
+            noverified.disabled = false;
+            verified.disabled = false;
+            suspension.disabled = false;
+        }
+
+
+
+        function addrowEvent() {
+            allrows.forEach((row) => {
+                row.addEventListener('click', async () => {
+                    let memberId = row.getAttribute('data-memberid');
+                    const response = await fetch(`${doman}/api/MemberApi/GetMemberData/?memberId=${memberId}`,
+                        {
+                            method: "Get"
+                        })
+                    const data = await response.json();
+                    console.log(data);
+
+                    MemberId.value = data.memberId;
+                    MemberName.value = data.memberName;
+                    Phone.value = data.phone;
+                    Email.value = data.email;
+                    Password.value = data.password;
+                    sexm.checked = data.gender ? true : false;
+                    sexfm.checked = data.gender ? false : true;
+                    Birthday.value = data.birthday.split('T')[0];
+
+                    const selectcities = document.querySelectorAll('.selectcities');
+                    selectcities.forEach(op => {
+                        if (op.value == data.cityId) {
+                            op.selected = true;
+                        }
+                    })
+                    const selectlevels = document.querySelectorAll('.selectlevels');
+                    selectlevels.forEach(op => {
+                        if (op.value == data.memberLevelId) {
+                            op.selected = true;
+                        }
+                    })
+                    if (data.memberStatusId == 1) {
+                        noverified.checked = true;
+                    }
+                    else if (data.memberStatusId == 2) {
+                        verified.checked = true;
+                    }
+                    else if (data.memberStatusId == 3) {
+                        suspension.checked = true;
+                    }
+                })
+
+
+            })
+        }
         window.onload = async () => {
             const responsecities = await fetch(`${doman}/api/MemberApi/GetAreaList`,
                 {
@@ -195,7 +314,7 @@
                 })
             const citylist = await responsecities.json();
             const elecitylist = citylist.map(city => {
-                return (`<option value="${city['cityId']}">${city['city1']}</option>`)
+                return (`<option class="selectcities" value="${city['cityId']}">${city['city1']}</option>`)
             })
             selectareas.innerHTML = elecitylist.join("");
             //=================================================================================================
@@ -205,10 +324,24 @@
                 })
             const levellist = await responselevels.json();
             const elelevellist = levellist.map(level => {
-                 return (`<option value="${level['memberLevelId']}">${level['memberLevelName']}</option>`)
+                return (`<option class="selectlevels" value="${level['memberLevelId']}">${level['memberLevelName']}</option>`)
             })
             selectlevel.innerHTML = elelevellist.join("");
+            //=============================================================================
+            addrowEvent();
         }
+        //=================新增按鈕============================================================
+        btnInsert.addEventListener('click', () => {
+            btnInsert.disable = true;
+            reset();
+            enable();
+        })
+        //======================取消============================================================a
+        btnCancel.addEventListener('click', () => {
+            reset();
+        })
+
+
     </script>
 
 

@@ -23,15 +23,18 @@ namespace prjJapanTravel_BackendMVC.Controllers
             var cities = _context.Cities;
             return Ok(cities);
         }
+        [HttpGet]
         public IActionResult GetLevelList()
         {
             var MemberLevels = _context.MemberLevels;
             return Ok(MemberLevels);
         }
-        public IActionResult GetStatusList()
+        [HttpGet]
+        public IActionResult GetMemberData(int memberId)
         {
-            var MemberStatuses = _context.MemberStatuses;
-            return Ok(MemberStatuses);
+            Member mem  = _context.Members.FirstOrDefault(m => m.MemberId == memberId);
+
+            return Ok(mem);
         }
     }
 }

@@ -29,14 +29,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapControllerRoute(
-        name: "shipment",
-        pattern: "Shipment/{routeId}/{action}/{scheduleId?}",
-        defaults: new { controller = "Shipment" });
-app.Run();
+
 
 // Swagger
 app.UseSwagger();

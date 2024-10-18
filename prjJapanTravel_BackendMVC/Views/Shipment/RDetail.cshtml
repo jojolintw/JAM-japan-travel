@@ -27,14 +27,10 @@
                         <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Images[i])" alt="Route Image" style="width: 200px; height: auto;" />
                         <p>圖片描述: @(string.IsNullOrEmpty(Model.ImageDescriptions[i]) ? "無圖片描述" : Model.ImageDescriptions[i])</p>
                         <p>
-                            @Html.ActionLink("修改", "IEdit", new { id = Model.RouteImageId }) |
-                            @Html.ActionLink("刪除", "IDelete", new { id = Model.RouteImageId }, new { onclick = "return confirm('確定要刪除這張圖片嗎？')" })
+                            @Html.ActionLink("修改", "IEdit", new { routeId = Model.RouteId, imageId = Model.RouteImageId }) |
+                            @Html.ActionLink("刪除", "IDelete", new { routeId = Model.RouteId, imageId = Model.RouteImageId }, new { onclick = "return confirm('確定要刪除這張圖片嗎？')" })
                         </p>
                     </div>
-                }
-                else
-                {
-                    <p>無圖片</p>
                 }
             }
         }
@@ -43,7 +39,6 @@
             <p>無圖片</p>
         }
 
-    </div>
 
 
 

@@ -535,11 +535,11 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("RouteImage");
 
             entity.Property(e => e.RouteImageId).HasColumnName("RouteImageID");
-            entity.Property(e => e.Description)
+            entity.Property(e => e.RouteId).HasColumnName("RouteID");
+            entity.Property(e => e.RouteImage1).HasColumnName("RouteImage");
+            entity.Property(e => e.RouteImageDescription)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Image).HasColumnType("image");
-            entity.Property(e => e.RouteId).HasColumnName("RouteID");
 
             entity.HasOne(d => d.Route).WithMany(p => p.RouteImages)
                 .HasForeignKey(d => d.RouteId)

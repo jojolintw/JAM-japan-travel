@@ -10,16 +10,15 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SCreate">
+        <form asp-action="SCreate" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!-- 使用 HiddenFor 來確保 RouteId 正確綁定 -->
             <div class="form-group">
+                <input asp-for="RouteId" type="hidden" /> <!-- 將 RouteId 設為隱藏欄位 -->
                 <label asp-for="RouteId" class="control-label"></label>
-                <input asp-for="RouteId" class="form-control" value="@ViewBag.RouteId" />
-                <span asp-validation-for="RouteId" class="text-danger"></span>
+                <span>@ViewBag.RouteId</span> <!-- 顯示 RouteId 的值 -->
             </div>
-
 
             <div class="form-group">
                 <label asp-for="DepartureTime" class="control-label"></label>
@@ -53,5 +52,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -91,9 +91,15 @@
                 }
             </td>
             <td>
-                @foreach (var img in item.行程圖片)
+                @if (item.行程圖片 != null && item.行程圖片.Count > 0)
                 {
-                    <img src="@img.ImagePath" alt="@img.ImageName" width="100" height="100" />
+                    <img src="~/images/Product/@item.行程圖片[0].ImagePath"
+                        alt=""
+                        style ="width:100px; height:100px" />
+                }
+                else
+                {
+                    <span>無圖片</span>
                 }
             </td>
             <td>

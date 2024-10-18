@@ -35,8 +35,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     ItineraryPicSystemId = img.ItineraryPicSystemId,
                     ItinerarySystemId = img.ItinerarySystemId,
                     ImagePath = img.ImagePath,
-                    ImageName = img.ImageName,
-                    ImageDetail = img.ImageDetail
                    }).ToList(),
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
@@ -96,7 +94,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         string photoname = Guid.NewGuid() + ".jpg";
 
                         // 設置圖片的保存路徑
-                         var filePath = _enviroment.WebRootPath + "/images/Admin/" + photoname;
+                         var filePath = _enviroment.WebRootPath + "/images/Product/" + photoname;
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             img.ImageFile.CopyTo(stream);
@@ -106,7 +104,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         Image image = new Image
                         {
                             ItinerarySystemId = itinerary.ItinerarySystemId,
-                            ImageName = img.ImageName, // 從 ViewModel 獲取圖片名稱
+                            ImageName = img.ImageName, 
                             ImagePath = photoname,  // 保存相對路徑
                             ImageDetail = img.ImageDetail // 圖片描述
                         };

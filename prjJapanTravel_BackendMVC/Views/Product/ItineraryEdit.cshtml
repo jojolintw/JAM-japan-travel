@@ -1,4 +1,4 @@
-﻿@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.ItineraryListViewModel
+﻿@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.ItineraryViewModel
 
 @{
     ViewData["Title"] = "修改行程";
@@ -86,13 +86,6 @@
                     <label asp-for="地區" class="control-label"></label>
                     <input asp-for="地區" class="form-control" />
                     <span asp-validation-for="地區" class="text-danger"></span>
-                </div>
-
-                <!-- 行程圖片編號 -->
-                <div class="form-group">
-                    <label asp-for="行程圖片編號" class="control-label"></label>
-                    <input asp-for="行程圖片編號" class="form-control" />
-                    <span asp-validation-for="行程圖片編號" class="text-danger"></span>
                 </div>
 
                 <!-- 行程圖片 -->

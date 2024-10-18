@@ -23,8 +23,6 @@ public partial class Itinerary
 
     public int? AreaSystemId { get; set; }
 
-    public int? ItineraryPicSystemId { get; set; }
-
     public string ItineraryDetail { get; set; }
 
     public string ItineraryBrief { get; set; }
@@ -35,9 +33,9 @@ public partial class Itinerary
 
     public virtual Area AreaSystem { get; set; }
 
-    public virtual ICollection<ItineraryDate> ItineraryDates { get; set; } = new List<ItineraryDate>();
+    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
-    public virtual Image ItineraryPicSystem { get; set; }
+    public virtual ICollection<ItineraryDate> ItineraryDates { get; set; } = new List<ItineraryDate>();
 
     public virtual ICollection<MyCollection> MyCollections { get; set; } = new List<MyCollection>();
 

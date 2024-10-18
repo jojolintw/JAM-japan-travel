@@ -13,12 +13,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public BlogController(JapanTravelContext context)
         {
             _context = context;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
+        } 
         public IActionResult List()
         {
             var articledatas = _context.ArticleMains
@@ -40,6 +35,17 @@ namespace prjJapanTravel_BackendMVC.Controllers
         private static string GetHashtags(ICollection<ArticleHashtag> hashtags)
         {
             return string.Join(", ", hashtags.Select(h => h.HashtagNumberNavigation.HashtagName));
+        }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(ArticleMain am)
+        {
+            _context.ArticleMains.Add(am);
+            _context.SaveChanges();
+            return RedirectToAction("List");
         }
     }
 }

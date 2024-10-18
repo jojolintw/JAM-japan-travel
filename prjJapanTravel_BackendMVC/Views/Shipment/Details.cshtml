@@ -1,60 +1,36 @@
-﻿@model prjJapanTravel_BackendMVC.ViewModels.RouteDetailsViewModel
+﻿<h1>航線詳細資訊</h1>
 
-<h1>航線詳細資訊</h1>
+<h4>航線圖片</h4>
+<a asp-action="RouteImages" asp-route-routeId="@Model.Route.RouteId">管理航線圖片</a>
 
-<!-- 第一塊：Route 資訊 -->
-<div>
-    <h2>航線資訊</h2>
-    <p><strong>出發港口:</strong> @Model.OriginPortName</p>
-    <p><strong>目的地港口:</strong> @Model.DestinationPortName</p>
-    <p><strong>票價:</strong> @Model.Price</p>
-    <p><strong>航線描述:</strong> @Model.RouteDescription</p>
-</div>
+<h4>排班資訊</h4>
+<a asp-action="Schedules" asp-route-routeId="@Model.Route.RouteId">管理排班</a>
 
-<!-- 第二塊：Schedule 列表 -->
-<div>
-    <h2>航班排程</h2>
-    <p>
-        <a asp-action="CreateSchedule">Create New</a>
-    </p>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>出發時間</th>
-                <th>到達時間</th>
-                <th>座位數</th>
-                <th>操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var schedule in Model.Schedules)
-            {
-                <tr>
-                    <td>@schedule.DepartureTime</td>
-                    <td>@schedule.ArrivalTime</td>
-                    <td>@schedule.Seats</td>
-                    <td>
-                        <a asp-action="EditSchedule" asp-route-id="@schedule.ScheduleId">編輯</a> |
-                        <a asp-action="DeleteSchedule" asp-route-id="@schedule.ScheduleId">刪除</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <a asp-action="CreateSchedule" asp-route-id="@Model.RouteId">新增排班</a>
-</div>
-
-<!-- 第三塊：圖片列表 -->
-<div>
-    <h3>航線圖片</h3>
-    <div>
-        @foreach (var image in Model.RouteImages)
+<h4>航班排班</h4>
+<table>
+    <thead>
+        <tr>
+            <th>出發時間</th>
+            <th>到達時間</th>
+            <th>座位數</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model.Schedules)
         {
-            <div>
-                <img src="data:image/jpeg;base64,@image.RouteImageBase64" alt="航線圖片" width="200" />
-                <p>@image.RouteImageDescription</p>
-            </div>
+            <tr>
+                <td>@schedule.DepartureTime</td>
+                <td>@schedule.ArrivalTime</td>
+                <td>@schedule.Seats</td>
+                <td>
+                    <a asp-action="EditSchedule" asp-route-id="@schedule.ScheduleId">編輯</a> |
+                    <form asp-action="DeleteSchedule" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@schedule.ScheduleId" />
+                        <button type="submit" class="btn btn-danger">刪除</button>
+                    </form>
+                </td>
+            </tr>
         }
-    </div>
-</div>
+    </tbody>
+</table>

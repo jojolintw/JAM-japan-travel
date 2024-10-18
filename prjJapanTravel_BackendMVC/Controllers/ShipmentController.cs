@@ -124,13 +124,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(updatedRoute);
         }
         //--------------------------------------------------------------------------
-        public IActionResult RDetail(int id)
+        [Route("Shipment/{routeId}/RDetail")]
+        public IActionResult RDetail(int routeId)
         {
             // 查詢 Route 資料
             var routeData = (from route in _context.Routes
                              join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
                              join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
-                             where route.RouteId == id
+                             where route.RouteId == routeId
                              select new RouteDetailViewModel
                              {
                                  RouteId = route.RouteId,
@@ -140,23 +141,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
                                  RouteDescription = route.RouteDescription,
                                  Images = (from img in _context.RouteImages
                                            where img.RouteId == route.RouteId
-                                           select img.RouteImage1).ToList(), // 加載多張圖片
+                                           select img.Image).ToList(), // 加載多張圖片
                                  ImageDescriptions = (from img in _context.RouteImages
                                                       where img.RouteId == route.RouteId
-                                                      select img.RouteImageDescription).ToList() // 加載圖片描述
+                                                      select img.Description).ToList() // 加載圖片描述
                              }).FirstOrDefault();
-
-            // 查詢 Schedule 資料
-            var schedules = (from schedule in _context.Schedules
-                             where schedule.RouteId == id
-                             select schedule).ToList();
 
             if (routeData == null)
             {
-                return NotFound($"未找到 RouteId {id} 的資料");
+                return NotFound();
             }
-
-            routeData.Schedules = schedules;
 
             return View(routeData);
         }
@@ -180,7 +174,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.Schedules.Add(newSchedule);
                 _context.SaveChanges();
 
-                return RedirectToAction("RDetail", new { id = routeId }); // 新增成功後，返回 Route 詳細頁
+                return RedirectToAction("RDetail", new { routeId = routeId }); // 新增成功後，返回 Route 詳細頁
             }
 
             return View(newSchedule); // 如果驗證失敗，重新顯示新增頁面
@@ -241,7 +235,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(model); // 如果模型不合法，返回原始視圖
         }
 
-
+        
 
         public ActionResult SDelete(int? id)
         {
@@ -263,27 +257,31 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _context.SaveChanges(); // 儲存變更到資料庫
 
             // 刪除後重定向回到該 Route 的詳細頁
-            return RedirectToAction("RDetail", new { id = sch.RouteId });
+            return RedirectToAction("RDetail", new { routeId = sch.RouteId }); // 使用 routeId
         }
 
 
 
         //--------------------------------------------------------------------------
 
-        public IActionResult ICreate(int routeId)
+        public IActionResult ICreate(int routeId, int? routeImageId)
         {
             // 傳遞 RouteId 到 ViewBag 或直接使用 ViewModel
+            ViewBag.RouteId = routeId;
+
+            // 如果需要初始化其他數據，可以在這裡做
             var model = new RouteDetailViewModel
             {
                 RouteId = routeId,
-                // 初始化其他需要的屬性，如果有的話
+                // 其他初始化資料
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult ICreate(RouteDetailViewModel model)
+        [Route("Shipment/{routeId}/ICreate")]
+        public IActionResult ICreate(int routeId, RouteDetailViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -297,25 +295,23 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         model.Image = memoryStream.ToArray(); // 將記憶體流轉換為 byte[]
                     }
 
-                    // 儲存圖片到資料庫
-                    var routeImage = new RouteImage
-                    {
-                        RouteId = model.RouteId,
-                        RouteImage1 = model.Image, // 更新為 RouteImage1
-                        RouteImageDescription = model.ImageDescription
-                    };
+                // 儲存圖片到資料庫
+                var routeImage = new RouteImage
+                {
+                    RouteId = model.RouteId,
+                    Image = model.Image,
+                    Description = model.ImageDescription
+                };
 
-                    _context.RouteImages.Add(routeImage);
-                    _context.SaveChanges(); // 儲存到資料庫
-                }
+                _context.RouteImages.Add(routeImage);
+                _context.SaveChanges();
 
-                return RedirectToAction("RDetail", new { routeId = model.RouteId }); // 使用 routeId 進行重定向
+                return RedirectToAction("RDetail", new { id = model.RouteId });
             }
 
-            // 如果 ModelState 無效，則返回原視圖並顯示錯誤
+            // 如果模型驗證失敗，返回新增頁面並顯示錯誤
             return View(model);
         }
-
 
 
 

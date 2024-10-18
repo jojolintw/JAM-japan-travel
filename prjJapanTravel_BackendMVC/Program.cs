@@ -27,6 +27,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+//有問題刪這段
+// 啟用靜態文件中間件，確保靜態資源（如 CSS、JS）可以正常被加載
+app.UseStaticFiles();
 app.UseRouting();
 
 

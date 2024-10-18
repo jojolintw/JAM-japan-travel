@@ -27,14 +27,10 @@
                         <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Images[i])" alt="Route Image" style="width: 200px; height: auto;" />
                         <p>圖片描述: @(string.IsNullOrEmpty(Model.ImageDescriptions[i]) ? "無圖片描述" : Model.ImageDescriptions[i])</p>
                         <p>
-                            @Html.ActionLink("修改", "IEdit", new { id = Model.RouteImageId }) |
-                            @Html.ActionLink("刪除", "IDelete", new { id = Model.RouteImageId }, new { onclick = "return confirm('確定要刪除這張圖片嗎？')" })
+                            @Html.ActionLink("修改", "IEdit", "Shipment", new { routeId = Model.RouteId, id = Model.RouteImageId }, null) |
+                            @Html.ActionLink("刪除", "IDelete", "Shipment", new { routeId = Model.RouteId, id = Model.RouteImageId }, new { onclick = "return confirm('確定要刪除這張圖片嗎？')" })
                         </p>
                     </div>
-                }
-                else
-                {
-                    <p>無圖片</p>
                 }
             }
         }
@@ -44,10 +40,6 @@
         }
 
     </div>
-
-
-
-
 </div>
 
 <!-- 清除浮動 -->
@@ -60,7 +52,6 @@
 </p>
 @if (Model.Schedules != null && Model.Schedules.Count > 0)
 {
-    
     <table class="table">
         <thead>
             <tr>
@@ -87,7 +78,7 @@
                         <td>@item.Capacity</td>
                         <td>
                             @Html.ActionLink("修改", "SEdit", "Shipment", new { routeId = Model.RouteId, scheduleId = item.ScheduleId }, null) |
-                            @Html.ActionLink("刪除", "SDelete", "Shipment", new { id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
+                            @Html.ActionLink("刪除", "SDelete", "Shipment", new { routeId = Model.RouteId, id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
                         </td>
                     </tr>
                 }
@@ -99,6 +90,7 @@ else
 {
     <p>此航線無航班資訊。</p>
 }
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

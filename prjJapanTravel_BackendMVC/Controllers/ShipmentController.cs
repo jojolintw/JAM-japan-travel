@@ -155,7 +155,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(routeData);
         }
 
-
         [HttpGet]
         [Route("Shipment/{routeId}/SCreate")]
         public IActionResult SCreate(int routeId)
@@ -175,7 +174,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.Schedules.Add(newSchedule);
                 _context.SaveChanges();
 
-                return RedirectToAction("RDetail", new { id = routeId }); // 新增成功後，返回 Route 詳細頁
+                return RedirectToAction("RDetail", new { routeId = routeId }); // 新增成功後，返回 Route 詳細頁
             }
 
             return View(newSchedule); // 如果驗證失敗，重新顯示新增頁面
@@ -195,8 +194,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             return View(schedule); // 將資料傳遞到視圖
         }
-
-        
 
         public ActionResult SDelete(int? id)
         {
@@ -218,7 +215,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _context.SaveChanges(); // 儲存變更到資料庫
 
             // 刪除後重定向回到該 Route 的詳細頁
-            return RedirectToAction("RDetail", new { id = sch.RouteId });
+            return RedirectToAction("RDetail", new { routeId = sch.RouteId }); // 使用 routeId
         }
 
 

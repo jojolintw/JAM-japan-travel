@@ -49,65 +49,66 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="table-group-divider">
         @{
             int count = 0;
-            foreach (var item in Model) {
+            foreach (var item in Model)
+            {
                 count++;
-        <tr>
-            <td>
-                @count
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.行程編號)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.行程名稱)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.體驗項目)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.總團位)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.價格)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.地區)
-            </td>
-            <td>
-                @if (item.行程日期 != null && item.行程日期.Any())
-                {
-                    foreach (var date in item.行程日期)
-                    {
-                        <span>@date.DepartureDate</span>
-                        <br />
-                    }
-                }
-                else
-                {
-                    <span>無出發日期</span>
-                }
-            </td>
-            <td>
-                @if (item.行程圖片 != null && item.行程圖片.Count > 0)
-                {
-                    <img src="~/images/Product/@item.行程圖片[0].ImagePath"
-                        alt=""
-                        style ="width:100px; height:100px" />
-                }
-                else
-                {
-                    <span>無圖片</span>
-                }
-            </td>
-            <td>
-                @Html.ActionLink("行程詳情", "Details", "Product", new { id=item.行程系統編號 }) |
-                @Html.ActionLink("修改", "ItineraryEdit", "Product", new { id = item.行程系統編號 }) |
-                @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id = item.行程系統編號 })
-            </td>
-        </tr>
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.行程編號)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.行程名稱)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.體驗項目)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.總團位)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.價格)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.地區)
+                    </td>
+                    <td>
+                        @if (item.行程日期 != null && item.行程日期.Any())
+                        {
+                            foreach (var date in item.行程日期)
+                            {
+                                <span>@date.DepartureDate</span>
+                                <br />
+                            }
+                        }
+                        else
+                        {
+                            <span>無出發日期</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.行程圖片 != null && item.行程圖片.Count > 0)
+                        {
+                            <img src="~/images/Product/@item.行程圖片[0].ImagePath"
+                                 alt=""
+                                 style="width:100px; height:100px" />
+                        }
+                        else
+                        {
+                            <span>無圖片</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("行程詳情", "Details", "Product", new { id = item.行程系統編號 }) |
+                        @Html.ActionLink("修改", "ItineraryEdit", "Product", new { id = item.行程系統編號 }) |
+                        @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id = item.行程系統編號 })
+                    </td>
+                </tr>
             }
         }
     </tbody>

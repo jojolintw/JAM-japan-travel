@@ -62,4 +62,5 @@ public partial class ItineraryOrder
     public virtual PaymentMethod PaymentMethod { get; set; }
 
     public virtual PaymentStatus PaymentStatus { get; set; }
+    public int ItinerarySystemId {  get; set; } //new 不確定是否該新增
 }

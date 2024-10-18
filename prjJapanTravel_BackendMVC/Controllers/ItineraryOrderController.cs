@@ -72,8 +72,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName");
             ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
 
+
             return View();
         }
+
+
         [HttpPost]
         public IActionResult Create(ItineraryOrder io)
         {
@@ -83,31 +86,21 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _context.SaveChanges();
             return RedirectToAction("List");
         }
-        //[HttpGet]
-        //public IActionResult GetItineraryDates(int id)
-        //{
-        //    var dates = _context.ItineraryDates
-        //                        .Where(d => d.ItinerarySystemId == id)
-        //                        .Select(d => new
-        //                        {
-        //                            ItineraryDateSystemId = d.ItineraryDateSystemId, // 行程日期的 ID
-        //                            DepartureDate = d.DepartureDate.ToString() // 行程日期的文本
-        //                        })
-        //                        .ToList();
 
-        //    return Json(dates);
-        //}
+        [HttpGet]
+        public IActionResult GetItineraryDates(int id)
+        {
+            var dates = _context.ItineraryDates
+                .Where(d => d.ItinerarySystemId == id)
+                .Select(d => new
+                {
+                    dateId = d.ItineraryDateSystemId,
+                    date = d.DepartureDate // 根據實際的日期屬性進行調整
+                }).ToList();
 
-        //[HttpGet("getDepartureDates")]
-        //public IActionResult GetDepartureDates(int itineraryId)
-        //{
-        //    var dates = _context.ItineraryDates
-        //        .Where(d => d.ItinerarySystemId == itineraryId)
-        //        .Select(d => new { d.ItineraryDateSystemId, d.DepartureDate })
-        //        .ToList();
+            return Json(dates);
+        }
 
-        //    return Ok(dates);
-        //}
 
         public IActionResult Edit(int? id)
         {

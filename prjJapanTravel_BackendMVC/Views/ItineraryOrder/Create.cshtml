@@ -23,44 +23,21 @@
                 <span asp-validation-for="MemberId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ItineraryDateSystemId" class="control-label">行程編號</label>
-                <input asp-for="ItineraryDateSystemId" class="form-control" />
+                <label asp-for="ItinerarySystemId" class="control-label">行程名稱</label>
+                <select asp-for="ItinerarySystemId" class="form-control" asp-items="ViewBag.ItineraryList" onchange="fetchItineraryDates(this.value)">
+                    <option value="">-- 請選擇行程 --</option>
+                </select>
+                <span asp-validation-for="ItinerarySystemId" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="ItineraryDateSystemId" class="control-label">行程日期</label>
+                <select asp-for="ItineraryDateSystemId" class="form-control">
+                    <option value="">-- 請選擇行程日期 --</option>
+                </select>
                 <span asp-validation-for="ItineraryDateSystemId" class="text-danger"></span>
             </div>
-
-
-            @* <div class="form-group">
-                <label for="ItinerarySystemId" class="control-label">行程名稱</label>
-                <select id="ItinerarySystemId" class="form-control" asp-for="ItineraryDateSystemId" asp-items="ViewBag.ItineraryList">
-                    <option value="">-- 請選擇行程名稱 --</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="ItineraryDateSystemId" class="control-label">行程日期</label>
-                <select id="ItineraryDateSystemId" class="form-control">
-                    <option value="">-- 請選擇行程日期 --</option>
-                </select>
-            </div> *@
-
-            @* <div class="form-group">
-                <label for="ItinerarySystemId" class="control-label">行程名稱</label>
-                <select id="ItinerarySystemId" class="form-control" onchange="updateDepartureDates()">
-                    <option value="">-- 請選擇行程名稱 --</option>
-                    @foreach (var itinerary in ViewBag.ItineraryList)
-                    {
-                        <option value="@itinerary.ItinerarySystemId">@itinerary.ItineraryName</option>
-                    }
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="ItineraryDateSystemId" class="control-label">行程日期</label>
-                <select id="ItineraryDateSystemId" class="form-control">
-                    <option value="">-- 請選擇行程日期 --</option>
-                </select>
-            </div> *@
-
 
             <div class="form-group">
                 <label asp-for="Quantity" class="control-label">數量</label>
@@ -124,82 +101,27 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-
-        // document.getElementById('ItinerarySystemId').addEventListener('change', function () {
-        //     const ItinerarySystemId = this.value;
-
-        //     if (ItinerarySystemId) {
-        //         fetch(`/ItineraryOrder/GetItineraryDates/${ItinerarySystemId}`)
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 const dateSelect = document.getElementById('ItineraryDateId');
-        //                 dateSelect.innerHTML = '<option value="">-- 請選擇行程日期 --</option>'; // 重置選項
-        //                 data.forEach(date => {
-        //                     const option = document.createElement('option');
-        //                     option.value = date.ItineraryDateSystemId; // 對應的行程日期ID
-        //                     option.text = date.DepartureDate; // 顯示的行程日期
-        //                     dateSelect.appendChild(option);
-        //                 });
-        //             })
-        //             .catch(error => console.error('Error fetching itinerary dates:', error));
-        //     } else {
-        //         document.getElementById('ItineraryDateId').innerHTML = '<option value="">-- 請選擇行程日期 --</option>'; // 重置選項
-        //     }
-        // });
-
-
-
-        // document.addEventListener('DOMContentLoaded', function () {
-        //     document.getElementById('ItinerarySystemId').addEventListener('change', function () {
-        //         const ItinerarySystemId = this.value;
-
-        //         if (ItinerarySystemId) {
-        //             fetch(`/ItineraryOrder/GetItineraryDates/${ItinerarySystemId}`)
-        //                 .then(response => {
-        //                     if (!response.ok) {
-        //                         throw new Error('Network response was not ok');
-        //                     }
-        //                     return response.json();
-        //                 })
-        //                 .then(data => {
-        //                     const dateSelect = document.getElementById('ItineraryDateSystemId');
-        //                     dateSelect.innerHTML = '<option value="">-- 請選擇行程日期 --</option>'; // 重置選項
-        //                     data.forEach(date => {
-        //                         const option = document.createElement('option');
-        //                         option.value = date.ItineraryDateSystemId; // 對應的行程日期ID
-        //                         option.text = date.DepartureDate; // 顯示的行程日期
-        //                         dateSelect.appendChild(option);
-        //                     });
-        //                 })
-        //                 .catch(error => console.error('Error fetching itinerary dates:', error));
-        //         } else {
-        //             document.getElementById('ItineraryDateId').innerHTML = '<option value="">-- 請選擇行程日期 --</option>'; // 重置選項
-        //         }
-        //     });
-        // });
-
-
-
-        async function updateDepartureDates() {
-            const itineraryId = document.getElementById("ItinerarySystemId").value;
-
-            // 透過 AJAX 請求獲取對應的出發日期
-            const response = await fetch(`/api/getDepartureDates?itineraryId=${itineraryId}`);
-
-            if (response.ok) {
-                const departureDates = await response.json();
-
-                const departureDateSelect = document.getElementById("ItineraryDateSystemId");
-                departureDateSelect.innerHTML = '<option value="">-- 請選擇行程日期 --</option>'; // 清空選項
-
-                departureDates.forEach(date => {
-                    const option = document.createElement("option");
-                    option.value = date.ItineraryDateSystemId;
-                    option.textContent = date.DepartureDate;
-                    departureDateSelect.appendChild(option);
+                function fetchItineraryDates(ItinerarySystemId) {
+                    if (ItinerarySystemId) {
+                        $.ajax({
+                            url: '@Url.Action("GetItineraryDates", "ItineraryOrder")',
+                            type: 'GET',
+                            data: { id: ItinerarySystemId },
+                            success: function (data) {
+                                console.log(data);
+                                var $dateDropdown = $('#ItineraryDateSystemId');
+                        $dateDropdown.empty();
+                        $dateDropdown.append('<option value="">-- 請選擇行程日期 --</option>');
+                        $.each(data, function (index, item) {
+                            $dateDropdown.append($('<option>').val(item.dateId).text(item.date));
+                        });
+                    },
+                    error: function () {
+                        alert('無法獲取日期，請稍後再試。');
+                    }
                 });
             } else {
-                console.error('獲取出發日期失敗');
+                $('#ItineraryDateSystemId').empty().append('<option value="">-- 請選擇行程日期 --</option>');
             }
         }
     </script>

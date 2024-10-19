@@ -209,59 +209,70 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
 
-
-        // 編輯圖片頁面 (Edit)
-        [HttpGet]
-        public IActionResult EditRouteImage(int id)
+        public ActionResult EditRouteImage(int? id)
         {
-            var routeImage = _context.RouteImages.Find(id);
-            if (routeImage == null) return NotFound();
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var routeImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == id);
+            if (routeImage == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(routeImage);
         }
 
-        // 提交圖片修改 (Edit - POST)
         [HttpPost]
-        public IActionResult EditRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
+        public ActionResult EditRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
         {
+            var dbRouteImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == routeImage.RouteImageId);
+            if (dbRouteImage == null)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (RouteImageUrl != null && RouteImageUrl.Length > 0)
             {
                 using (var memoryStream = new MemoryStream())
                 {
                     RouteImageUrl.CopyTo(memoryStream);
-                    routeImage.RouteImageUrl = memoryStream.ToArray();
+                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array 並儲存
                 }
             }
 
-            if (ModelState.IsValid)
+            // 更新圖片描述
+            dbRouteImage.RouteImageDescription = routeImage.RouteImageDescription;
+
+            // 保存更改到資料庫
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { routeId = dbRouteImage.RouteId });
+        }
+
+
+
+        public ActionResult DeleteRouteImage(int? id)
+        {
+            if (id == null)
             {
-                _context.RouteImages.Update(routeImage);
-                _context.SaveChanges();
-                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+                return NotFound(); // 如果 id 為 null，返回 404
             }
-            return View(routeImage);
-        }
 
-        // 刪除圖片確認頁面 (Delete)
-        [HttpGet]
-        public IActionResult DeleteRouteImage(int id)
-        {
-            var routeImage = _context.RouteImages.Find(id);
-            if (routeImage == null) return NotFound();
-            return View(routeImage);
-        }
-
-        // 提交刪除 (Delete - POST)
-        [HttpPost, ActionName("DeleteRouteImage")]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var routeImage = _context.RouteImages.Find(id);
+            var routeImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == id);
             if (routeImage != null)
             {
-                _context.RouteImages.Remove(routeImage);
-                _context.SaveChanges();
+                _context.RouteImages.Remove(routeImage); // 從資料庫中移除該圖片
+                _context.SaveChanges(); // 保存更改
             }
-            return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+
+            return RedirectToAction("Index", new { routeId = routeImage?.RouteId }); // 返回到列表頁
         }
+
+
+
 
 
     }

@@ -13,5 +13,9 @@ public partial class Activity
 
     public string ActivityDetail { get; set; }
 
+    public int? ThemeSystemId { get; set; }
+
     public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
+
+    public virtual Theme ThemeSystem { get; set; }
 }

@@ -11,5 +11,5 @@ public partial class Theme
 
     public string ThemeName { get; set; }
 
-    public virtual ICollection<Itinerary> Itineraries { get; set; } = new List<Itinerary>();
+    public virtual ICollection<Activity> Activities { get; set; } = new List<Activity>();
 }

@@ -27,7 +27,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗項目 = n.ActivitySystem.ActivityName,
                 總團位 = n.Stock,
                 價格 = n.Price,
-                體驗主題 = n.ThemeSystem.ThemeName,
+                ////體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
                 行程日期 = n.ItineraryDates.Where(date=>date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
                 行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).Select(img => new Image
@@ -148,7 +148,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 總團位 = n.Stock,
                 價格 = n.Price,
                 體驗主題編號 = n.ThemeSystemId,
-                體驗主題 = n.ThemeSystem.ThemeName,
+                //體驗主題 = n.ThemeSystem.ThemeName,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
                 //行程圖片 = n.ItineraryPicSystem.ImagePath,

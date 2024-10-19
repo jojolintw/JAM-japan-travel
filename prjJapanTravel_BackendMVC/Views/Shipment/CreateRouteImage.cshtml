@@ -9,6 +9,13 @@
 <form asp-action="CreateRouteImage" enctype="multipart/form-data">
     <!-- 注意這裡的 enctype -->
     <div class="form-group">
+        
+        <label asp-for="RouteId" class="control-label"></label>
+    <input asp-for="RouteId" class="form-control" />
+    <span asp-validation-for="RouteId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="RouteImageUrl" class="control-label">Upload Image</label>
         <input type="file" class="form-control" asp-for="RouteImageUrl" /> <!-- 允許上傳檔案 -->
         <span asp-validation-for="RouteImageUrl" class="text-danger"></span>
@@ -18,7 +25,6 @@
         <input asp-for="RouteImageDescription" class="form-control" />
         <span asp-validation-for="RouteImageDescription" class="text-danger"></span>
     </div>
-    <input  asp-for="RouteId" value="@ViewBag.RouteId" />
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 

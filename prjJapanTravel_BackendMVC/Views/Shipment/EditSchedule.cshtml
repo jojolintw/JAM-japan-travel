@@ -1,0 +1,57 @@
+﻿@model prjJapanTravel_BackendMVC.Models.Schedule
+
+@{
+    ViewData["Title"] = "Edit Schedule";
+}
+
+<h1>Edit Schedule</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="EditSchedule">
+            <!-- RouteId 手動輸入 -->
+            <div class="form-group">
+                <label asp-for="RouteId" class="control-label">Route ID</label>
+                <input readonly asp-for="RouteId" class="form-control" placeholder="Enter Route ID" />
+                <span asp-validation-for="RouteId" class="text-danger"></span>
+            </div>
+
+            <!-- Departure Time -->
+            <div class="form-group">
+                <label asp-for="DepartureTime" class="control-label">Departure Time</label>
+                <input asp-for="DepartureTime" class="form-control" placeholder="Enter Departure Time" />
+                <span asp-validation-for="DepartureTime" class="text-danger"></span>
+            </div>
+
+            <!-- Arrival Time -->
+            <div class="form-group">
+                <label asp-for="ArrivalTime" class="control-label">Arrival Time</label>
+                <input asp-for="ArrivalTime" class="form-control" placeholder="Enter Arrival Time" />
+                <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+            </div>
+
+            <!-- Seats -->
+            <div class="form-group">
+                <label asp-for="Seats" class="control-label">Seats Available</label>
+                <input asp-for="Seats" class="form-control" placeholder="Enter Seats Available" />
+                <span asp-validation-for="Seats" class="text-danger"></span>
+            </div>
+
+            <!-- Capacity -->
+            <div class="form-group">
+                <label asp-for="Capacity" class="control-label">Capacity</label>
+                <input asp-for="Capacity" class="form-control" placeholder="Enter Capacity" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

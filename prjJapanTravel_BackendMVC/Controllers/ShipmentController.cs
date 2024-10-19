@@ -274,7 +274,75 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return RedirectToAction("Index", new { routeId = routeImage?.RouteId }); // 返回到列表頁
         }
 
+        public ActionResult EditSchedule(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
 
+            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
+            if (schedule == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(schedule);
+        }
+
+        [HttpPost]
+        public ActionResult EditSchedule(Schedule schedule)
+        {
+            var dbSchedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == schedule.ScheduleId);
+            if (dbSchedule == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // 更新班表資料
+            dbSchedule.DepartureTime = schedule.DepartureTime;
+            dbSchedule.ArrivalTime = schedule.ArrivalTime;
+            dbSchedule.Seats = schedule.Seats;
+            dbSchedule.Capacity = schedule.Capacity;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { routeId = dbSchedule.RouteId });
+        }
+
+        public ActionResult CreateSchedule(int routeId)
+        {
+            var newSchedule = new Schedule { RouteId = routeId };
+            return View(newSchedule);
+        }
+
+        [HttpPost]
+        public ActionResult CreateSchedule(Schedule schedule)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Schedules.Add(schedule);
+                _context.SaveChanges();
+                return RedirectToAction("Index", new { routeId = schedule.RouteId });
+            }
+
+            return View(schedule);
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteSchedule(int id)
+        {
+            var schedule = _context.Schedules.Find(id);
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            _context.Schedules.Remove(schedule);
+            _context.SaveChanges();
+
+            return Ok();
+        }
 
 
 

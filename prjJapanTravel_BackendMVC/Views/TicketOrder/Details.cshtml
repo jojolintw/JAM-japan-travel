@@ -4,8 +4,8 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>訂單明細</h1>
-@* <h2>@Html.DisplayFor(modelItem => item.訂單編號)</h2> *@
+<h1> @ViewBag.Member 的訂單明細</h1>
+<h2> 訂單編號 @ViewBag.OrderNumber</h2>
 
 <p>
     <a asp-action="List" class="btn btn-outline-info">返回</a>

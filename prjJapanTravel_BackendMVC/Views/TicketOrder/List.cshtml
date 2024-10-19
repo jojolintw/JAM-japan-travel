@@ -4,24 +4,27 @@
     ViewData["Title"] = "List";
 }
 
-<h1>船票訂單管理</h1>
+<h1>🛳️船票訂單管理</h1>
 
 <p style="margin:12px">
-    <a asp-action="Create" class="btn btn-primary">新增訂單</a>
-    <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a>
+    <a asp-action="Create" class="btn btn-outline-primary">新增訂單</a>
 </p>
 
 <div style="margin:12px 12px">
-    <input type="text" id="TicketOrderNumber" placeholder="訂單編號" />
-    <input type="text" id="Member" placeholder="會員" />
+    @using (Html.BeginForm())
+    {
+        @Html.TextBox("txtKeyword", null, new 
+            { 
+                @placeholder = "輸入訂單編號或會員名稱",
+                @style = "text-align:center; font-size:16px;" 
+            })
+        <input type="submit" value="查詢" class="btn btn-outline-primary" />
+    }
 </div>
 
 <table class="table table-hover">
     <thead>
         <tr style="font-size:20px">
-            @* <th>
-                @Html.DisplayNameFor(model => model.TicketOrderId)
-            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.訂單編號)
             </th>
@@ -49,19 +52,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.總金額)
             </th>
-            @* <th></th> *@
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            @* <td>
-                @Html.DisplayFor(modelItem => item.TicketOrderId)
-            </td> *@
             <td>
                     @Html.ActionLink(item.訂單編號.ToString(), "Details", "TicketOrder", new { id = item.船票訂單編號 }, null)
-                    @* @Html.DisplayFor(modelItem => item.訂單編號) *@
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.會員)
@@ -89,9 +87,6 @@
                 <td style="text-align: right;">
                     @item.總金額.ToString("###,###,#0")
                 </td>
-            @* <td>
-                    @Html.ActionLink("明細", "Details", "TicketOrder", new { id = item.船票訂單編號 }, null)
-            </td> *@
             <td>
                     @Html.ActionLink("修改", "Edit", "TicketOrder", new { id = item.船票訂單編號 }, null)
                     @Html.ActionLink("取消", "Cancel", "TicketOrder", new { id = item.船票訂單編號 }, 

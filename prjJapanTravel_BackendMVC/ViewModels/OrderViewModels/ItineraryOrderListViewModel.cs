@@ -47,7 +47,7 @@ namespace prjJapanTravel_BackendMVC.ViewModels.OrderViewModels
         public string 代表人護照號碼 { get; set; }
 
         public string 代表人手機號碼 { get; set; }
-        public string 優惠券 { get; set; }
+        public string? 優惠券 { get; set; }
         public string 行程名稱 { get; set; }
         public string 會員 { get; set; }
         public string 付款方式 { get; set; }

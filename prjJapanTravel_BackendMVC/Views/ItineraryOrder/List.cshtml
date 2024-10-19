@@ -4,16 +4,25 @@
     ViewData["Title"] = "List";
 }
 
-<h1>行程訂單管理</h1>
+<h1>👣行程訂單管理</h1>
 
 <p style="margin:12px">
     <a asp-action="Create" class="btn btn-outline-primary">新增訂單</a>
-    <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a>
+    @* <a asp-action="Delete" class="btn btn-outline-danger disabled">刪除訂單</a> *@
 </p>
 
 <div style="margin:12px 12px">
-    <input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" />
-    <input type="text" id="Member" placeholder="會員" />
+    @* <input type="text" id="ItineraryOrderNumber" placeholder="訂單編號" oninput="search()"/>
+    <input type="text" id="Member" placeholder="會員" oninput="search()"/> *@
+    @using (Html.BeginForm())
+    {
+        @Html.TextBox("txtKeyword", null, new
+            {
+                @placeholder = "輸入訂單編號或會員名稱",
+                @style = "text-align:center; font-size:16px;"
+            })
+        <input type="submit" value="查詢" class="btn btn-outline-primary" />
+    }
 </div>
 
 <table class="table table-hover">
@@ -43,9 +52,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.訂單狀態)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.優惠券)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.總金額)
             </th>
@@ -54,7 +63,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr style="font-size:15px">
             <td>
                 @Html.ActionLink( item.訂單編號.ToString(), "Details", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
             </td>
@@ -81,18 +90,37 @@
             <td>
                     @Html.DisplayFor(modelItem => item.訂單狀態)
             </td>
-            <td>
+            @* <td>
                     @Html.DisplayFor(modelItem => item.優惠券)
-            </td>
-            <td style="text-align: right;">
+            </td> *@
+            <td style="text-align:right">
                 @item.總金額.ToString("###,###,#0")
             </td>
             <td>
-                    @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
-                    @Html.ActionLink("取消", "Cancel", "ItineraryOrder", new { id = item.行程訂單編號 }, 
-                                    new { onclick= "return confirm('確定要取消此訂單?')"})
+                    @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, new { @class = "btn btn-outline-secondary" })
+                    <a asp-action ="Delete" class="btn btn-outline-danger" onclick="confirmDelete(@item.行程訂單編號)">刪除</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<script>
+    
+    function confirmDelete(orderId) {
+
+        const today = new Date();
+        const correctPassword = ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2); // 確保月份日期皆為兩位數
+        console.log(correctPassword)
+
+        // 密碼設定
+        const password = prompt("請輸入密碼 (提示:今天日期)：");
+
+        if (password === correctPassword) {
+            // 密碼正確，重定向到刪除操作
+            window.location.href = '/ItineraryOrder/Delete/' + orderId;
+        } else {
+            alert("密碼輸入錯誤");
+        }
+    }
+</script>

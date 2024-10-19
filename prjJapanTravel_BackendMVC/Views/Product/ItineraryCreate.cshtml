@@ -65,7 +65,7 @@
         </div>
         <div style="margin-bottom: 10px;">
             <label>上傳圖片</label>
-            <input type="file" id="fileInput" name="ImageFile" multiple="multiple" />
+            <input type="file" id="fileInput" name="imageViewModel[0].ImageFile" multiple="multiple" />
         </div>
         <div>
             <label>圖片預覽</label>
@@ -75,13 +75,15 @@
         <div style="margin-bottom: 10px;">
             <div style="margin-bottom: 10px;">
                 <label>圖片名稱</label>
-                <input type="text" name="ImageName"/>
+                <input type="text" name="imageViewModel[0].ImageName" />
             </div>
             <div>
                 <label style="vertical-align: top;">圖片描述</label>
-                <textarea name="ImageDetail" rows="7" cols="99"></textarea>
+                <textarea name="imageViewModel[0].ImageDetail" rows="7" cols="99"></textarea>
             </div>
         </div>
+        @* <button type="button" id="addImageButton">+</button> <!-- 按鈕來新增欄位 -->
+        <div id="imagePreviewContainer"></div> *@
         <div class="form-group">
             <div style="margin-bottom: 10px;">
                 <label>行程簡介</label>
@@ -107,6 +109,7 @@
 @section Scripts
 {
     <script>
+        // let imageIndex = 1;
         document.getElementById('fileInput').addEventListener('change', function (event) {
             var output = document.getElementById('output');
             var files = event.target.files;
@@ -122,6 +125,54 @@
                 reader.readAsDataURL(files[0]);  // 讀取第一個文件並預覽
             }
         });
+        // 當按下 "+" 按鈕時，動態增加圖片上傳欄位
+        // document.getElementById('addImageButton').addEventListener('click', function () {
+        //     const container = document.getElementById('imageUploadContainer');
+
+        //     // 新增一個新的圖片上傳區域
+        //     const newImageSection = document.createElement('div');
+        //     newImageSection.classList.add('imageUploadSection');
+        //     newImageSection.setAttribute('data-index', imageIndex);
+
+        //     newImageSection.innerHTML = `
+        //             <label>上傳圖片</label>
+        //             <input type="file" name="imageViewModel[${imageIndex}].ImageFile" onchange="previewImage(event, ${imageIndex})" />
+
+        //             <label>圖片名稱</label>
+        //             <input type="text" name="imageViewModel[${imageIndex}].ImageName" />
+
+        //             <label>圖片描述</label>
+        //             <textarea name="imageViewModel[${imageIndex}].ImageDetail" rows="3"></textarea>
+        //         `;
+
+        //     // 將新欄位區塊添加到容器中
+        //     container.appendChild(newImageSection);
+
+        //     // 增加索引
+        //     imageIndex++;
+        // });
+
+        // // 預覽圖片的函數
+        // function previewImage(event, index) {
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         const reader = new FileReader();
+        //         reader.onload = function (e) {
+        //             const previewArea = document.getElementById('imagePreviewContainer');
+
+        //             // 如果這是新的預覽圖片，創建一個新的 img 標籤
+        //             let img = document.getElementById(`imgPreview-${index}`);
+        //             if (!img) {
+        //                 img = document.createElement('img');
+        //                 img.id = `imgPreview-${index}`;
+        //                 img.style.height = '200px';
+        //                 previewArea.appendChild(img);
+        //             }
+        //             img.src = e.target.result; // 設定圖片來源為讀取的結果
+        //         }
+        //         reader.readAsDataURL(file); // 開始讀取文件
+        //     }
+        // }
         function addDepartureDate() {
             var dateInput = document.getElementById("departureDateInput");
             var selectedDate = dateInput.value;

@@ -27,17 +27,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗項目 = n.ActivitySystem.ActivityName,
                 總團位 = n.Stock,
                 價格 = n.Price,
-                ////體驗主題 = n.ThemeSystem.ThemeName,
                 地區 = n.AreaSystem.AreaName,
-                行程日期 = n.ItineraryDates.Where(date=>date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
+                行程日期 = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
                 行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).Select(img => new Image
-                   {
+                {
                     ItineraryPicSystemId = img.ItineraryPicSystemId,
                     ItinerarySystemId = img.ItinerarySystemId,
                     ImagePath = img.ImagePath,
-                    ImageName = img.ImageName,
-                    ImageDetail = img.ImageDetail
-                   }).ToList(),
+                }).ToList(),
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
@@ -57,7 +54,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult ItineraryCreate(ItineraryViewModel itimodel)
         {
             Itinerary itinerary = new Itinerary();
-            
+
             itinerary.ItineraryId = itimodel.行程編號;
             itinerary.ItineraryName = itimodel.行程名稱;
             itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
@@ -96,7 +93,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         string photoname = Guid.NewGuid() + ".jpg";
 
                         // 設置圖片的保存路徑
-                         var filePath = _enviroment.WebRootPath + "/images/Admin/" + photoname;
+                        var filePath = _enviroment.WebRootPath + "/images/Product/" + photoname;
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             img.ImageFile.CopyTo(stream);
@@ -106,7 +103,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                         Image image = new Image
                         {
                             ItinerarySystemId = itinerary.ItinerarySystemId,
-                            ImageName = img.ImageName, // 從 ViewModel 獲取圖片名稱
+                            ImageName = img.ImageName,
                             ImagePath = photoname,  // 保存相對路徑
                             ImageDetail = img.ImageDetail // 圖片描述
                         };
@@ -148,14 +145,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 總團位 = n.Stock,
                 價格 = n.Price,
                 體驗主題編號 = n.ThemeSystemId,
-                //體驗主題 = n.ThemeSystem.ThemeName,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
-                //行程圖片 = n.ItineraryPicSystem.ImagePath,
+                行程圖片 = n.Images.Where(pic => pic.ItinerarySystemId == n.ItinerarySystemId).ToList(),
                 行程詳情 = n.ItineraryDetail,
                 行程簡介 = n.ItineraryBrief,
                 行程注意事項 = n.ItineraryNotes
             }).FirstOrDefault();
+
             return View(data);
         }
         [HttpPost]
@@ -174,14 +171,47 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.Price = itiModel.價格;
             itinerary.ThemeSystemId = itiModel.體驗主題編號;
             itinerary.AreaSystemId = itiModel.地區編號;
-            //itinerary.ItineraryPicSystemId = itiModel.行程圖片編號;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;
 
+            if (itiModel.imageViewModel != null && itiModel.imageViewModel[0].ImageFile != null && itiModel.imageViewModel[0].ImageFile.Length > 0)
+            {
+                var oldImage = _JP.Images.FirstOrDefault(i => i.ItinerarySystemId == itinerary.ItinerarySystemId);
+
+                // 如果已經有舊圖片，先刪除舊的圖片
+                if (oldImage != null && !string.IsNullOrEmpty(oldImage.ImagePath))
+                {
+                    var oldImagePath = Path.Combine(_enviroment.WebRootPath, oldImage.ImagePath);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);  // 刪除舊圖片
+                    }
+
+                    // 刪除資料庫中的舊圖片紀錄
+                    _JP.Images.Remove(oldImage);
+                }
+
+                string photoname = Guid.NewGuid() + ".jpg";
+                var filePath = Path.Combine(_enviroment.WebRootPath, "images/Product", photoname);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    itiModel.imageViewModel[0].ImageFile.CopyTo(stream);
+                }
+
+                // 新建圖片紀錄並更新路徑到資料庫
+                Image newImage = new Image
+                {
+                    ItinerarySystemId = itinerary.ItinerarySystemId,
+                    ImagePath = photoname,  // 保存相對路徑
+                };
+
+                _JP.Images.Add(newImage);
+            }
+
             _JP.SaveChanges();
             return RedirectToAction("List");
-            
+
         }
     }
 }

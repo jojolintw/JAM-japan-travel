@@ -169,7 +169,7 @@
                 check.checked = false;
             })
             AdminPhoto.src = NoimageUrl;
-            txtKeyworddisabled = false; 
+            txtKeyword.disabled = false; 
         }
         // 為每張卡片添加點擊事件
 
@@ -207,6 +207,8 @@
                     else {
                         AdminPhoto.src = `${imageUrl}${data.imagePath}`;
                     }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
                     alterbtn.disabled = false;
                     deletebtn.disabled = false;
                 });
@@ -352,7 +354,7 @@
             }
         })
         //=================Keyword=======================================================
-        Keyword.addEventListener('keydown', async (event) => 
+        txtKeyword.addEventListener('keydown', async (event) => 
         {
             const Keyword = txtKeyword.value;
             if (event.keyCode == 13 && Keyword.value != '') {

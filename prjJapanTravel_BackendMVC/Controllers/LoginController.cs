@@ -27,6 +27,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             if (loginAdmin == null) 
             {
                 ErroMSg = "找不到帳號";
+
                 return Json(new { result= "Noaccount" , message = ErroMSg });
             }
 
@@ -34,8 +35,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 ErroMSg = "密碼輸入錯誤";
                 ViewBag.ErrP = ErroMSg;
-
-        
 
                 return Json(new { result = "Nopassword", message = ErroMSg });
             }

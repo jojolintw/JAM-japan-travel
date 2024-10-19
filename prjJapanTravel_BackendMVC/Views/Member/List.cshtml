@@ -201,6 +201,7 @@
         const sexm = document.getElementById('sexm');
         const sexfm = document.getElementById('sexfm');
         const Birthday = document.getElementById('Birthday');
+        const txtKeyword = document.getElementById('Keyword');
         //============================================================================================================
         const noverified = document.getElementById('noverified');
         const verified = document.getElementById('verified');
@@ -324,6 +325,8 @@
                     else if (data.memberStatusId == 3) {
                         suspension.checked = true;
                     }
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                     //=====改變按鈕=================================================
                     btnAlter.disabled = false;
                     btnDelete.disabled = false;
@@ -542,7 +545,57 @@
         btnCancel.addEventListener('click', () => {
             reset();
         })
+        //=========================關鍵字搜尋==============================================
+        txtKeyword.addEventListener('keydown', async (event) => 
+        {
+            const Keyword = txtKeyword.value;
+            if (event.keyCode == 13 && Keyword.value != '') {
+                const response = await fetch(`https://localhost:7146/MemberApi/Search/?keyword=${Keyword}`, {
+                    method: "Get",
+                })
+                if (response.ok) {
+                    const allmembers = await response.json();
+                    const eleallmembers = allmembers.map(mem => {
+                        const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+                        return (`<tr class="newrow" data-memberid="${mem.會員編號}">
+                                                        <td>
+                                                            <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.會員姓名}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${(mem.性別 ? "男" : "女")}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${birthday}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.城市}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.手機號碼}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.email}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.會員等級}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${mem.會員狀態}</p>
+                                                        </td>
+                                                    </tr>`)
 
+                    })
+                    membertable.innerHTML = eleallmembers.join("");
+                    addrowEvent();
+                }
+            }
+
+
+
+        })
 
     </script>
 

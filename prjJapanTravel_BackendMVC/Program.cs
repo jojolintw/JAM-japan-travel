@@ -27,16 +27,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-//app.UseRouting();
+//有問題刪這段
+// 啟用靜態文件中間件，確保靜態資源（如 CSS、JS）可以正常被加載
+app.UseStaticFiles();
+app.UseRouting();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-//app.MapControllerRoute(
-//        name: "shipment",
-//        pattern: "Shipment/{routeId}/{action}/{scheduleId?}",
-//        defaults: new { controller = "Shipment" });
-//app.Run();
+
 
 // Swagger
 app.UseSwagger();

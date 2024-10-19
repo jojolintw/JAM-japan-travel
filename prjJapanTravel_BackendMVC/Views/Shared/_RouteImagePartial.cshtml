@@ -1,0 +1,26 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.RouteImage>
+
+<h3>Route Images</h3>
+<div class="row">
+    @foreach (var image in Model)
+    {
+        <div class="col-md-4 text-center mb-4">
+            <!-- 使用 col-md-4 以便三個一行，並加上底部間距 -->
+            <div>
+                @if (image.RouteImageUrl != null)
+                {
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(image.RouteImageUrl)" alt="Route Image" style="width:100%;" /> <!-- 調整為100%寬度 -->
+                }
+            </div>
+            <div>
+                <p>@image.RouteImageDescription</p> <!-- 敘述 -->
+            </div>
+            <div>
+                @Html.ActionLink("Edit", "EditRouteImage", new { id = image.RouteImageId }, new { @class = "btn btn-warning btn-sm" }) |
+                @Html.ActionLink("Delete", "DeleteRouteImage", new { id = image.RouteImageId }, new { onclick = "return confirm('Are you sure?')", @class = "btn btn-danger btn-sm" })
+            </div>
+        </div>
+    }
+</div>
+
+<a asp-action="CreateRouteImage" asp-route-routeId="@ViewBag.RouteId" class="btn btn-primary">Create New Route Image</a>

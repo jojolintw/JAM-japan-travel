@@ -1,14 +1,13 @@
-﻿@* @model IEnumerable<prjJapanTravel_BackendMVC.Models.Route> *@
-@model IEnumerable<dynamic>
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels.ShipmentListViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>航線清單</h1>
+<h1>Index</h1>
 
 <p>
-    <a asp-action="Create">新增航線</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -25,12 +24,9 @@
             <th>
                 票價
             </th>
-                            <th>操作</th>
-
-            @* <th>
-                簡介
-            </th> *@
-            <th></th>
+            <th>
+                操作
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -44,28 +40,21 @@
                         @count
                     </td>
                     <td>
-                        @item.OriginPortName <!-- 顯示出發港口名稱 -->
+                        @Html.DisplayFor(modelItem => item.OriginPortName)
                     </td>
                     <td>
-                        @item.DestinationPortName <!-- 顯示目的地港口名稱 -->
+                        @Html.DisplayFor(modelItem => item.DestinationPortName)
                     </td>
                     <td>
-                        @item.Price <!-- 顯示票價 -->
+                        @Html.DisplayFor(modelItem => item.Price)
                     </td>
-                    
                     <td>
-                        @Html.ActionLink("詳細資料", "RDetail", "Shipment", new { id = item.RouteId }, null) |
-                        @Html.ActionLink("修改", "Edit", "Shipment", new { id = item.RouteId }, null) |
-                        @Html.ActionLink("刪除", "Delete", "Shipment", new { id = item.RouteId },
-                             new { onclick = "return confirm('確定要刪除嗎')" })
+                        @Html.ActionLink("詳細資料", "Details", new { id = item.RouteId }) |
+                        @Html.ActionLink("修改", "Edit", new { id = item.RouteId }) |
+                        @Html.ActionLink("刪除", "Delete", new { id = item.RouteId }, new { onclick = "return confirm('確定要刪除嗎')" })
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

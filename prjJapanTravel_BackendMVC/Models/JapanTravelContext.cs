@@ -82,6 +82,10 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("Activity");
 
             entity.Property(e => e.ActivityName).HasMaxLength(50);
+
+            entity.HasOne(d => d.ThemeSystem).WithMany(p => p.Activities)
+                .HasForeignKey(d => d.ThemeSystemId)
+                .HasConstraintName("FK_Activity_Theme");
         });
 
         modelBuilder.Entity<Admin>(entity =>
@@ -254,10 +258,6 @@ public partial class JapanTravelContext : DbContext
             entity.HasOne(d => d.AreaSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.AreaSystemId)
                 .HasConstraintName("FK_Itinerary行程_Area地區");
-
-            entity.HasOne(d => d.ThemeSystem).WithMany(p => p.Itineraries)
-                .HasForeignKey(d => d.ThemeSystemId)
-                .HasConstraintName("FK_Itinerary行程_Theme主題1");
         });
 
         modelBuilder.Entity<ItineraryDate>(entity =>
@@ -535,11 +535,11 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("RouteImage");
 
             entity.Property(e => e.RouteImageId).HasColumnName("RouteImageID");
-            entity.Property(e => e.Description)
+            entity.Property(e => e.RouteId).HasColumnName("RouteID");
+            entity.Property(e => e.RouteImageDescription)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Image).HasColumnType("image");
-            entity.Property(e => e.RouteId).HasColumnName("RouteID");
+            entity.Property(e => e.RouteImageUrl).HasColumnName("RouteImageURL");
 
             entity.HasOne(d => d.Route).WithMany(p => p.RouteImages)
                 .HasForeignKey(d => d.RouteId)

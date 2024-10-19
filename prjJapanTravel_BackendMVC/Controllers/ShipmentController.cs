@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
+using prjJapanTravel_BackendMVC.ViewModels;
 using prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels;
 
 namespace prjJapanTravel_BackendMVC.Controllers
@@ -10,272 +10,268 @@ namespace prjJapanTravel_BackendMVC.Controllers
     {
         private readonly JapanTravelContext _context;
 
-        // 在構造函數中注入 JapanTravelContext
         public ShipmentController(JapanTravelContext context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        //---------------------首頁------------------------------------------
+        public async Task<IActionResult> Index()
         {
-            var data = from route in _context.Routes
-                       join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
-                       join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
-                       select new
-                       {
-                           route.RouteId,
-                           OriginPortName = originPort.PortName,
-                           DestinationPortName = destinationPort.PortName,
-                           route.Price,
-                           route.RouteDescription
-                       };
+            var shipments = await _context.Routes
+                .Include(r => r.OriginPort)
+                .Include(r => r.DestinationPort)
+                .Select(r => new ShipmentListViewModel
+                {
+                    RouteId = r.RouteId,
+                    OriginPortName = r.OriginPort.PortName,
+                    DestinationPortName = r.DestinationPort.PortName,
+                    Price = r.Price,
+                    RouteDescription = r.RouteDescription
+                })
+                .ToListAsync();
 
-            return View(data.ToList());
+            return View(shipments);
         }
-        public ActionResult Create()
+
+        //---------------------Create------------------------------------------
+        public async Task<IActionResult> Create()
         {
-            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
+            var ports = await _context.Ports.ToListAsync(); // 取得所有港口以填充下拉選單
+            ViewBag.Ports = ports;
             return View();
         }
+
         [HttpPost]
-        public ActionResult Create(Models.Route r)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Models.Route route)
         {
             if (ModelState.IsValid)
             {
-                _context.Routes.Add(r);  // 新增資料
-                _context.SaveChanges(); // 儲存變更
-                return RedirectToAction("Index");  // 回到列表頁面
+                _context.Add(route);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName");
-            return View(r); // 回傳到視圖並顯示錯誤
+
+            var ports = await _context.Ports.ToListAsync(); // 取得所有港口以填充下拉選單
+            ViewBag.Ports = ports;
+            return View(route);
         }
-        
-        public ActionResult Delete(int? id)
+
+        //---------------------Edit------------------------------------------
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
-                return NotFound(); // 返回 404 找不到頁面
+                return NotFound();
             }
 
-            var route = _context.Routes.FirstOrDefault(r => r.RouteId == id);
-
+            var route = await _context.Routes.FindAsync(id);
             if (route == null)
             {
-                return NotFound(); // 如果找不到路由，返回 404
+                return NotFound();
             }
 
-            // 刪除路由
-            _context.Routes.Remove(route);
-            _context.SaveChanges(); // 儲存變更到資料庫
-
-            return RedirectToAction("Index"); // 刪除後返回列表頁面
+            var ports = await _context.Ports.ToListAsync(); // 取得所有港口以填充下拉選單
+            ViewBag.Ports = ports;
+            return View(route);
         }
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound(); // 返回 404 找不到頁面
-            }
 
-            // 根據 id 查詢對應的 Route
-            var route = _context.Routes.FirstOrDefault(r => r.RouteId == id);
-
-            if (route == null)
-            {
-                return NotFound(); // 如果找不到對應的 Route，返回 404
-            }
-
-            // 將出發港口和目的地港口的選項列表傳給視圖
-            ViewBag.OriginPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName", route.OriginPortId);
-            ViewBag.DestinationPortList = new SelectList(_context.Ports.ToList(), "PortId", "PortName", route.DestinationPortId);
-
-            return View(route); // 返回編輯頁面，並將 route 資料傳遞給視圖
-        }
         [HttpPost]
-        public ActionResult Edit(int id, Models.Route updatedRoute)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Models.Route route)
         {
-            if (id != updatedRoute.RouteId)
+            if (id != route.RouteId)
             {
-                return NotFound(); // 如果路徑中的 id 和提交表單中的 RouteId 不匹配，返回 404
+                return NotFound();
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // 更新資料庫中的資料
-                    _context.Update(updatedRoute);
-                    _context.SaveChanges(); // 儲存變更到資料庫
+                    _context.Update(route);
+                    await _context.SaveChangesAsync();
                 }
-                catch (Exception ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    // 如果發生例外，可以記錄例外或顯示錯誤信息
-                    ModelState.AddModelError("", "更新失敗: " + ex.Message);
-                    return View(updatedRoute); // 返回編輯頁面，並顯示錯誤信息
+                    if (!RouteExists(route.RouteId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
                 }
-
-                // 更新成功後，重定向回到列表頁面
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
-            // 如果 ModelState 無效，則重新顯示編輯頁面
-            return View(updatedRoute);
+            var ports = await _context.Ports.ToListAsync(); // 取得所有港口以填充下拉選單
+            ViewBag.Ports = ports;
+            return View(route);
         }
-        //--------------------------------------------------------------------------
-        public IActionResult RDetail(int id)
+
+        private bool RouteExists(int id)
         {
-            // 查詢 Route 資料
-            var routeData = (from route in _context.Routes
-                             join originPort in _context.Ports on route.OriginPortId equals originPort.PortId
-                             join destinationPort in _context.Ports on route.DestinationPortId equals destinationPort.PortId
-                             where route.RouteId == id
-                             select new RouteDetailViewModel
-                             {
-                                 RouteId = route.RouteId,
-                                 OriginPortName = originPort.PortName,
-                                 DestinationPortName = destinationPort.PortName,
-                                 Price = route.Price,
-                                 RouteDescription = route.RouteDescription,
-                                 Images = (from img in _context.RouteImages
-                                           where img.RouteId == route.RouteId
-                                           select img.Image).ToList(), // 加載多張圖片
-                                 ImageDescriptions = (from img in _context.RouteImages
-                                                      where img.RouteId == route.RouteId
-                                                      select img.Description).ToList() // 加載圖片描述
-                             }).FirstOrDefault();
+            return _context.Routes.Any(e => e.RouteId == id);
+        }
 
-            // 查詢 Schedule 資料
-            var schedules = (from schedule in _context.Schedules
-                             where schedule.RouteId == id
-                             select schedule).ToList();
-
-            if (routeData == null)
+        //---------------------Delete------------------------------------------
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == 0)
             {
-                return NotFound($"未找到 RouteId {id} 的資料");
+                return NotFound();
             }
 
-            routeData.Schedules = schedules;
-
-            return View(routeData);
-        }
-
-        [HttpGet]
-        [Route("Shipment/{routeId}/SCreate")]
-        public IActionResult SCreate(int routeId)
-        {
-            ViewBag.RouteId = routeId; // 傳遞 RouteId 給視圖
-
-            return View();
-        }
-
-        [HttpPost]
-        [Route("Shipment/{routeId}/SCreate")]
-        public IActionResult SCreate(int routeId, Schedule newSchedule)
-        {
-            if (ModelState.IsValid)
+            var route = await _context.Routes.FindAsync(id);
+            if (route != null)
             {
-                newSchedule.RouteId = routeId; // 設定 RouteId
-                _context.Schedules.Add(newSchedule);
-                _context.SaveChanges();
-
-                return RedirectToAction("RDetail", new { id = routeId }); // 新增成功後，返回 Route 詳細頁
+                _context.Routes.Remove(route);
+                await _context.SaveChangesAsync();
             }
 
-            return View(newSchedule); // 如果驗證失敗，重新顯示新增頁面
+            return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        [Route("Shipment/{routeId}/SEdit/{scheduleId}")]
-        public IActionResult SEdit(int routeId, int scheduleId)
+        //---------------------Detail------------------------------------------
+        public async Task<IActionResult> Details(int id)
         {
-            // 根據 routeId 和 scheduleId 查詢對應的 Schedule
-            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == scheduleId && s.RouteId == routeId);
+            var route = await _context.Routes
+                .Include(r => r.OriginPort)
+                .Include(r => r.DestinationPort)
+                .Include(r => r.Schedules) // Include Schedule data
+                .Include(r => r.RouteImages) // Include RouteImage data
+                .FirstOrDefaultAsync(m => m.RouteId == id);
 
-            if (schedule == null)
+            if (route == null)
             {
-                return NotFound(); // 如果找不到資料，返回 404
+                return NotFound();
             }
 
-            return View(schedule); // 將資料傳遞到視圖
-        }
-
-        
-
-        public ActionResult SDelete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound(); // 返回 404 找不到頁面
-            }
-
-            // 正確地使用 ScheduleId 來查詢
-            var sch = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
-
-            if (sch == null)
-            {
-                return NotFound(); // 如果找不到對應的 Schedule，返回 404
-            }
-
-            // 刪除 Schedule
-            _context.Schedules.Remove(sch);
-            _context.SaveChanges(); // 儲存變更到資料庫
-
-            // 刪除後重定向回到該 Route 的詳細頁
-            return RedirectToAction("RDetail", new { id = sch.RouteId });
-        }
-
-
-
-        //--------------------------------------------------------------------------
-
-        public IActionResult ICreate(int routeId, int? routeImageId)
-        {
-            // 傳遞 RouteId 到 ViewBag 或直接使用 ViewModel
-            ViewBag.RouteId = routeId;
-
-            // 如果需要初始化其他數據，可以在這裡做
             var model = new RouteDetailViewModel
             {
-                RouteId = routeId,
-                // 其他初始化資料
+                RouteId = route.RouteId,
+                OriginPortName = route.OriginPort.PortName,
+                DestinationPortName = route.DestinationPort.PortName,
+                RouteDescription = route.RouteDescription,
+                Price = route.Price,
+                Schedules = route.Schedules.ToList(),
+                RouteImages = route.RouteImages.ToList()
             };
 
             return View(model);
         }
-        [HttpPost]
-        public IActionResult ICreate(RouteDetailViewModel model)
+
+
+        //-----------------------------------------------------------------------------------------------
+        [HttpGet]
+        public IActionResult CreateRouteImage(int routeId)
         {
+            ViewBag.RouteId = routeId;
+            return View();
+        }
+
+        // 提交新圖片 (Create - POST)
+        [HttpPost]
+        public IActionResult CreateRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
+        {
+            // 檢查 RouteId 是否正確
+            if (routeImage.RouteId <= 0)
+            {
+                ModelState.AddModelError("RouteId", "RouteId is required.");
+            }
+
+            // 檢查上傳的圖片是否存在且有內容
+            if (RouteImageUrl != null && RouteImageUrl.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    RouteImageUrl.CopyTo(memoryStream);
+                    routeImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("RouteImageUrl", "Image is required.");
+            }
+
+            // 如果所有資料都正確，將資料存入資料庫
             if (ModelState.IsValid)
             {
-                // 檢查是否有檔案上傳
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        model.ImageFile.CopyTo(memoryStream); // 將檔案複製到記憶體流
-                        model.Image = memoryStream.ToArray(); // 將記憶體流轉換為 byte[]
-                    }
-                }
-
-                // 儲存圖片到資料庫
-                var routeImage = new RouteImage
-                {
-                    RouteId = model.RouteId,
-                    Image = model.Image,
-                    Description = model.ImageDescription
-                };
-
                 _context.RouteImages.Add(routeImage);
                 _context.SaveChanges();
 
-                return RedirectToAction("RDetail", new { id = model.RouteId });
+                // 重定向回圖片列表頁面，並將 RouteId 傳回去
+                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
             }
 
-            // 如果 ModelState 無效，則返回原視圖並顯示錯誤
-            return View(model);
+            // 如果有錯誤，返回表單頁面並顯示錯誤訊息
+            return View(routeImage);
         }
+
+
+        public ActionResult EditRouteImage(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var routeImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == id);
+            if (routeImage == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return View(routeImage);
+        }
+
+        [HttpPost]
+        public ActionResult EditRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
+        {
+            var dbRouteImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == routeImage.RouteImageId);
+            if (dbRouteImage == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (RouteImageUrl != null && RouteImageUrl.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    RouteImageUrl.CopyTo(memoryStream);
+                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array 並儲存
+                }
+            }
+
+            // 更新圖片描述
+            dbRouteImage.RouteImageDescription = routeImage.RouteImageDescription;
+
+            // 保存更改到資料庫
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", new { routeId = dbRouteImage.RouteId });
+        }
+
+
+
+        public ActionResult DeleteRouteImage(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound(); // 如果 id 為 null，返回 404
+            }
+
+            var routeImage = _context.RouteImages.FirstOrDefault(ri => ri.RouteImageId == id);
+            if (routeImage != null)
+            {
+                _context.RouteImages.Remove(routeImage); // 從資料庫中移除該圖片
+                _context.SaveChanges(); // 保存更改
+            }
+
+            return RedirectToAction("Index", new { routeId = routeImage?.RouteId }); // 返回到列表頁
+        }
+
+
 
 
 

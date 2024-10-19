@@ -57,7 +57,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult Create()
         {
-            ViewBag.HashtagList = new SelectList(_context.ArticleStatuses.ToList(), "StatusNumber", "StatusName");
+            ViewBag.StatusesList = new SelectList(_context.ArticleStatuses.ToList(), "StatusNumber", "StatusName");
 
             return View();
         }
@@ -83,29 +83,55 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult Edit(int? id)
         {
 
+            if (id == null)
+                return RedirectToAction("List");
+
             var data = _context.ArticleMains
                 .Where(i => i.ArticleNumber == id)
                 .Select(i => new ArticleMainViewModel()
                 {
-                    文章編號=i.ArticleNumber,
-                    會員編號 =i.MemberId,
-                    文章狀態 =i.ArticleStatusnumberNavigation.StatusName,
-                    文章標題=i.ArticleTitle,
-                    //文章內容=i.ArticleContent,
+                    文章編號 = i.ArticleNumber,
+                    會員編號 = i.MemberId,
+                    文章狀態 = i.ArticleStatusnumberNavigation.StatusName,
+                    文章標題 = i.ArticleTitle,
+                    文章內容 = i.ArticleContent,
 
                 }).FirstOrDefault();
 
-            ViewBag.HashtagList = new SelectList(_context.ArticleStatuses.ToList()
+            ViewBag.StatusesList = new SelectList(_context.ArticleStatuses.ToList()
                 , "StatusNumber", "StatusName",data.文章狀態);
 
             return View(data);
         }
-        //[HttpPost]
-        //public IActionResult Edit(ArticleMainViewModel amvm)
-        //{
-        //    amvm.ArticleUpdatetime = DateOnly.FromDateTime(DateTime.Now);
+        [HttpPost]
+        public IActionResult Edit(ArticleMainViewModel amvm)
+        {
+            var data = _context.ArticleMains
+                .FirstOrDefault(an => an.ArticleNumber == amvm.文章編號);
+            if (data == null)
+                return RedirectToAction("List");
 
-        //}
+            data.MemberId = amvm.會員編號;
+            data.ArticleStatusnumber = _context.ArticleStatuses
+            .FirstOrDefault(s => s.StatusName == amvm.文章狀態)
+            ?.StatusNumber ?? data.ArticleStatusnumber;
+
+            // 根據狀態名更新狀態編號
+
+            data.ArticleTitle = amvm.文章標題;
+
+            data.ArticleContent = amvm.文章內容;
+
+            //if (string.IsNullOrEmpty(amvm.文章內容))
+            //{
+            //    ModelState.AddModelError("文章內容", "文章內容不能為空。");
+            //    return View(amvm); // 返回原視圖以顯示錯誤信息
+            //}
+            data.ArticleUpdatetime = DateOnly.FromDateTime(DateTime.Now);
+
+              _context.SaveChanges();
+            return RedirectToAction("List");
+        }
 
     }
 }

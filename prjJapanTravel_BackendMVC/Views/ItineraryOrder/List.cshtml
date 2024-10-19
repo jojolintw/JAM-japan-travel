@@ -97,10 +97,8 @@
                 @item.總金額.ToString("###,###,#0")
             </td>
             <td>
-                    @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
-                    @* @Html.ActionLink("刪除", "Delete", "ItineraryOrder", new { id = item.行程訂單編號 }, 
-                                    new { onclick= "return confirm('確定要刪除此訂單?')"}) *@
-                    <a asp-action ="Delete" class="text-danger" onclick="confirmDelete(@item.行程訂單編號)">刪除</a>
+                    @Html.ActionLink("修改", "Edit", "ItineraryOrder", new { id = item.行程訂單編號 }, new { @class = "btn btn-outline-secondary" })
+                    <a asp-action ="Delete" class="btn btn-outline-danger" onclick="confirmDelete(@item.行程訂單編號)">刪除</a>
             </td>
         </tr>
 }
@@ -109,18 +107,20 @@
 
 <script>
     
-    
     function confirmDelete(orderId) {
-        const password = prompt("請輸入密碼：");
 
-        // 假設密碼是 "yourPassword"，根據實際情況修改
-        const correctPassword = "123";
+        const today = new Date();
+        const correctPassword = ('0' + (today.getMonth() + 1)).slice(-2) + ('0' + today.getDate()).slice(-2); // 確保月份日期皆為兩位數
+        console.log(correctPassword)
+
+        // 密碼設定
+        const password = prompt("請輸入密碼 (提示:今天日期)：");
 
         if (password === correctPassword) {
             // 密碼正確，重定向到刪除操作
             window.location.href = '/ItineraryOrder/Delete/' + orderId;
         } else {
-            alert("密碼錯誤");
+            alert("密碼輸入錯誤");
         }
     }
 </script>

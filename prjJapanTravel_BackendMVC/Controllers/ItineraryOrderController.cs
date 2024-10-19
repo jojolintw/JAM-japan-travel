@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.OrderViewModels;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
+using System;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -118,16 +119,17 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     行程訂單編號 = i.ItineraryOrderId,
                     訂單編號 = i.ItineraryOrderNumber,
                     會員編號 = i.MemberId,
+                    行程名稱 = _context.Itineraries
+                        .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
+                        .Select(it=>it.ItineraryName).
+                        FirstOrDefault(),
                     行程編號 = i.ItineraryDateSystemId,
                     會員 = _context.Members
                         .Where(m => m.MemberId == i.MemberId)
                         .Select(m =>m.MemberName)
                         .FirstOrDefault(),
                     
-                    行程名稱 = _context.Itineraries
-                        .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
-                        .Select(it=>it.ItineraryName).
-                        FirstOrDefault(),
+                   
                     數量 = i.Quantity,
                     下單時間 = i.OrderTime,
                     付款方式編號 = i.PaymentMethodId,
@@ -151,6 +153,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.ItineraryNameList = new SelectList(_context.Itineraries.ToList()
                 , "ItinerarySystemId", "ItineraryName",data.行程名稱);
             ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
+            ViewBag.CouponList = _context.Coupons.Select(c => new SelectListItem
+            {
+                Value = c.CouponId.ToString(),
+                Text = $"{c.CouponName} (折扣: {c.Discount}元)"
+            }).ToList();
 
             return View(data);
         }
@@ -158,27 +165,34 @@ namespace prjJapanTravel_BackendMVC.Controllers
         [HttpPost]
         public IActionResult Edit(ItineraryOrderListViewModel vm)
         {
-            var data = _context.ItineraryOrders
-                .FirstOrDefault(io => io.ItineraryOrderId == vm.行程訂單編號);
-            if (data == null)
+            //try
+            //{
+
+                var data = _context.ItineraryOrders
+                    .FirstOrDefault(io => io.ItineraryOrderId == vm.行程訂單編號);
+                if (data == null)
+                    return RedirectToAction("List");
+                data.ItineraryOrderId = (int)vm.行程訂單編號;
+                data.ItineraryOrderNumber = vm.訂單編號;
+                //data.MemberId = (int)vm.會員編號;
+                data.ItineraryDateSystemId = (int)vm.行程編號;
+                data.Quantity = (int)vm.數量;
+                //data.OrderTime = vm.下單時間;
+                data.PaymentMethodId = (int)vm.付款方式編號;
+                data.PaymentStatusId = (int)vm.付款狀態編號;
+                data.PaymentTime = vm.付款時間;
+                data.OrderStatusId = (int)vm.訂單狀態編號;
+                //data.CouponId = (int?)vm.優惠券編號;
+                data.TotalAmount = vm.總金額;
+
+                _context.SaveChanges();
                 return RedirectToAction("List");
-            data.ItineraryOrderId = (int)vm.行程訂單編號;
-            data.ItineraryOrderNumber = vm.訂單編號;
-            //data.MemberId = (int)vm.會員編號;
-            data.ItineraryDateSystemId = (int)vm.行程編號;
-            data.Quantity = (int)vm.數量;
-            //data.OrderTime = vm.下單時間;
-            data.PaymentMethodId = (int)vm.付款方式編號;
-            data.PaymentStatusId = (int)vm.付款狀態編號;
-            data.PaymentTime = vm.付款時間;
-            data.OrderStatusId = (int)vm.訂單狀態編號;
-            //data.CouponId = (int?)vm.優惠券編號;
-            data.TotalAmount = vm.總金額;
+            //}
 
-            _context.SaveChanges();
-            return RedirectToAction("List");
-
-
+            //catch (Exception ex)
+            //{
+            //    return RedirectToAction("List");
+            //}
 
         }
 

@@ -26,15 +26,10 @@
                 <input asp-for="會員" class="form-control" readonly/>
                 <span asp-validation-for="會員" class="text-danger"></span>
             </div>
-            @* <div class="form-group">
-                <label asp-for="行程名稱" class="control-label"></label>
-                <input asp-for="行程名稱" class="form-control" />
-                <span asp-validation-for="行程名稱" class="text-danger"></span>
-            </div> *@
 
 
             @* 只使用選擇器而不綁定到模型 *@
-            <div class="form-group">
+            @* <div class="form-group">
                 <label class="control-label">行程名稱</label>
                 <select id="ItinerarySystemId" class="form-control" onchange="fetchItineraryDates(this.value)">
                     <option value="">-- 請選擇行程 --</option>
@@ -44,8 +39,14 @@
                     }
                 </select>
                 <span class="text-danger"></span>
+            </div> *@
 
-
+            <div class="form-group">
+                <label asp-for="行程名稱" class="control-label">行程</label>
+                <select asp-for="行程名稱" id="ItinerarySystemId" class="form-control" asp-items="ViewBag.ItineraryNameList" onchange="fetchItineraryDates(this.value)">
+                    <option value="">-- 請選擇行程 --</option>
+                </select>
+                <span asp-validation-for="行程名稱" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -56,11 +57,9 @@
                 <span asp-validation-for="行程編號" class="text-danger"></span>
             </div>
 
-
-
             <div class="form-group">
                 <label asp-for="數量" class="control-label"></label>
-                <input asp-for="數量" class="form-control" />
+                <input asp-for="數量" id="數量" class="form-control" min="1" onchange="updateTotalAmount()"/>
                 <span asp-validation-for="數量" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -89,14 +88,21 @@
                 </select>
                 <span asp-validation-for="訂單狀態編號" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="優惠券" class="control-label"></label>
                 <input asp-for="優惠券" class="form-control" readonly />
                 <span asp-validation-for="優惠券" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="優惠券" class="control-label"></label>
+                <select asp-for="優惠券編號" id="CouponId" class="form-control" asp-items="ViewBag.CouponList" disabled>
+                    <option value="">-- 請選擇優惠券 --</option>
+                </select>
+                <span asp-validation-for="優惠券編號" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="總金額" class="control-label"></label>
-                <input asp-for="總金額" class="form-control" />
+                <input asp-for="總金額" id="TotalAmount" class="form-control" readonly/>
                 <span asp-validation-for="總金額" class="text-danger"></span>
             </div>
             <div class="form-group" >
@@ -115,6 +121,10 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
+
+        let price = 0;
+
+
             function fetchItineraryDates(ItinerarySystemId)
             {
                 if (ItinerarySystemId) {
@@ -129,15 +139,53 @@
                     $dateDropdown.append('<option value="">-- 請選擇行程日期 --</option>');
                     $.each(data, function (index, item) {
                         $dateDropdown.append($('<option>').val(item.dateId).text(item.date));
+
+                        price = item.price; //new
                     });
+
+                    updateTotalAmount();
+
                 },
                 error: function () {
                     alert('無法獲取日期，請稍後再試。');
                 }
                         });
                 } else {
-                $('#行程編號').empty().append('<option value="">-- 請選擇行程日期 --</option>');
+                    $('#行程編號').empty().append('<option value="">-- 請選擇行程日期 --</option>');
+                    price = 0;
+                    $('#TotalAmount').val(0); // 清空總金額
                 }
+
+                
+
             }
+
+
+            function updateTotalAmount() 
+            {
+                const quantity = parseInt($('#數量').val()) || 0;
+                const selectedCouponId = $('#優惠券').val();
+
+                let discount = 0;
+
+                if (selectedCouponId) {
+                    const selectedCoupon = $('#優惠券 option:selected');
+                    const couponText = selectedCoupon.text();
+                    const discountMatch = couponText.match(/折扣:\s*(\d+)/); // 正則表達式提取折扣
+                    if (discountMatch && discountMatch[1]) {
+                        discount = parseInt(discountMatch[1]) || 0;
+                    }
+                }
+
+                console.log('Quantity:', quantity);
+                console.log('Unit Price:', price);
+                console.log('Discount:', discount);
+
+
+                const totalAmount = (price * quantity) - discount;
+                console.log('Total Amount:', totalAmount);
+                $('#TotalAmount').val(totalAmount > 0 ? totalAmount : 0); // 確保不會出現負數
+            }
+
     </script>
 }

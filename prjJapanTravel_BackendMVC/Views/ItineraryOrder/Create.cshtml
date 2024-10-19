@@ -130,6 +130,9 @@
 
                     price = item.price; //new
                 });
+
+                updateTotalAmount();
+
             },
             error: function () {
                 alert('無法獲取日期，請稍後再試。');
@@ -166,7 +169,6 @@
             console.log('Total Amount:', totalAmount);
             $('#TotalAmount').val(totalAmount > 0 ? totalAmount : 0); // 確保不會出現負數
         }
-
 
 
     </script>

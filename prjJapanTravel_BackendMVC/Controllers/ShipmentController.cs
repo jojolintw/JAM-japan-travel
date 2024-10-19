@@ -234,12 +234,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return RedirectToAction("Index");
             }
 
+            // 檢查是否有上傳新圖片
             if (RouteImageUrl != null && RouteImageUrl.Length > 0)
             {
+                // 使用 MemoryStream 轉換上傳的圖片為 byte array
                 using (var memoryStream = new MemoryStream())
                 {
                     RouteImageUrl.CopyTo(memoryStream);
-                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array 並儲存
+                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片更新為新圖片
                 }
             }
 
@@ -251,6 +253,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             return RedirectToAction("Index", new { routeId = dbRouteImage.RouteId });
         }
+
 
 
 

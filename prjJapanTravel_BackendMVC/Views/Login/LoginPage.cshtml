@@ -31,20 +31,21 @@
     {
         
         <script>
-        let button = document.getElementById('btnsubmit');
-        let ErrA = document.getElementById('divErrA');
-        let ErrP = document.getElementById('divErrP');
-        let formElememt = document.getElementById('loginform');
-        let domain = "https://localhost:7146"
+        const button = document.getElementById('btnsubmit');
+        const ErrA = document.getElementById('divErrA');
+        const ErrP = document.getElementById('divErrP');
+        const formElememt = document.getElementById('loginform');
+        const domain = "https://localhost:7146"
+        const txts = document.querySelectorAll('.form-control')
 
         button.addEventListener('click', async (event) => {
             event.preventDefault();
-            let form = new FormData(formElememt);
-            let response = await fetch(`${domain}/Login/LoginPage`, {
+            const form = new FormData(formElememt);
+            const response = await fetch(`${domain}/Login/LoginPage`, {
                 method: "Post",
                 body: form
             });
-            let data = await response.json();
+            const data = await response.json();
             if (data.result == "Noaccount") {
                 ErrA.textContent = data.message;
             }
@@ -56,8 +57,13 @@
                 window.location.href = "@Url.Action("Index","Home")";
             }
             })
-            
 
+            txts.forEach(txt => {
+            txt.addEventListener('click', () => {
+                ErrA.textContent = '';
+                ErrP.textContent = '';
+                })
+            })
 
 
     

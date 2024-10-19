@@ -34,7 +34,7 @@
             </div>
         
             @* ================================================================================= *@
-            <div class="col-4"  style="margin-left:50px;margin-top:30px;font-size:25px">
+            <div class="col-3"  style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="form-check">
                     <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
@@ -85,8 +85,8 @@
                 </div>
             </div>
             @* ============================================================================================= *@
-             <div class="col-3" style="margin-left:50px">
-                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
+             <div class="col-4" style="margin-left:50px">
+                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:500px; width:500px">        
                 <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div> 
     </div>
@@ -102,11 +102,11 @@
                 <input type="text" value="@item.AdminId" />
                 @if (item.ImagePath != null)
                 {
-                    <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px;padding:20px">
+                    <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:300px;width:300px;padding:20px">
                 }
                 else
                 {
-                    <img class="img-fluid" src="~/images/Admin/Noimage.png" alt="" style="height:280px;padding:20px">
+                    <img class="img-fluid" src="~/images/Admin/Noimage.png" alt="" style="height:height:300px;width:300px;padding:20px">
                 }
                 <div class="card-body">
                     <h5 class="card-title">@item.AdminName</h5>
@@ -169,12 +169,8 @@
                 check.checked = false;
             })
             AdminPhoto.src = NoimageUrl;
-            txtKeyworddisabled = false; 
+            txtKeyword.disabled = false; 
         }
-
-
-
-
         // 為每張卡片添加點擊事件
 
         function addCardEvent() 
@@ -186,14 +182,13 @@
                     reset();
                     // 從 data-adminid 屬性中取得 AdminId
                     const adminId = this.getAttribute('data-adminid');
-
                     const response = await fetch(`${doman}/AdminAPI/GetData/?adminId=${adminId}`,
                         {
                             method: "Get"
                         })
 
                     const data = await response.json();
-                    console.log(data);
+
                     AdminId.value = data.adminId;
                     AdminName.value = data.adminName;
                     Account.value = data.account;
@@ -212,6 +207,8 @@
                     else {
                         AdminPhoto.src = `${imageUrl}${data.imagePath}`;
                     }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
                     alterbtn.disabled = false;
                     deletebtn.disabled = false;
                 });
@@ -357,7 +354,7 @@
             }
         })
         //=================Keyword=======================================================
-        Keyword.addEventListener('keydown', async (event) => 
+        txtKeyword.addEventListener('keydown', async (event) => 
         {
             const Keyword = txtKeyword.value;
             if (event.keyCode == 13 && Keyword.value != '') {

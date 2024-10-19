@@ -163,7 +163,105 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
 
         //-----------------------------------------------------------------------------------------------
+        [HttpGet]
+        public IActionResult CreateRouteImage(int routeId)
+        {
+            ViewBag.RouteId = routeId;
+            return View();
+        }
 
+        // 提交新圖片 (Create - POST)
+        [HttpPost]
+        public IActionResult CreateRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
+        {
+            // 檢查 RouteId 是否正確
+            if (routeImage.RouteId <= 0)
+            {
+                ModelState.AddModelError("RouteId", "RouteId is required.");
+            }
+
+            // 檢查上傳的圖片是否存在且有內容
+            if (RouteImageUrl != null && RouteImageUrl.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    RouteImageUrl.CopyTo(memoryStream);
+                    routeImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("RouteImageUrl", "Image is required.");
+            }
+
+            // 如果所有資料都正確，將資料存入資料庫
+            if (ModelState.IsValid)
+            {
+                _context.RouteImages.Add(routeImage);
+                _context.SaveChanges();
+
+                // 重定向回圖片列表頁面，並將 RouteId 傳回去
+                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+            }
+
+            // 如果有錯誤，返回表單頁面並顯示錯誤訊息
+            return View(routeImage);
+        }
+
+
+
+        // 編輯圖片頁面 (Edit)
+        [HttpGet]
+        public IActionResult EditRouteImage(int id)
+        {
+            var routeImage = _context.RouteImages.Find(id);
+            if (routeImage == null) return NotFound();
+            return View(routeImage);
+        }
+
+        // 提交圖片修改 (Edit - POST)
+        [HttpPost]
+        public IActionResult EditRouteImage(RouteImage routeImage, IFormFile RouteImageUrl)
+        {
+            if (RouteImageUrl != null && RouteImageUrl.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    RouteImageUrl.CopyTo(memoryStream);
+                    routeImage.RouteImageUrl = memoryStream.ToArray();
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.RouteImages.Update(routeImage);
+                _context.SaveChanges();
+                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+            }
+            return View(routeImage);
+        }
+
+        // 刪除圖片確認頁面 (Delete)
+        [HttpGet]
+        public IActionResult DeleteRouteImage(int id)
+        {
+            var routeImage = _context.RouteImages.Find(id);
+            if (routeImage == null) return NotFound();
+            return View(routeImage);
+        }
+
+        // 提交刪除 (Delete - POST)
+        [HttpPost, ActionName("DeleteRouteImage")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var routeImage = _context.RouteImages.Find(id);
+            if (routeImage != null)
+            {
+                _context.RouteImages.Remove(routeImage);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+        }
 
 
     }

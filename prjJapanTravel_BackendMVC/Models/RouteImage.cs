@@ -11,9 +11,9 @@ public partial class RouteImage
 
     public int RouteId { get; set; }
 
-    public byte[] Image { get; set; }
+    public byte[] RouteImageUrl { get; set; }
 
-    public string Description { get; set; }
+    public string RouteImageDescription { get; set; }
 
     public virtual Route Route { get; set; }
 }

@@ -138,12 +138,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
                                  DestinationPortName = destinationPort.PortName,
                                  Price = route.Price,
                                  RouteDescription = route.RouteDescription,
-                                 Images = (from img in _context.RouteImages
-                                           where img.RouteId == route.RouteId
-                                           select img.Image).ToList(), // 加載多張圖片
-                                 ImageDescriptions = (from img in _context.RouteImages
-                                                      where img.RouteId == route.RouteId
-                                                      select img.Description).ToList() // 加載圖片描述
+                                 //Images = (from img in _context.RouteImages
+                                 //          where img.RouteId == route.RouteId
+                                 //          select img.Image).ToList(), // 加載多張圖片
+                                 //ImageDescriptions = (from img in _context.RouteImages
+                                 //                     where img.RouteId == route.RouteId
+                                 //                     select img.Description).ToList() // 加載圖片描述
                              }).FirstOrDefault();
 
             // 查詢 Schedule 資料
@@ -260,14 +260,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 }
 
                 // 儲存圖片到資料庫
-                var routeImage = new RouteImage
-                {
-                    RouteId = model.RouteId,
-                    Image = model.Image,
-                    Description = model.ImageDescription
-                };
+                //var routeImage = new RouteImage
+                //{
+                //    RouteId = model.RouteId,
+                //    Image = model.Image,
+                //    Description = model.ImageDescription
+                //};
 
-                _context.RouteImages.Add(routeImage);
+                //_context.RouteImages.Add(routeImage);
                 _context.SaveChanges();
 
                 return RedirectToAction("RDetail", new { id = model.RouteId });

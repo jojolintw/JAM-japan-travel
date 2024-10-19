@@ -1,130 +1,122 @@
 ﻿@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.ItineraryViewModel
 
 @{
-    ViewData["Title"] = "修改行程";
+    ViewData["Title"] = "ItineraryEdit";
 }
 
 <h1>修改行程</h1>
 
+<h4>行程項目</h4>
 <hr />
 <div class="row">
-        <!-- 捲動容器 -->
-        <div style="max-height: 600px; margin-left:10px; overflow-y: auto;">
+    <div class="col-md-4">
+        <form asp-action="ItineraryEdit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="行程系統編號" class="control-label"></label>
+                <input asp-for="行程系統編號" class="form-control" />
+                <span asp-validation-for="行程系統編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程編號" class="control-label"></label>
+                <input asp-for="行程編號" class="form-control" />
+                <span asp-validation-for="行程編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程名稱" class="control-label"></label>
+                <input asp-for="行程名稱" class="form-control" />
+                <span asp-validation-for="行程名稱" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="體驗項目編號" type="hidden" class="form-control" />
+                <span asp-validation-for="體驗項目編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="體驗項目" class="control-label"></label>
+                <input asp-for="體驗項目" class="form-control" />
+                <span asp-validation-for="體驗項目" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="總團位" class="control-label"></label>
+                <input asp-for="總團位" class="form-control" />
+                <span asp-validation-for="總團位" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="價格" class="control-label"></label>
+                <input asp-for="價格" class="form-control" />
+                <span asp-validation-for="價格" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <input asp-for="地區編號" type="hidden" class="form-control" />
+                <span asp-validation-for="地區編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="地區" class="control-label"></label>
+                <input asp-for="地區" class="form-control" />
+                <span asp-validation-for="地區" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程圖片" class="control-label"></label>
+                @if (Model.行程圖片 != null && Model.行程圖片.Count > 0)
+                {
+                    <img id="currentImage" src="@Url.Content("~/images/Product/" + Model.行程圖片[0].ImagePath)"
+                         alt="行程圖片" style="width:150px; height:150px; cursor:pointer;" ondblclick="selectNewImage()" />
+                }
+                else
+                {
+                    <span>無圖片</span>
+                }
 
-            <!-- 表單 -->
-            <form asp-action="ItineraryEdit">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- 隱藏的 input 用於選擇新圖片 -->
+                <input type="file" id="newImageInput" name="imageViewModel[0].ImageFile" style="display:none;" accept="image/*" onchange="previewImage(event)" />
 
-                <!-- Hidden field for itinerary system ID -->
-                <input asp-for="行程系統編號" type="hidden" />
+                <!-- 預覽新圖片 -->
+                <img id="previewImage" src="#" alt="預覽圖片" style="display:none; width:150px; height:150px; margin-top:10px;" />
 
-                <!-- 行程編號 -->
-                <div class="form-group">
-                    <label asp-for="行程編號" class="control-label"></label>
-                    <input asp-for="行程編號" class="form-control" />
-                    <span asp-validation-for="行程編號" class="text-danger"></span>
-                </div>
+                <span asp-validation-for="行程圖片" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程詳情" class="control-label"></label>
+                <input asp-for="行程詳情" class="form-control" />
+                <span asp-validation-for="行程詳情" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程簡介" class="control-label"></label>
+                <input asp-for="行程簡介" class="form-control" />
+                <span asp-validation-for="行程簡介" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="行程注意事項" class="control-label"></label>
+                <input asp-for="行程注意事項" class="form-control" />
+                <span asp-validation-for="行程注意事項" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
-                <!-- 行程名稱 -->
-                <div class="form-group">
-                    <label asp-for="行程名稱" class="control-label"></label>
-                    <input asp-for="行程名稱" class="form-control" />
-                    <span asp-validation-for="行程名稱" class="text-danger"></span>
-                </div>
-
-                <!-- 體驗項目編號 -->
-                <div class="form-group">
-                    <label asp-for="體驗項目編號" class="control-label"></label>
-                    <input asp-for="體驗項目編號" class="form-control" />
-                    <span asp-validation-for="體驗項目編號" class="text-danger"></span>
-                </div>
-
-                <!-- 體驗項目 -->
-                <div class="form-group">
-                    <label asp-for="體驗項目" class="control-label"></label>
-                    <input asp-for="體驗項目" class="form-control" />
-                    <span asp-validation-for="體驗項目" class="text-danger"></span>
-                </div>
-
-                <!-- 總團位 -->
-                <div class="form-group">
-                    <label asp-for="總團位" class="control-label"></label>
-                    <input asp-for="總團位" class="form-control" />
-                    <span asp-validation-for="總團位" class="text-danger"></span>
-                </div>
-
-                <!-- 價格 -->
-                <div class="form-group">
-                    <label asp-for="價格" class="control-label"></label>
-                    <input asp-for="價格" class="form-control" />
-                    <span asp-validation-for="價格" class="text-danger"></span>
-                </div>
-
-                <!-- 體驗主題編號 -->
-                <div class="form-group">
-                    <label asp-for="體驗主題編號" class="control-label"></label>
-                    <input asp-for="體驗主題編號" class="form-control" />
-                    <span asp-validation-for="體驗主題編號" class="text-danger"></span>
-                </div>
-
-                <!-- 體驗主題 -->
-                <div class="form-group">
-                    <label asp-for="體驗主題" class="control-label"></label>
-                    <input asp-for="體驗主題" class="form-control" />
-                    <span asp-validation-for="體驗主題" class="text-danger"></span>
-                </div>
-
-                <!-- 地區編號 -->
-                <div class="form-group">
-                    <label asp-for="地區編號" class="control-label"></label>
-                    <input asp-for="地區編號" class="form-control" />
-                    <span asp-validation-for="地區編號" class="text-danger"></span>
-                </div>
-
-                <!-- 地區 -->
-                <div class="form-group">
-                    <label asp-for="地區" class="control-label"></label>
-                    <input asp-for="地區" class="form-control" />
-                    <span asp-validation-for="地區" class="text-danger"></span>
-                </div>
-
-                <!-- 行程圖片 -->
-                <div class="form-group">
-                    <label asp-for="行程圖片" class="control-label"></label>
-                    <input asp-for="行程圖片" class="form-control" />
-                    <span asp-validation-for="行程圖片" class="text-danger"></span>
-                </div>
-
-                <!-- 行程詳情 -->
-                <div class="form-group">
-                    <label asp-for="行程詳情" class="control-label"></label>
-                    <input asp-for="行程詳情" class="form-control" />
-                    <span asp-validation-for="行程詳情" class="text-danger"></span>
-                </div>
-
-                <!-- 行程簡介 -->
-                <div class="form-group">
-                    <label asp-for="行程簡介" class="control-label"></label>
-                    <input asp-for="行程簡介" class="form-control" />
-                    <span asp-validation-for="行程簡介" class="text-danger"></span>
-                </div>
-
-                <!-- 行程注意事項 -->
-                <div class="form-group">
-                    <label asp-for="行程注意事項" class="control-label"></label>
-                    <input asp-for="行程注意事項" class="form-control" />
-                    <span asp-validation-for="行程注意事項" class="text-danger"></span>
-                </div>
-
-                <!-- 提交和取消按鈕 -->
-                <div class="form-group">
-                    <input type="submit" value="送出" class="btn btn-primary" />
-                    <a asp-action="List" class="btn btn-secondary">取消</a>
-                </div>
-            </form>
-        </div>
+<div>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function selectNewImage() {
+            document.getElementById('newImageInput').click();
+        }
+
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('previewImage');
+                output.src = reader.result;
+                output.style.display = 'block';  // 顯示預覽圖片
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 }

@@ -5,10 +5,14 @@
 }
 @section Styles
 {
-    <link href="~\lib\DataTables\css\datatables.min.css" rel="stylesheet" />
+    @* <link rel="stylesheet" type="text/css" href="~/lib/DataTables/css/datatables.min.css" /> *@
+    @* <link href="~/css/jiancustomer.css" rel="stylesheet" /> *@
 
     <style>
-
+        th {
+            font-weight: bold;
+            color: black;
+        }
     </style>
 }
 <h1 style="text-align: center; margin: 0; padding-top: 30px;">行程列表</h1>
@@ -16,7 +20,7 @@
 <button class="btn btn-outline-secondary">
     <a asp-action="ItineraryCreate">建立行程</a>
 </button>
-<table class="table table-striped table-hover">
+<table id="myTable" class="table table-striped table-hover">
     <thead>
         <tr>
             <th>
@@ -104,7 +108,6 @@
                         }
                     </td>
                     <td>
-                        @Html.ActionLink("行程詳情", "Details", "Product", new { id = item.行程系統編號 }) |
                         @Html.ActionLink("修改", "ItineraryEdit", "Product", new { id = item.行程系統編號 }) |
                         @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id = item.行程系統編號 })
                     </td>
@@ -115,16 +118,8 @@
 </table>
 @section Scripts
 {
-    <script src="~\lib\DataTables\css\datatables.min.js"></script>
+    @* <script src="~\lib\DataTables\css\datatables.min.js"></script> *@
     <script>
-        $(document).ready(function () {
-            $("table").DataTable({
-                // 在這裡你可以自定義 DataTables 的配置
-                "paging": true,      // 啟用分頁
-                "searching": true,   // 啟用搜尋
-                "ordering": true,    // 啟用排序
-                "info": true         // 顯示表格資訊
-            });
-        });
+       
     </script>
 }

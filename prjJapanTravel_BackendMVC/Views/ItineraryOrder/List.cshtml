@@ -52,9 +52,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.訂單狀態)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.優惠券)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.總金額)
             </th>
@@ -63,7 +63,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr style="font-size:15px">
             <td>
                 @Html.ActionLink( item.訂單編號.ToString(), "Details", "ItineraryOrder", new { id = item.行程訂單編號 }, null)
             </td>
@@ -90,10 +90,10 @@
             <td>
                     @Html.DisplayFor(modelItem => item.訂單狀態)
             </td>
-            <td>
+            @* <td>
                     @Html.DisplayFor(modelItem => item.優惠券)
-            </td>
-            <td style="text-align: right;">
+            </td> *@
+            <td style="text-align:right">
                 @item.總金額.ToString("###,###,#0")
             </td>
             <td>

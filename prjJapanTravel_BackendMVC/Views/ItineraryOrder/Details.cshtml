@@ -11,7 +11,7 @@
 <p style="margin:12px">
     <a asp-action="List" class="btn btn-outline-info">返回</a>
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead class="table-primary">
         <tr style="font-size:20px">
             <th>
@@ -48,7 +48,7 @@
             int count = 0;
             foreach (var item in Model) {
                 count++;
-        <tr>
+        <tr style="font-size:16px">
             <td>
                 @count
             </td>

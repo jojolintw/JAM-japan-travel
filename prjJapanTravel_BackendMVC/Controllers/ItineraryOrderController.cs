@@ -69,19 +69,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.PaymentMethodList = new SelectList(_context.PaymentMethods.ToList(), "PaymentMethodId", "PaymentMethod1");
             ViewBag.PaymentStatusList = new SelectList(_context.PaymentStatuses.ToList(), "PaymentStatusId", "PaymentStatus1");
             ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList(), "OrderStatusId", "OrderStatus1");
-            ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName");
+            //ViewBag.CouponLIst = new SelectList(_context.Coupons.ToList(), "CouponId", "CouponName" );
             ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
 
-            //var itineraries = _context.Itineraries
-            //.Select(it => new
-            //{
-            //    ItinerarySystemId = it.ItinerarySystemId,
-            //    ItineraryName = it.ItineraryName,
-            //    Price = it.Price // 假設這是行程的價格屬性
-            //}).ToList();
-
-            //ViewBag.ItineraryList = itineraries; // 不再使用 SelectList
-
+            ViewBag.CouponList = _context.Coupons.Select(c => new SelectListItem
+            {
+                Value = c.CouponId.ToString(),
+                Text = $"{c.CouponName} (折扣: {c.Discount}元)"
+            }).ToList();
 
             return View();
         }
@@ -105,11 +100,13 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 .Select(d => new
                 {
                     dateId = d.ItineraryDateSystemId,
-                    date = d.DepartureDate // 根據實際的日期屬性進行調整
+                    date = d.DepartureDate, // 根據實際的日期屬性進行調整
+                    price = d.ItinerarySystem.Price
                 }).ToList();
 
             return Json(dates);
         }
+
 
 
         public IActionResult Edit(int? id)
@@ -121,20 +118,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     行程訂單編號 = i.ItineraryOrderId,
                     訂單編號 = i.ItineraryOrderNumber,
                     會員編號 = i.MemberId,
+                    行程編號 = i.ItineraryDateSystemId,
                     會員 = _context.Members
                         .Where(m => m.MemberId == i.MemberId)
                         .Select(m =>m.MemberName)
                         .FirstOrDefault(),
-                    行程編號 = i.ItineraryDateSystemId,
+                    
                     行程名稱 = _context.Itineraries
                         .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
                         .Select(it=>it.ItineraryName).
                         FirstOrDefault(),
-                    //行程名稱 = _context.Itineraries
-                    //    .Include("Itinerary")
-                    //    .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
-                    //    .Select(it => it.ItineraryName)
-                    //    .FirstOrDefault(),
                     數量 = i.Quantity,
                     下單時間 = i.OrderTime,
                     付款方式編號 = i.PaymentMethodId,
@@ -157,6 +150,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 , "OrderStatusId", "OrderStatus1", data.訂單狀態編號);
             ViewBag.ItineraryNameList = new SelectList(_context.Itineraries.ToList()
                 , "ItinerarySystemId", "ItineraryName",data.行程名稱);
+            ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
 
             return View(data);
         }

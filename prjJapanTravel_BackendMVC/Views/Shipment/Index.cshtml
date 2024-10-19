@@ -49,7 +49,7 @@
                         @Html.DisplayFor(modelItem => item.Price)
                     </td>
                     <td>
-                        @Html.ActionLink("詳細資料", "Details", new { id = item.RouteId }) |
+                        @Html.ActionLink("詳細資料", "Detail", new { id = item.RouteId }) |
                         @Html.ActionLink("修改", "Edit", new { id = item.RouteId }) |
                         @Html.ActionLink("刪除", "Delete", new { id = item.RouteId }, new { onclick = "return confirm('確定要刪除嗎')" })
                     </td>

@@ -1,21 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels;
 using prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
     public class ShipmentController : Controller
     {
-        public JapanTravelContext _context;
+        private readonly JapanTravelContext _context;
+
         public ShipmentController(JapanTravelContext context)
         {
             _context = context;
         }
+
         //---------------------首頁------------------------------------------
         public async Task<IActionResult> Index()
         {
@@ -34,6 +33,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             return View(shipments);
         }
+
         //---------------------Create------------------------------------------
         public async Task<IActionResult> Create()
         {
@@ -57,6 +57,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.Ports = ports;
             return View(route);
         }
+
         //---------------------Edit------------------------------------------
         public async Task<IActionResult> Edit(int id)
         {
@@ -112,6 +113,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             return _context.Routes.Any(e => e.RouteId == id);
         }
+
         //---------------------Delete------------------------------------------
         public async Task<IActionResult> Delete(int id)
         {
@@ -129,9 +131,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        //---------------------Details------------------------------------------
 
-        public async Task<IActionResult> Details(int id)
+        //---------------------Detail------------------------------------------
+        public async Task<IActionResult> Detail(int id)
         {
             if (id == 0)
             {
@@ -141,7 +143,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
             var route = await _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
-                .Include(r => r.RouteImages) // 包含圖片
                 .FirstOrDefaultAsync(r => r.RouteId == id);
 
             if (route == null)
@@ -149,92 +150,30 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return NotFound();
             }
 
+            var routeImages = await _context.RouteImages
+                .Where(img => img.RouteId == id)
+                .ToListAsync();
+
             var schedules = await _context.Schedules
                 .Where(s => s.RouteId == id)
                 .ToListAsync();
 
-            var viewModel = new RouteDetailsViewModel
+            var viewModel = new RouteDetailViewModel
             {
-                Route = route,
-                Schedules = schedules,
-                RouteImages = route.RouteImages // 添加圖片資料到 ViewModel
+                RouteId = route.RouteId,
+                OriginPortName = route.OriginPort.PortName,
+                DestinationPortName = route.DestinationPort.PortName,
+                Price = route.Price,
+                RouteDescription = route.RouteDescription,
+                RouteImages = routeImages,
+                Schedules = schedules
             };
 
             return View(viewModel);
         }
-        // 顯示所有航線圖片
-        public async Task<IActionResult> RouteImages(int routeId)
-        {
-            var routeImages = await _context.RouteImages
-                                             .Where(r => r.RouteId == routeId)
-                                             .ToListAsync();
-            ViewBag.RouteId = routeId; // 傳遞 RouteId 以便於返回
-            return View(routeImages);
-        }
 
-        // 顯示所有排班資訊
-        public async Task<IActionResult> Schedules(int routeId)
-        {
-            var schedules = await _context.Schedules
-                                           .Where(s => s.RouteId == routeId)
-                                           .ToListAsync();
-            ViewBag.RouteId = routeId; // 傳遞 RouteId 以便於返回
-            return View(schedules);
-        }
-
-        // 刪除排班
-        [HttpPost]
-        public async Task<IActionResult> DeleteSchedule(int id)
-        {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule != null)
-            {
-                _context.Schedules.Remove(schedule);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Details", new { id = schedule.RouteId }); // 返回 Details 頁面
-        }
-        // 新增排班
-        [HttpGet]
-        public IActionResult CreateSchedule(int routeId)
-        {
-            var schedule = new Schedule { RouteId = routeId };
-            return View(schedule);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateSchedule(Schedule schedule)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Schedules.Add(schedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
-            }
-            return View(schedule);
-        }
-
-        // 編輯排班
-        [HttpGet]
-        public async Task<IActionResult> EditSchedule(int id)
-        {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null) return NotFound();
-            return View(schedule);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditSchedule(Schedule schedule)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Schedules.Update(schedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Schedules", new { routeId = schedule.RouteId }); // 返回到 Schedules 頁面
-            }
-            return View(schedule);
-        }
-
+        //-----------------------------------------------------------------------------------------------
+        
 
 
     }

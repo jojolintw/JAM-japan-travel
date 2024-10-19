@@ -2,16 +2,18 @@
 
 namespace prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels
 {
-    public class RouteDetailsViewModel
+    public class RouteDetailViewModel
     {
-        public Models.Route Route { get; set; }
-        public IEnumerable<Schedule> Schedules { get; set; }
-        public IEnumerable<RouteImage> RouteImages { get; set; }
+        public int RouteId { get; set; }
+        public string OriginPortName { get; set; }
+        public string DestinationPortName { get; set; }
+        public decimal Price { get; set; }
+        public string RouteDescription { get; set; }
 
-        // 用於新增圖片
-        public RouteImage NewRouteImage { get; set; } = new RouteImage();
-
-        // 用於新增排班
-        public Schedule NewSchedule { get; set; } = new Schedule();
+        // RouteImages and Schedules will be lists displayed in the view
+        public List<RouteImage> RouteImages { get; set; }
+        public List<Schedule> Schedules { get; set; }
     }
+
+
 }

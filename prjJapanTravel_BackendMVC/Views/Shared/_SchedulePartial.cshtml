@@ -1,0 +1,31 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Schedule>
+
+<h3>Schedules</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
+            <th>Capacity</th>
+            <th>Seats</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model)
+        {
+            <tr>
+                <td>@schedule.DepartureTime</td>
+                <td>@schedule.ArrivalTime</td>
+                <td>@schedule.Capacity</td>
+                <td>@schedule.Seats</td>
+                <td>
+                    @Html.ActionLink("Edit", "EditSchedule", new { id = schedule.ScheduleId }) |
+                    @Html.ActionLink("Delete", "DeleteSchedule", new { id = schedule.ScheduleId }, new { onclick = "return confirm('Are you sure?')" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateSchedule" asp-route-routeId="@ViewBag.RouteId">Create New Schedule</a>

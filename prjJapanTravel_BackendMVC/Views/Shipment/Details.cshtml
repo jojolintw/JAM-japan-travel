@@ -1,0 +1,23 @@
+﻿@model prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels.RouteDetailViewModel
+
+<h1>Route Details</h1>
+
+<h3>Route Information</h3>
+<p>
+    <strong>Origin Port:</strong> @Model.OriginPortName <br />
+    <strong>Destination Port:</strong> @Model.DestinationPortName <br />
+    <strong>Description:</strong> @Model.RouteDescription <br />
+    <strong>Price:</strong> @Model.Price
+</p>
+
+<hr />
+
+<div>
+    @await Html.PartialAsync("_SchedulePartial", Model.Schedules)
+</div>
+
+<hr />
+
+<div>
+    @await Html.PartialAsync("_RouteImagePartial", Model.RouteImages)
+</div>

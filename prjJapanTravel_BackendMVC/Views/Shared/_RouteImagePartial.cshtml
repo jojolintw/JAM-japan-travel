@@ -1,0 +1,27 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.RouteImage>
+
+<h3>Route Images</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var image in Model)
+        {
+            <tr>
+                <td><img src="@image.RouteImage1" alt="Route Image" style="width:100px;" /></td>
+                <td>@image.RouteImageDescription</td>
+                <td>
+                    @Html.ActionLink("Edit", "EditRouteImage", new { id = image.RouteImageId }) |
+                    @Html.ActionLink("Delete", "DeleteRouteImage", new { id = image.RouteImageId }, new { onclick = "return confirm('Are you sure?')" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="CreateRouteImage" asp-route-routeId="@ViewBag.RouteId">Create New Route Image</a>

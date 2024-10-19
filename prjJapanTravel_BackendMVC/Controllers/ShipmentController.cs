@@ -133,47 +133,37 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         //---------------------Detail------------------------------------------
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == 0)
-            {
-                return NotFound();
-            }
-
             var route = await _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
-                .FirstOrDefaultAsync(r => r.RouteId == id);
+                .Include(r => r.Schedules) // Include Schedule data
+                .Include(r => r.RouteImages) // Include RouteImage data
+                .FirstOrDefaultAsync(m => m.RouteId == id);
 
             if (route == null)
             {
                 return NotFound();
             }
 
-            var routeImages = await _context.RouteImages
-                .Where(img => img.RouteId == id)
-                .ToListAsync();
-
-            var schedules = await _context.Schedules
-                .Where(s => s.RouteId == id)
-                .ToListAsync();
-
-            var viewModel = new RouteDetailViewModel
+            var model = new RouteDetailViewModel
             {
                 RouteId = route.RouteId,
                 OriginPortName = route.OriginPort.PortName,
                 DestinationPortName = route.DestinationPort.PortName,
-                Price = route.Price,
                 RouteDescription = route.RouteDescription,
-                RouteImages = routeImages,
-                Schedules = schedules
+                Price = route.Price,
+                Schedules = route.Schedules.ToList(),
+                RouteImages = route.RouteImages.ToList()
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
+
         //-----------------------------------------------------------------------------------------------
-        
+
 
 
     }

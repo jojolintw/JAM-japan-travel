@@ -29,7 +29,6 @@
     <Folder Include="PartialClass\Product\" />
     <Folder Include="PartialClass\Shipment\" />
     <Folder Include="ViewModels\LoginViewModels\" />
-    <Folder Include="ViewModels\MemberViewModels\" />
     <Folder Include="ViewModels\ShipmentViewModels\" />
     <Folder Include="ViewModels\ProductViewModels\" />
     <Folder Include="ViewModels\OrderViewModels\" />

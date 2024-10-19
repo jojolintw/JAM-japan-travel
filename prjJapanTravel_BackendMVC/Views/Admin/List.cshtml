@@ -34,7 +34,7 @@
             </div>
         
             @* ================================================================================= *@
-            <div class="col-4"  style="margin-left:50px;margin-top:30px;font-size:25px">
+            <div class="col-3"  style="margin-left:50px;margin-top:30px;font-size:25px">
                 <div class="form-check">
                     <input id="AdminManageStatus" name="AdminManageStatus" class="form-check-input" type="checkbox" value="false" disabled="disabled" />
                     <label class="form-check-label" for="">
@@ -85,8 +85,8 @@
                 </div>
             </div>
             @* ============================================================================================= *@
-             <div class="col-3" style="margin-left:50px">
-                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:300px">        
+             <div class="col-4" style="margin-left:50px">
+                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:500px; width:500px">        
                 <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div> 
     </div>
@@ -102,11 +102,11 @@
                 <input type="text" value="@item.AdminId" />
                 @if (item.ImagePath != null)
                 {
-                    <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:280px;padding:20px">
+                    <img class="img-fluid" src="~/images/Admin/@item.ImagePath" alt="" style="height:300px;width:300px;padding:20px">
                 }
                 else
                 {
-                    <img class="img-fluid" src="~/images/Admin/Noimage.png" alt="" style="height:280px;padding:20px">
+                    <img class="img-fluid" src="~/images/Admin/Noimage.png" alt="" style="height:height:300px;width:300px;padding:20px">
                 }
                 <div class="card-body">
                     <h5 class="card-title">@item.AdminName</h5>

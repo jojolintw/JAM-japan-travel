@@ -13,7 +13,7 @@
                     <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                 </div>
                 <input type="Text" id="Keyword" name="Keyword" class="form-control" value="" placeholder="請輸入關鍵字" />
-                <input type="text" id="MemberId" name="會員編號" class="form-control" value="" disabled="disabled" />
+                <input type="text" id="MemberId" name="會員編號" class="form-control" value=""  />
                 <div class="mb-3">
                     <label for="MemberName" class="form-label" style="font-size:20px">會員姓名</label>
                     <input type="text" id="MemberName" name="會員姓名" class="form-control" aria-describedby="emailHelp" disabled="disabled">
@@ -102,7 +102,7 @@
             </div>
             @* ============================================================================================= *@
             <div class="col-4" style="margin-left:50px">
-                <img src="~/images/Admin/Noimage.png" id="image" class="img-thumbnail" alt="..." style="height:500px">
+                <img src="~/images/Member/Noimage.png" id="MemberPhoto" class="img-thumbnail" alt="..." style="height:500px;width:500px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png" />
                 <input type="file" id="btnphoto" name="photo" class="form-control" style="margin-top:30px" accept="image/*" disabled="disabled">
             </div>
         </div>
@@ -143,23 +143,23 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="membertable">
 
         @foreach (var item in Model)
         {
 
             <tr class="newrow" data-memberid="@item.會員編號">
                 <td>
-                    <p><img src="~/images/Member/@item.頭像路徑" /></p>
+                    <p><img src="~/images/Member/@item.頭像路徑" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';" /></p>
                 </td>
                 <td>
                     <p>@item.會員姓名</p>
                 </td>
                 <td>
-                    <p>@(item.性別?"男":"女")</p>
+                    <p>@(item.性別 ? "男" : "女")</p>
                 </td>
                 <td>
-                    <p>  @item.生日.ToString("yyyy年 MM月 dd日")</p>
+                    <p>@item.生日.ToString("yyyy年 MM月 dd日")</p>
                 </td>
                 <td>
                     <p>@item.城市</p>
@@ -186,9 +186,11 @@
 {
     <script>
         const doman = "https://localhost:7146";
+        const NoimageUrl = '/images/Member/Noimage.png';
         const selectareas = document.getElementById('selectareas');
         const selectlevel = document.getElementById('selectlevel');
-        const allrows = document.querySelectorAll('.newrow');
+
+        const membertable = document.getElementById('membertable');
 
         //========所有控制項=====================================================================================================
         const MemberId = document.getElementById('MemberId');
@@ -203,12 +205,14 @@
         const noverified = document.getElementById('noverified');
         const verified = document.getElementById('verified');
         const suspension = document.getElementById('suspension');
+        const MemberPhoto = document.getElementById('MemberPhoto');
         //==========btn===============================================================================================
         const btnphoto = document.getElementById('btnphoto');
         const btnInsert = document.getElementById('btnInsert');
         const btnAlter = document.getElementById('btnAlter');
         const btnSubmit = document.getElementById('btnSubmit');
         const btnCancel = document.getElementById('btnCancel');
+        const btnDelete = document.getElementById('btnDelete');
         // ==============================================================================================
         let lastbtnclick = null;
         // ==============================================================================================
@@ -221,6 +225,8 @@
             Password.value = '';
             sexm.checked = true;
             Birthday.value = '';
+            MemberPhoto.src = '/images/Member/Noimage.png';
+            btnphoto.value = '';
 
             const selectcities = document.querySelectorAll('.selectcities');
             selectcities.forEach(op => {
@@ -249,6 +255,9 @@
             verified.disabled = true;
             suspension.disabled = true;
             btnphoto.disabled = true;
+            btnAlter.disabled = true;
+            btnSubmit.disabled = true;
+            btnDelete.disabled = true;
         }
         function enable() {
             MemberName.disabled = false;
@@ -264,12 +273,14 @@
             verified.disabled = false;
             suspension.disabled = false;
             btnphoto.disabled = false;
+            btnSubmit.disabled = false;
         }
         function addrowEvent() {
+            const allrows = document.querySelectorAll('.newrow');
             allrows.forEach((row) => {
                 row.addEventListener('click', async () => {
                     let memberId = row.getAttribute('data-memberid');
-                    const response = await fetch(`${doman}/api/MemberApi/GetMemberData/?memberId=${memberId}`,
+                    const response = await fetch(`${doman}/MemberApi/GetMemberData/?memberId=${memberId}`,
                         {
                             method: "Get"
                         })
@@ -285,6 +296,13 @@
                     sexfm.checked = data.gender ? false : true;
                     Birthday.value = data.birthday.split('T')[0];
 
+                    if (data.imagePath != null) {
+                        MemberPhoto.src = `/images/Member/${data.imagePath}`;
+                    }
+                    else 
+                    {
+                        MemberPhoto.src = NoimageUrl;
+                    }
                     const selectcities = document.querySelectorAll('.selectcities');
                     selectcities.forEach(op => {
                         if (op.value == data.cityId) {
@@ -306,6 +324,9 @@
                     else if (data.memberStatusId == 3) {
                         suspension.checked = true;
                     }
+                    //=====改變按鈕=================================================
+                    btnAlter.disabled = false;
+                    btnDelete.disabled = false;
                 })
 
 
@@ -334,39 +355,187 @@
             //=============================================================================
             addrowEvent();
         }
+        //============圖片預覽=====================================================
+        btnphoto.addEventListener('change', async (event) => {
+
+            const file = event.target.files[0];
+            const allowtype = 'image.*';
+            if (file.type.match(allowtype)) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    let dataURL = reader.result;
+                    MemberPhoto.src = `${dataURL}`;
+                }
+                reader.readAsDataURL(file);
+                btnSubmit.disabled = false;
+            }
+            else {
+                alert('圖片格式錯誤');
+                btnSubmit.disabled = true;
+            }
+
+        })
         //=================新增按鈕============================================================
         btnInsert.addEventListener('click', (event) => {
             lastbtnclick = event.target;
 
-            btnInsert.disable = true;
-            btnSubmit.disabled = false;
+                    
 
             reset();
+            enable();
+            btnInsert.disable = true;
+        })
+        //=============修改按鈕=====================================================================
+        btnAlter.addEventListener('click', (event) => {
+            lastbtnclick = event.target;
             enable();
         })
         //==============Submit====================================================================
         btnSubmit.addEventListener('click', async () => {
-            let form = new FormData(memberform);   
-
+            let form = new FormData(memberform);
+            //=============Insert=====================================================================
             if (lastbtnclick.id == 'btnInsert') {
 
-                const response = await fetch(`${doman}/MemberApi/InsertMember`,
+                const Insertresponse = await fetch(`${doman}/MemberApi/InsertMember`,
                     {
                         method: "POST",
                         body: form,
                     })
+                const allmemberdatas = await Insertresponse.json();
 
-
-
-
-
-
-
-
-
+                const eleallmembers = allmemberdatas.map(mem => {
+                    const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+                    return (`<tr class="newrow" data-memberid="${mem.會員編號}">
+                                <td>
+                                    <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
+                                </td>
+                                <td>
+                                    <p>${mem.會員姓名}</p>
+                                </td>
+                                <td>
+                                    <p>${(mem.性別 ? "男" : "女")}</p>
+                                </td>
+                                <td>
+                                    <p>${birthday}</p>
+                                </td>
+                                <td>
+                                    <p>${mem.城市}</p>
+                                </td>
+                                <td>
+                                    <p>${mem.手機號碼}</p>
+                                </td>
+                                <td>
+                                    <p>${mem.email}</p>
+                                </td>
+                                <td>
+                                    <p>${mem.會員等級}</p>
+                                </td>
+                                <td>
+                                    <p>${mem.會員狀態}</p>
+                                </td>
+                            </tr>`)
+                })
+                membertable.innerHTML = eleallmembers.join("");
+                addrowEvent();
             }
             else if (lastbtnclick.id == 'btnAlter') {
+                const Alterresponse = await fetch(`${doman}/MemberApi/AlterMember`,
+                    {
+                        method: "POST",
+                        body: form,
+                    })
+                const allmemberdatas = await Alterresponse.json();
+                const eleallmembers = allmemberdatas.map(mem => 
+                    {
+                    const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+                    return (`<tr class="newrow" data-memberid="${mem.會員編號}">
+                                        <td>
+                                            <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.會員姓名}</p>
+                                        </td>
+                                        <td>
+                                            <p>${(mem.性別 ? "男" : "女")}</p>
+                                        </td>
+                                        <td>
+                                            <p>${birthday}</p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.城市}</p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.手機號碼}</p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.email}</p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.會員等級}</p>
+                                        </td>
+                                        <td>
+                                            <p>${mem.會員狀態}</p>
+                                        </td>
+                                    </tr>`)
 
+                    })
+                membertable.innerHTML = eleallmembers.join("");
+                addrowEvent();
+            }
+            reset();
+        })
+        //=======================刪除會員==========================================================
+        btnDelete.addEventListener('click', async () => {
+            const memberId = MemberId.value;
+            if (confirm('刪除確認')) {
+                const response = await fetch(`${doman}/MemberApi/DeleteMember/${memberId}`,
+                    {
+                        method: "Get",
+                    })
+                if (response.ok) {
+                    alert('資料已刪除');
+                
+                    const allmemberdatas = await response.json();
+                    const eleallmembers = allmemberdatas.map(mem => {
+                        const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+                        return (`<tr class="newrow" data-memberid="${mem.會員編號}">
+                                                <td>
+                                                    <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.會員姓名}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${(mem.性別 ? "男" : "女")}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${birthday}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.城市}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.手機號碼}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.email}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.會員等級}</p>
+                                                </td>
+                                                <td>
+                                                    <p>${mem.會員狀態}</p>
+                                                </td>
+                                            </tr>`)
+
+                    })
+                    membertable.innerHTML = eleallmembers.join("");
+                    addrowEvent();
+                }
+                else {
+                    alert('刪除失敗');
+                }
+                reset();
             }
         })
         //======================取消============================================================a

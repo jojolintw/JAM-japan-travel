@@ -38,6 +38,4 @@ public partial class Itinerary
     public virtual ICollection<ItineraryDate> ItineraryDates { get; set; } = new List<ItineraryDate>();
 
     public virtual ICollection<MyCollection> MyCollections { get; set; } = new List<MyCollection>();
-
-    public virtual Theme ThemeSystem { get; set; }
 }

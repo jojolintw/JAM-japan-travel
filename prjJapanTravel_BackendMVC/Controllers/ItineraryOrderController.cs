@@ -125,10 +125,15 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     訂單編號 = i.ItineraryOrderNumber,
                     會員編號 = i.MemberId,
                     行程編號 = i.ItineraryDateSystemId,
-                    行程名稱 = _context.Itineraries
+                    行程名稱編號 = _context.Itineraries
                         .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
-                        .Select(it=>it.ItineraryName).
-                        FirstOrDefault(),
+                        .Select(it=>it.ItinerarySystemId)
+                        .FirstOrDefault(),
+
+                    //行程名稱 = _context.Itineraries
+                    //    .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
+                    //    .Select(it=>it.ItineraryName).
+                    //    FirstOrDefault(),
                     會員 = _context.Members
                         .Where(m => m.MemberId == i.MemberId)
                         .Select(m =>m.MemberName)
@@ -156,8 +161,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList()
                 , "OrderStatusId", "OrderStatus1", data.訂單狀態編號);
             ViewBag.ItineraryNameList = new SelectList(_context.Itineraries.ToList()
-                , "ItinerarySystemId", "ItineraryName",data.行程名稱);
-            ViewBag.ItineraryDateList = new SelectList(_context.Itineraries.ToList()
+                , "ItinerarySystemId", "ItineraryName",data.行程名稱編號);
+            ViewBag.ItineraryDateList = new SelectList(_context.ItineraryDates.ToList()
                 , "ItineraryDateSystemId", "DepartureDate", data.行程編號);
             ViewBag.CouponList = _context.Coupons.Select(c => new SelectListItem
             {
@@ -200,7 +205,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return RedirectToAction("List");
             }
 
-        }
+}
 
         public IActionResult Delete(int? id)
         {

@@ -16,12 +16,19 @@
     <input type="text" id="Member" placeholder="會員" oninput="search()"/> *@
     @using (Html.BeginForm())
     {
+        <div>
         @Html.TextBox("txtKeyword", null, new
             {
-                @placeholder = "輸入訂單編號或會員名稱",
+                @placeholder = "查詢會員或訂單編號",
                 @style = "text-align:center; font-size:16px;"
             })
-        <input type="submit" value="查詢" class="btn btn-outline-primary" />
+            @* <label style="margin-left:1%">查詢下單時間</label>
+            <label style="margin-left:1%">起始日</label>
+            <input type="date" name="StartDate"/>
+            <label>結束日</label>
+            <input type="date" name="EndDate" /> *@
+            <input type="submit" value="查詢" class="btn btn-outline-info" style="margin-left:1%" />
+        </div>
     }
 </div>
 

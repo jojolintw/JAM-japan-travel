@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.MemberViewModels;
+using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -12,10 +13,26 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             _context = context;
         }
-
-        public IActionResult List()
+        [HttpGet]
+        public IActionResult AccessMember()
         {
-            var memberdatas = _context.Members.Select(m =>new MemberViewModel
+            if (!HttpContext.Session.Keys.Contains(CDictionary.SK_LoginAdmin))
+                return Json(new { success = false, errormessage = "未登入" });
+
+
+
+            string adminjson = HttpContext.Session.GetString(CDictionary.SK_LoginAdmin);
+            Admin loginAdmin = JsonSerializer.Deserialize<Admin>(adminjson);
+
+            if (loginAdmin.MemberManageStatus == false)
+                return Json(new { success = false, errormessage = "無權限" });
+
+            return Json(new { success = true });
+
+        }
+        public IActionResult MemberList()
+        {
+            var datas = _context.Members.Select(m =>new MemberViewModel
             {
                 會員編號 = m.MemberId,
                 會員姓名 = m.MemberName,
@@ -29,7 +46,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 會員狀態 = m.MemberStatus.MemberStatusName,
                 頭像路徑 = m.ImagePath
             });
-            return View(memberdatas);
+            return PartialView("_MemberListPartial", datas);
         }
     }
 }

@@ -217,7 +217,7 @@
                             <i class="icon-globe-alt menu-icon"></i><span class="nav-text">會員管理系統</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a asp-controller="Member" asp-action="List">會員管理</a></li>
+                            <li><a id="linkMmeber" @* asp-controller="Member" asp-action="List" *@>會員管理</a></li>
                         </ul>
                     </li>
                     <br />
@@ -373,7 +373,8 @@
     <script src="~/js/settings.js"></script>
     <script src="~/js/gleek.js"></script>
     <script src="~/js/styleswitcher.js"></script>
-    <script src="~/js/member/admin.js"></script>
+     <script src="~/js/member/admin.js"></script> 
+     <script src="~/js/member/member.js"></script> 
     <script src="~/js/member/login.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

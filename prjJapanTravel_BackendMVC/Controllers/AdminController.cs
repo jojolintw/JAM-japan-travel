@@ -15,7 +15,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _context = context;
         }
         [HttpGet]
-        public IActionResult GetDatas()
+        public IActionResult AccessAdmin()
         {
             if (!HttpContext.Session.Keys.Contains(CDictionary.SK_LoginAdmin))
              return Json(new { success = false, errormessage = "未登入" });
@@ -36,7 +36,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
             var datas = _context.Admins;
 
             return PartialView("_AdminListPartial", datas);
-
         }
 
     }

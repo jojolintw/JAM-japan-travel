@@ -200,8 +200,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.RouteImages.Add(routeImage);
                 _context.SaveChanges();
 
-                // 重定向回圖片列表頁面，並將 RouteId 傳回去
-                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+                // 重定向到詳細頁面，並將 RouteId 傳回去
+                return RedirectToAction("Details", new { id = routeImage.RouteId });
             }
 
             // 如果有錯誤，返回表單頁面並顯示錯誤訊息
@@ -251,7 +251,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 保存更改到資料庫
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { routeId = dbRouteImage.RouteId });
+            // 重定向到詳細頁面
+            return RedirectToAction("Details", new { id = dbRouteImage.RouteId });
         }
 
 
@@ -271,10 +272,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.SaveChanges(); // 保存更改
             }
 
-            return RedirectToAction("Index", new { routeId = routeImage?.RouteId }); // 返回到列表頁
+            // 返回到詳細頁面
+            return RedirectToAction("Details", new { id = routeImage?.RouteId });
         }
-    /// <summary>
-    //-----------------------------------------------------------------------------------------------
+        /// <summary>
+        //-----------------------------------------------------------------------------------------------
         public ActionResult CreateSchedule(int routeId)
         {
             var newSchedule = new Schedule { RouteId = routeId };
@@ -288,7 +290,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 _context.Schedules.Add(schedule);
                 _context.SaveChanges();
-                return RedirectToAction("Index", new { routeId = schedule.RouteId });
+
+                // 重定向到詳細頁面
+                return RedirectToAction("Details", new { id = schedule.RouteId });
             }
 
             return View(schedule);
@@ -364,8 +368,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.Entry(dbSchedule).State = EntityState.Modified;
                 _context.SaveChanges();
 
-                // 重定向到 Index 頁面
-                return RedirectToAction("Index", new { routeId = dbSchedule.RouteId });
+                // 重定向到詳細頁面
+                return RedirectToAction("Details",  new { id = dbSchedule.RouteId });
             }
 
             // 如果 ModelState 無效，返回原表單並顯示錯誤訊息

@@ -3,6 +3,12 @@ const mainContent = document.getElementById('mainContent');
 const linkAdmin = document.getElementById('linkAdmin');
    const linkMmeber = document.getElementById('linkMmeber');
 /*    =======================================================================*/
+
+
+
+
+
+
      linkAdmin.addEventListener('click', async () =>
      {
          const response = await fetch(`https://localhost:7146/Admin/AccessAdmin`,
@@ -17,7 +23,7 @@ const linkAdmin = document.getElementById('linkAdmin');
          if (result.success === false && result.errormessage === '未登入') {
              alert('請先登入');
          }
-         if (result.success === false && data.errormessage === '無權限') {
+         if (result.success === false && result.errormessage === '無權限') {
              alert('沒有權限');
          }
          if (result.success === true) {
@@ -50,7 +56,7 @@ linkMmeber.addEventListener('click', async () => {
     if (result.success === false && result.errormessage === '未登入') {
         alert('請先登入');
     }
-    if (result.success === false && data.errormessage === '無權限') {
+    if (result.success === false && result.errormessage === '無權限') {
         alert('沒有權限');
     }
     if (result.success === true) {
@@ -61,9 +67,10 @@ linkMmeber.addEventListener('click', async () => {
                     'Content-Type': 'application/json'
                 }
             })
-
         mainContent.innerHTML = await secondresponse.text();
         addSelectitems();
+        addMemberbtnEvent();
+        addMemberpicSearch();
         addrowEvent();
     }
 })

@@ -59,9 +59,8 @@
                 <td>@item.Capacity</td>
                 <td>
                     <!-- 編輯連結 -->
-                    @Html.ActionLink("Edit", "EditSchedule", new { id = item.ScheduleId }) |
-                    <!-- 刪除按鈕 -->
-                    <button class="btn btn-danger" onclick="deleteSchedule(@item.ScheduleId)">Delete</button>
+                    @Html.ActionLink("修改", "EditSchedule", new { id = item.ScheduleId }) |
+                    @Html.ActionLink("刪除", "deleteSchedule", new { id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
                 </td>
             </tr>
         }

@@ -23,9 +23,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
 
         [HttpGet]
-        public IActionResult GetData(int adminId)
+        public IActionResult GetData(int id)
         {
-            Admin ad = _context.Admins.FirstOrDefault(a => a.AdminId == adminId);
+            Admin ad = _context.Admins.FirstOrDefault(a => a.AdminId == id);
             return Ok(ad);
         }
         //AdminAPI/InsertAdmin

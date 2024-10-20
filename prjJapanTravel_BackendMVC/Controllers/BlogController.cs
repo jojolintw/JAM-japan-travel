@@ -92,7 +92,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 {
                     文章編號 = i.ArticleNumber,
                     會員編號 = i.MemberId,
-                    文章狀態 = i.ArticleStatusnumberNavigation.StatusName,
+                    文章狀態 = i.ArticleStatusnumberNavigation.StatusNumber.ToString(),
                     文章標題 = i.ArticleTitle,
                     文章內容 = i.ArticleContent,
 
@@ -106,17 +106,25 @@ namespace prjJapanTravel_BackendMVC.Controllers
         [HttpPost]
         public IActionResult Edit(ArticleMainViewModel amvm)
         {
+
+
             var data = _context.ArticleMains
                 .FirstOrDefault(an => an.ArticleNumber == amvm.文章編號);
             if (data == null)
                 return RedirectToAction("List");
 
             data.MemberId = amvm.會員編號;
+
             data.ArticleStatusnumber = _context.ArticleStatuses
             .FirstOrDefault(s => s.StatusName == amvm.文章狀態)
             ?.StatusNumber ?? data.ArticleStatusnumber;
 
             // 根據狀態名更新狀態編號
+
+
+
+
+
 
             data.ArticleTitle = amvm.文章標題;
 

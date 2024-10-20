@@ -17,7 +17,7 @@
 
             <div class="form-group">
                 <label asp-for="會員編號" class="control-label"></label>
-                <input asp-for="會員編號" class="form-control" />
+                <input asp-for="會員編號" class="form-control" readonly />
                 <span asp-validation-for="會員編號" class="text-danger"></span>
             </div>
 
@@ -37,16 +37,10 @@
 
             <div class="form-group">
                 <label asp-for="文章內容" class="control-label">文章內容</label>
-                <input type="hidden" name="ArticleContent" id="ArticleContent" />
+                <input type="hidden" name="文章內容" id="ArticleContent" />  
                 <div id="editor" style="height: 300px;">@Html.Raw(Model.文章內容)</div>
                 <span asp-validation-for="文章內容" class="text-danger"></span>
             </div>
-
-           @*  <div class="form-group">
-                <label asp-for="文章內容" class="control-label"></label>
-                <input asp-for="文章內容" class="form-control" />
-                <span asp-validation-for="文章內容" class="text-danger"></span>
-            </div> *@
 
             @* <div class="form-group">
                 <label asp-for="文章使用的Hashtag" class="control-label"></label>
@@ -81,7 +75,7 @@
         });
 
                 // 在編輯時載入原始內容
-                quill.root.innerHTML = '@Html.Raw(Model.文章內容)';
+                quill.root.innerHTML = '@Html.Raw(Model.文章內容)'; /* 將原始內容設置到編輯器 */
 
         document.querySelector('form').onsubmit = function () {
             var content = quill.root.innerHTML;

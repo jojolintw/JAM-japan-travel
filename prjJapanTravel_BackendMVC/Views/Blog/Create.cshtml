@@ -48,7 +48,10 @@
             <div class="form-group" style="display: flex; gap: 10px;">
                 <input type="submit" value="送出並新增" class="btn btn-primary" />
                 <a asp-action="List" class="btn btn-secondary">取消</a>
+                <button type="button" class="btn btn-info" onclick="fillDemoValues()">Demo</button>
             </div>
+
+            
             
         </form>
 
@@ -73,9 +76,16 @@
                 document.querySelector('form').onsubmit = function () {
                     var content = quill.root.innerHTML;
                     document.getElementById('ArticleContent').value = content;
-
-
                 };
+
+                function fillDemoValues() {
+                    // 自动生成示范值
+                    document.querySelector('[name="MemberId"]').value = "29"; // 填充會員編號
+                    document.querySelector('[name="ArticleTitle"]').value = "沖繩 "; // 添加时间戳
+                    quill.root.innerHTML = "是日本最西南側的縣，縣廳所在地是那霸市。沖繩縣由琉球群島中的沖繩群島、先島群島以及太平洋中的大東群島組成，隔海和九州的鹿兒島縣相鄰。"; // 填充示范内容
+                }
+           
+
             </script>
         }
 

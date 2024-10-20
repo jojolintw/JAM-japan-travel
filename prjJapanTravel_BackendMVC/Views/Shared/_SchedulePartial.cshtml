@@ -38,15 +38,15 @@
     }
 </script>
 
-<h3>Schedules</h3>
+<h3>航班列表</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
-            <th>Seats</th>
-            <th>Capacity</th>
-            <th>Actions</th>
+            <th>出發時間</th>
+            <th>到達時間</th>
+            <th>剩餘座位數</th>
+            <th>總座位數</th>
+            <th>功能</th>
         </tr>
     </thead>
     <tbody>
@@ -68,4 +68,4 @@
 </table>
 
 <!-- 新增行程連結 -->
-<a asp-action="CreateSchedule" asp-route-routeId="@ViewBag.RouteId">Create New Schedule</a>
+<a asp-action="CreateSchedule" asp-route-routeId="@ViewBag.RouteId" class="btn btn-primary">新增航班</a>

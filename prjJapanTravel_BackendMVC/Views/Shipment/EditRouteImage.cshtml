@@ -4,42 +4,40 @@
     ViewData["Title"] = "EditRouteImage";
 }
 
-<h1>EditRouteImage</h1>
+<h1>編輯圖片</h1>
 
-<h4>RouteImage</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditRouteImage" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="RouteImageId" class="control-label"></label>
-                <input asp-for="RouteImageId" class="form-control" />
+                <label asp-for="RouteImageId" class="control-label">圖片編號</label>
+                <input readonly asp-for="RouteImageId" class="form-control" />
                 <span asp-validation-for="RouteImageId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RouteId" class="control-label"></label>
-                <input asp-for="RouteId" class="form-control" />
+                <label asp-for="RouteId" class="control-label">航線編號</label>
+                <input readonly asp-for="RouteId" class="form-control" />
                 <span asp-validation-for="RouteId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RouteImageUrl" class="control-label">Upload Image</label>
+                <label asp-for="RouteImageUrl" class="control-label">上傳圖片</label>
                 <input type="file" class="form-control" asp-for="RouteImageUrl" /> <!-- 允許上傳檔案 -->
                 <span asp-validation-for="RouteImageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RouteImageDescription" class="control-label"></label>
+                <label asp-for="RouteImageDescription" class="control-label">圖片簡介</label>
                 <input asp-for="RouteImageDescription" class="form-control" />
                 <span asp-validation-for="RouteImageDescription" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="儲存" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">取消並返回</a>
 </div>
-

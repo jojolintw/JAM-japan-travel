@@ -29,6 +29,25 @@ const btnDelete = document.getElementById('btnDelete');
 let lastbtnclickmember = null;
 // ==============================================================================================
 
+function addMemberDemo()
+{
+    const btnDemoMember = document.getElementById('btnDemoMember');
+    const MemberName = document.getElementById('MemberName');
+    const Phone = document.getElementById('Phone');
+    const Email = document.getElementById('Email');
+    const MemberPassword = document.getElementById('Password');
+
+    //===============================================================
+    btnDemoMember.addEventListener('click', () =>
+    {
+        MemberName.value = '周杰倫';
+        Phone.value = '0945113528';
+        Email.value = 'jay5123@gmail.com';
+        MemberPassword.value = 'j12345';
+    })
+}
+
+
 function Memberreset() {
     //============================================================================
     const MemberId = document.getElementById('MemberId');
@@ -129,6 +148,8 @@ function Memberenable() {
     btnMemberphoto.disabled = false;
     btnSubmit.disabled = false;
 }
+
+
 
  async function addSelectitems()
 {

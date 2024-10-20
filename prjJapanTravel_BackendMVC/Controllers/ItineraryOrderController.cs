@@ -19,6 +19,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
         public IActionResult List(KeywordViewModel vm)
         {
             string keyword = vm.txtKeyword;
+            DateTime? startDate = vm.StartDate;
+            DateTime? endDate = vm.EndDate;
 
             if (string.IsNullOrEmpty(keyword))
             {
@@ -43,7 +45,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
             {
                 var datas = _context.ItineraryOrders
                     .Where(m=>m.ItineraryOrderNumber.Contains(keyword)
-                        ||m.Member.MemberName.Contains(keyword))
+                        ||m.Member.MemberName.Contains(keyword)
+                        //||m.OrderTime>=startDate.Value
+                        //||m.OrderTime<=endDate.Value
+                        )
                     .Select(m => new ItineraryOrderListViewModel()
                     {
                         行程訂單編號 = m.ItineraryOrderId,
@@ -119,11 +124,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     行程訂單編號 = i.ItineraryOrderId,
                     訂單編號 = i.ItineraryOrderNumber,
                     會員編號 = i.MemberId,
-                    行程名稱 = _context.Itineraries
-                        .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
-                        .Select(it=>it.ItineraryName).
-                        FirstOrDefault(),
                     行程編號 = i.ItineraryDateSystemId,
+                    行程名稱編號 = _context.Itineraries
+                        .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
+                        .Select(it=>it.ItinerarySystemId)
+                        .FirstOrDefault(),
+
+                    //行程名稱 = _context.Itineraries
+                    //    .Where(it=>it.ItinerarySystemId == i.ItineraryDateSystem.ItinerarySystemId)
+                    //    .Select(it=>it.ItineraryName).
+                    //    FirstOrDefault(),
                     會員 = _context.Members
                         .Where(m => m.MemberId == i.MemberId)
                         .Select(m =>m.MemberName)
@@ -151,8 +161,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             ViewBag.OrderStatusList = new SelectList(_context.OrderStatuses.ToList()
                 , "OrderStatusId", "OrderStatus1", data.訂單狀態編號);
             ViewBag.ItineraryNameList = new SelectList(_context.Itineraries.ToList()
-                , "ItinerarySystemId", "ItineraryName",data.行程名稱);
-            ViewBag.ItineraryList = new SelectList(_context.Itineraries.ToList(), "ItinerarySystemId", "ItineraryName");
+                , "ItinerarySystemId", "ItineraryName",data.行程名稱編號);
+            ViewBag.ItineraryDateList = new SelectList(_context.ItineraryDates.ToList()
+                , "ItineraryDateSystemId", "DepartureDate", data.行程編號);
             ViewBag.CouponList = _context.Coupons.Select(c => new SelectListItem
             {
                 Value = c.CouponId.ToString(),
@@ -165,8 +176,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
         [HttpPost]
         public IActionResult Edit(ItineraryOrderListViewModel vm)
         {
-            //try
-            //{
+            try
+            {
 
                 var data = _context.ItineraryOrders
                     .FirstOrDefault(io => io.ItineraryOrderId == vm.行程訂單編號);
@@ -187,14 +198,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
                 _context.SaveChanges();
                 return RedirectToAction("List");
-            //}
+            }
 
-            //catch (Exception ex)
-            //{
-            //    return RedirectToAction("List");
-            //}
+            catch (Exception ex)
+            {
+                return RedirectToAction("List");
+            }
 
-        }
+}
 
         public IActionResult Delete(int? id)
         {

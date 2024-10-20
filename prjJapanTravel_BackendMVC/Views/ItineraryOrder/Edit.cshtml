@@ -42,16 +42,16 @@
             </div> *@
 
             <div class="form-group">
-                <label asp-for="行程名稱" class="control-label">行程</label>
-                <select asp-for="行程名稱" id="ItinerarySystemId" class="form-control" asp-items="ViewBag.ItineraryNameList" onchange="fetchItineraryDates(this.value)">
+                <label asp-for="行程名稱編號" class="control-label">行程</label>
+                <select asp-for="行程名稱編號" id="ItinerarySystemId" class="form-control" asp-items="ViewBag.ItineraryNameList" onchange="fetchItineraryDates(this.value)">
                     <option value="">-- 請選擇行程 --</option>
                 </select>
-                <span asp-validation-for="行程名稱" class="text-danger"></span>
+                <span asp-validation-for="行程名稱編號" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="行程編號" class="control-label">行程日期</label>
-                <select asp-for="行程編號" id="行程編號" class="form-control">
+                <select asp-for="行程編號" id="行程編號" class="form-control" asp-items="ViewBag.ItineraryDateList">
                     <option value="">-- 請選擇行程日期 --</option>
                 </select>
                 <span asp-validation-for="行程編號" class="text-danger"></span>

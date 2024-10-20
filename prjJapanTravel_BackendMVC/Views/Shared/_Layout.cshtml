@@ -209,7 +209,7 @@
                             <i class="icon-speedometer menu-icon"></i></i><span class="nav-text">管理員管理系統</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a asp-controller="Admin" asp-action="List">管理員管理</a></li>
+                            <li><a id="linkAdmin" @* asp-controller="Admin" asp-action="List" *@>管理員管理</a></li>
                         </ul>
                     </li>
                     <li class="mega-menu mega-menu-sm">
@@ -323,11 +323,11 @@
         <!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body">
+        <div id="mainContent" class="content-body">
             <!-- row -->
 
-            <div class="container-fluid">
-            </div>
+  @*           <div class="container-fluid">
+            </div> *@
             <!-- #/ container -->
             @RenderBody()
         </div>
@@ -373,6 +373,8 @@
     <script src="~/js/settings.js"></script>
     <script src="~/js/gleek.js"></script>
     <script src="~/js/styleswitcher.js"></script>
+    <script src="~/js/member/admin.js"></script>
+    <script src="~/js/member/login.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

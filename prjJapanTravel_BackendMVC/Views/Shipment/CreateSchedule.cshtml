@@ -51,6 +51,8 @@
             <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="儲存並新增" class="btn btn-primary" />
+                <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
             </div>
         </form>
     </div>
@@ -59,3 +61,22 @@
 <div>
     <a asp-action="Index" class="btn btn-secondary">返回</a>
 </div>
+<script>
+    function fillDemoData() {
+        // 假資料
+        const demoData = {
+            routeId: 1, // 假設的航線編號
+            departureTime: new Date().toISOString().slice(0, 16), // 當前時間（到分鐘）
+            arrivalTime: new Date(new Date().getTime() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16), // 當前時間加兩小時
+            seats: 20, // 假設的剩餘座位數
+            capacity: 50 // 假設的總座位數
+        };
+
+        // 填入假資料
+        document.getElementById("RouteId").value = demoData.routeId;
+        document.getElementsByName("DepartureTime")[0].value = demoData.departureTime;
+        document.getElementsByName("ArrivalTime")[0].value = demoData.arrivalTime;
+        document.getElementsByName("Seats")[0].value = demoData.seats;
+        document.getElementsByName("Capacity")[0].value = demoData.capacity;
+    }
+</script>

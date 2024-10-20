@@ -33,6 +33,8 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="儲存" class="btn btn-primary" />
+                <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
             </div>
         </form>
     </div>
@@ -41,3 +43,15 @@
 <div>
     <a asp-action="Index" class="btn btn-secondary">取消並返回</a>
 </div>
+<script>
+    function fillDemoData() {
+        // 假資料
+        const demoData = {
+            routeImageDescription: "這是一張示範圖片2" // 假設的圖片簡介
+        };
+
+        // 填入假資料
+        document.getElementsByName("RouteImageDescription")[0].value = demoData.routeImageDescription;
+
+    }
+</script>

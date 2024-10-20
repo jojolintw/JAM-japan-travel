@@ -26,8 +26,24 @@
         <span asp-validation-for="RouteImageDescription" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">儲存</button>
+    <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
 </form>
 
 <div>
-    <a asp-action="Index">取消並返回</a>
+    <a asp-action="Index" class="btn btn-secondary">取消並返回</a>
 </div>
+<script>
+    function fillDemoData() {
+        // 假資料
+        const demoData = {
+            routeId: 1, // 假設的航線編號
+            routeImageDescription: "這是一張示範圖片" // 假設的圖片簡介
+        };
+
+        // 填入假資料
+        document.getElementsByName("RouteId")[0].value = demoData.routeId;
+        document.getElementsByName("RouteImageDescription")[0].value = demoData.routeImageDescription;
+
+    }
+</script>

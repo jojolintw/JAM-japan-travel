@@ -33,7 +33,7 @@
         </div>
         <div style="margin-bottom: 10px;">
             <label>地區</label>
-            <select name="AreaSystem.AreaSystemId" id="">
+            <select class="form-select" name="AreaSystem.AreaSystemId" id="" style="width:800px">
                 <option value="">請選擇區域</option>
                 @foreach (var item in Model.areaList)
                 {
@@ -44,7 +44,7 @@
         <div style="margin-bottom: 10px;">
             <label for="exampleDataList" class="form-label">體驗</label>
             @* <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="請輸入體驗關鍵字"> *@
-            <select name="ActivitySystem.ActivitySystemId">
+            <select class="form-select" name="ActivitySystem.ActivitySystemId" style="width:800px">
                 <option value="">請選擇體驗項目</option>
                 @foreach (var item in Model.activityList)
                 {
@@ -65,7 +65,7 @@
         </div>
         <div style="margin-bottom: 10px;">
             <label>上傳圖片</label>
-            <input type="file" id="fileInput" name="imageViewModel[0].ImageFile" multiple="multiple" />
+            <input type="file" id="fileInput" class="form-control" style="width:800px" name="imageViewModel[0].ImageFile" multiple="multiple" />
         </div>
         <div>
             <label>圖片預覽</label>
@@ -94,7 +94,7 @@
                 <textarea name="行程詳情" rows="7" cols="99"></textarea>
             </div>
             <div>
-                <label style="vertical-align: top;">行程注意事項</label>
+                <label style="vertical-align: top;">注意事項</label>
                 <textarea name="行程注意事項" rows="7" cols="99"></textarea>
             </div>
         </div>

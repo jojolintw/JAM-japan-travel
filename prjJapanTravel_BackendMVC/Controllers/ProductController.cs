@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata;
 using NuGet.Protocol.Resources;
 using prjJapanTravel_BackendMVC.Models;
@@ -135,6 +136,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
         public IActionResult ItineraryEdit(int? id)
         {
+
             var data = _JP.Itineraries.Where(n => n.ItinerarySystemId == id).Select(n => new ItineraryViewModel()
             {
                 行程系統編號 = n.ItinerarySystemId,
@@ -153,7 +155,12 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程注意事項 = n.ItineraryNotes
             }).FirstOrDefault();
 
+            // 查詢地區和體驗項目選單資料
+            data.地區選項 = new SelectList(_JP.Areas, "AreaSystemId", "AreaName", data.地區編號);
+            data.體驗項目選項 = new SelectList(_JP.Activities, "ActivitySystemId", "ActivityName", data.體驗項目編號);
+
             return View(data);
+
         }
         [HttpPost]
         public IActionResult ItineraryEdit(ItineraryViewModel itiModel)
@@ -175,7 +182,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;
 
-            if (itiModel.imageViewModel != null && itiModel.imageViewModel[0].ImageFile != null && itiModel.imageViewModel[0].ImageFile.Length > 0)
+            if (itiModel.imageViewModel != null && itiModel.imageViewModel.Count > 0 && itiModel.imageViewModel[0].ImageFile != null && itiModel.imageViewModel[0].ImageFile.Length > 0)
             {
                 var oldImage = _JP.Images.FirstOrDefault(i => i.ItinerarySystemId == itinerary.ItinerarySystemId);
 
@@ -207,6 +214,16 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 };
 
                 _JP.Images.Add(newImage);
+            }
+            else
+            {
+                // 如果沒有新圖片，那就保持舊圖片不變
+                var oldImage = _JP.Images.FirstOrDefault(i => i.ItinerarySystemId == itinerary.ItinerarySystemId);
+                if (oldImage != null)
+                {
+                    // 保留現有圖片的紀錄，不做更動
+                    itinerary.Images.Add(oldImage);
+                }
             }
 
             _JP.SaveChanges();

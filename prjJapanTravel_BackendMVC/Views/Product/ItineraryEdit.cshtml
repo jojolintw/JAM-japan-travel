@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="ItineraryEdit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" style="display:none">
                 <label asp-for="行程系統編號" class="control-label"></label>
                 <input asp-for="行程系統編號" class="form-control" />
                 <span asp-validation-for="行程系統編號" class="text-danger"></span>
@@ -28,13 +28,9 @@
                 <span asp-validation-for="行程名稱" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input asp-for="體驗項目編號" type="hidden" class="form-control" />
-                <span asp-validation-for="體驗項目編號" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="體驗項目" class="control-label"></label>
-                <input asp-for="體驗項目" class="form-control" />
-                <span asp-validation-for="體驗項目" class="text-danger"></span>
+                <select asp-for="體驗項目編號" class="form-control" asp-items="Model.體驗項目選項"></select>
+                <span asp-validation-for="體驗項目編號" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="總團位" class="control-label"></label>
@@ -48,13 +44,9 @@
             </div>
             
             <div class="form-group">
-                <input asp-for="地區編號" type="hidden" class="form-control" />
-                <span asp-validation-for="地區編號" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="地區" class="control-label"></label>
-                <input asp-for="地區" class="form-control" />
-                <span asp-validation-for="地區" class="text-danger"></span>
+                <select asp-for="地區編號" class="form-control" asp-items="Model.地區選項"></select>
+                <span asp-validation-for="地區編號" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="行程圖片" class="control-label"></label>
@@ -66,10 +58,11 @@
                 else
                 {
                     <span>無圖片</span>
+                    <img onclick="selectNewImage()" />
                 }
 
                 <!-- 隱藏的 input 用於選擇新圖片 -->
-                <input type="file" id="newImageInput" name="imageViewModel[0].ImageFile" style="display:none;" accept="image/*" onchange="previewImage(event)" />
+                <input type="file" id="newImageInput" name="imageViewModel[0].ImageFile" @* style="display:none;" *@ accept="image/*" onchange="previewImage(event)" />
 
                 <!-- 預覽新圖片 -->
                 <img id="previewImage" src="#" alt="預覽圖片" style="display:none; width:150px; height:150px; margin-top:10px;" />
@@ -99,7 +92,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="List">取消修改</a>
 </div>
 
 @section Scripts {
@@ -113,10 +106,10 @@
             var reader = new FileReader();
             reader.onload = function () {
                 var output = document.getElementById('previewImage');
-                output.src = reader.result;
+                output.src = reader.result;  // 設定圖片來源為讀取到的檔案
                 output.style.display = 'block';  // 顯示預覽圖片
             };
-            reader.readAsDataURL(event.target.files[0]);
+            reader.readAsDataURL(event.target.files[0]);  // 讀取檔案內容
         }
     </script>
 }

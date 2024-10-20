@@ -5,13 +5,16 @@
 }
 @section Styles
 {
-    @* <link rel="stylesheet" type="text/css" href="~/lib/DataTables/css/datatables.min.css" /> *@
-    @* <link href="~/css/jiancustomer.css" rel="stylesheet" /> *@
 
     <style>
         th {
             font-weight: bold;
             color: black;
+        }
+        table{
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
         }
     </style>
 }
@@ -20,8 +23,8 @@
 <button class="btn btn-outline-secondary">
     <a asp-action="ItineraryCreate">建立行程</a>
 </button>
-<table id="myTable" class="table table-striped table-hover">
-    <thead>
+<table id="myTable" class="table table-striped table-hover table-bordered">
+    <thead class="table-light">
         <tr>
             <th>
                 序號
@@ -29,7 +32,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.行程編號)
             </th>
-            <th>
+            <th style="width:400px">
                 @Html.DisplayNameFor(model => model.行程名稱)
             </th>
             <th>
@@ -47,7 +50,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.行程日期)
             </th>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.行程圖片)
             </th>
             <th></th>
@@ -109,7 +112,7 @@
                     </td>
                     <td>
                         @Html.ActionLink("修改", "ItineraryEdit", "Product", new { id = item.行程系統編號 }) |
-                        @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id = item.行程系統編號 })
+                        @Html.ActionLink("刪除", "ItineraryDelete", "Product", new { id = item.行程系統編號 }, new { onclick = "return confirm('確定要刪除嗎?')" })
                     </td>
                 </tr>
             }
@@ -118,7 +121,7 @@
 </table>
 @section Scripts
 {
-    @* <script src="~\lib\DataTables\css\datatables.min.js"></script> *@
+   
     <script>
        
     </script>

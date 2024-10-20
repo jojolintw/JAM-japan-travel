@@ -1,4 +1,5 @@
-﻿using prjJapanTravel_BackendMVC.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using prjJapanTravel_BackendMVC.Models;
 
 namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
 {
@@ -16,10 +17,11 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
         public int? 總團位 { get; set; }
 
         public decimal? 價格 { get; set; }
+        public SelectList 體驗項目選項 { get; set; }
 
         public int? 體驗主題編號 { get; set; }
         public string 體驗主題 { get; set; }
-
+        public SelectList 地區選項 { get; set; }
         public int? 地區編號 { get; set; }
         public string 地區 { get; set; }
         public List<ItineraryDate> 行程日期 { get; set; }

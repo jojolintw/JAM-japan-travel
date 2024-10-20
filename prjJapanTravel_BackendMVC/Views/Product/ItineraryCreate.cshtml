@@ -15,21 +15,25 @@
 <body>
     @using (Html.BeginForm("ItineraryCreate", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
+        
         <nav style="background-color: lightblue; height: 100px; margin-top: 0; margin-bottom: 10px;">
             <h1 style="text-align: center; margin: 0; padding-top: 30px;">新增體驗行程</h1>
         </nav>
+        <div>
+            <button type="button" class="btn btn-secondary" onclick="fillData()">Demo</button>
+        </div>
         <div style="margin-bottom: 10px;">
             <label for="text">行程編號</label>
-            <input type="text" name="行程編號">
+            <input type="text" id="itineraryId" name="行程編號">
 
             <label for="text">行程名稱</label>
-            <input type="text" name="行程名稱">
+            <input type="text" id="itineraryName" name="行程名稱">
 
             <label for="text">總團位</label>
-            <input type="text" name="總團位" style="width: 100px;">
+            <input type="number" id="itineraryAmount" name="總團位" style="width: 100px;">
 
             <label for="text">價格</label>
-            <input type="text" name="價格" style="width: 100px;">
+            <input type="number" id="itineraryPrice" name="價格" style="width: 100px;">
         </div>
         <div style="margin-bottom: 10px;">
             <label>地區</label>
@@ -75,11 +79,11 @@
         <div style="margin-bottom: 10px;">
             <div style="margin-bottom: 10px;">
                 <label>圖片名稱</label>
-                <input type="text" name="imageViewModel[0].ImageName" />
+                <input type="text" id="itineraryPicName" name="imageViewModel[0].ImageName" />
             </div>
             <div>
                 <label style="vertical-align: top;">圖片描述</label>
-                <textarea name="imageViewModel[0].ImageDetail" rows="7" cols="99"></textarea>
+                <textarea id="itineraryPicDetail" name="imageViewModel[0].ImageDetail" rows="7" cols="99"></textarea>
             </div>
         </div>
         @* <button type="button" id="addImageButton">+</button> <!-- 按鈕來新增欄位 -->
@@ -87,21 +91,23 @@
         <div class="form-group">
             <div style="margin-bottom: 10px;">
                 <label>行程簡介</label>
-                <input type="text" name="行程簡介" value="" />
+                <input type="text" id="itineraryBrief" name="行程簡介" value="" />
             </div>
             <div>
                 <label style="vertical-align: top;">行程詳情</label>
-                <textarea name="行程詳情" rows="7" cols="99"></textarea>
+                <textarea name="行程詳情" id="itineraryDetail" rows="7" cols="99"></textarea>
             </div>
             <div>
                 <label style="vertical-align: top;">注意事項</label>
-                <textarea name="行程注意事項" rows="7" cols="99"></textarea>
+                <textarea name="行程注意事項" id="itineraryNote" rows="7" cols="99"></textarea>
             </div>
         </div>
+
         <div>
-            <input type="submit" value="送出" class="btn btn-primary" />
+            <input type="submit" value="送出" class="btn btn-primary" onclick="validateForm()" />
             <a asp-action="List">取消</a>
         </div>
+        
     }
 </body>
 
@@ -109,6 +115,17 @@
 @section Scripts
 {
     <script>
+        function fillData() {
+            document.getElementById('itineraryId').value = '24CUL0008';
+            document.getElementById('itineraryName').value = '情侶/雙人計畫京都與服/浴衣約會☆';
+            document.getElementById('itineraryAmount').value = 12;
+            document.getElementById('itineraryPrice').value = 5000;
+            document.getElementById('itineraryPicName').value = '情侶和服體驗';
+            document.getElementById('itineraryPicDetail').value ='您可以從種類繁多的和服中選擇您最喜歡的和服（浴衣）！和服（浴衣）種類繁多♪你可以空手來♪一起選擇和服吧！互相挑选和服真好♪要不要穿上自己喜歡的和服或浴衣，享受京都的觀光呢？';
+            document.getElementById('itineraryBrief').value = '穿上精美的和服，感受傳統日本文化';
+            document.getElementById('itineraryDetail').value = '穿上傳統的和服，走在京都的古街小巷，感受日本文化的深厚底蘊。專業和服師將幫助您選擇適合的和服款式，並仔細穿戴每一層衣物。體驗期間，您可以拍攝多張照片，留下珍貴的紀念。除了穿著和服，導遊還會帶您參觀著名景點如金閣寺和清水寺，並介紹這些地方的歷史和傳統意義。這是一次深度體驗日本文化的機會。';
+            document.getElementById('itineraryNote').value = '預約需提前一週，取消將收取30%費用'
+        }
         // let imageIndex = 1;
         document.getElementById('fileInput').addEventListener('change', function (event) {
             var output = document.getElementById('output');
@@ -191,6 +208,28 @@
                 document.forms[0].appendChild(hiddenInput); // 將隱藏欄位添加到表單中
             }
         }
+
+        function validateForm(){
+            var Id = document.getElementById('itineraryId').value;
+            var Name = document.getElementById('itineraryName').value;
+            var Stock = document.getElementById('itineraryAmount').value;
+            var Price = document.getElementById('itineraryPrice').value;
+
+            if (Stock === '' || Price === '' || Stock <= 0 || Price < 0) {
+                alert('請確保團位和價格輸入正確的數字');
+                event.preventDefault();  // 阻止表單提交
+            }
+            else if (Id === '') {
+                alert('行程編號必須輸入');
+                event.preventDefault();
+            }
+            else if (Name === '') {
+                alert('行程名稱必須輸入');
+                event.preventDefault();
+            }
+            
+        }
+        
      </script>
 
 }

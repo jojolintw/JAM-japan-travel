@@ -200,8 +200,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.RouteImages.Add(routeImage);
                 _context.SaveChanges();
 
-                // 重定向回圖片列表頁面，並將 RouteId 傳回去
-                return RedirectToAction("Index", new { routeId = routeImage.RouteId });
+                // 重定向到詳細頁面，並將 RouteId 傳回去
+                return RedirectToAction("Details", new { id = routeImage.RouteId });
             }
 
             // 如果有錯誤，返回表單頁面並顯示錯誤訊息
@@ -234,12 +234,14 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 return RedirectToAction("Index");
             }
 
+            // 檢查是否有上傳新圖片
             if (RouteImageUrl != null && RouteImageUrl.Length > 0)
             {
+                // 使用 MemoryStream 轉換上傳的圖片為 byte array
                 using (var memoryStream = new MemoryStream())
                 {
                     RouteImageUrl.CopyTo(memoryStream);
-                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片轉換為 byte array 並儲存
+                    dbRouteImage.RouteImageUrl = memoryStream.ToArray(); // 將圖片更新為新圖片
                 }
             }
 
@@ -249,8 +251,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 保存更改到資料庫
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { routeId = dbRouteImage.RouteId });
+            // 重定向到詳細頁面
+            return RedirectToAction("Details", new { id = dbRouteImage.RouteId });
         }
+
 
 
 
@@ -268,9 +272,109 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _context.SaveChanges(); // 保存更改
             }
 
-            return RedirectToAction("Index", new { routeId = routeImage?.RouteId }); // 返回到列表頁
+            // 返回到詳細頁面
+            return RedirectToAction("Details", new { id = routeImage?.RouteId });
+        }
+        /// <summary>
+        //-----------------------------------------------------------------------------------------------
+        public ActionResult CreateSchedule(int routeId)
+        {
+            var newSchedule = new Schedule { RouteId = routeId };
+            return View(newSchedule);
         }
 
+        [HttpPost]
+        public ActionResult CreateSchedule(Schedule schedule)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Schedules.Add(schedule);
+                _context.SaveChanges();
+
+                // 重定向到詳細頁面
+                return RedirectToAction("Details", new { id = schedule.RouteId });
+            }
+
+            return View(schedule);
+        }
+
+        public async Task<IActionResult> DeleteSchedule(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var schedule = await _context.Schedules
+                .Include(s => s.Route)  // Include the related Route data if needed
+                .FirstOrDefaultAsync(s => s.ScheduleId == id);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Schedules.Remove(schedule);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // 記錄或處理錯誤
+                return StatusCode(500, "An error occurred while deleting the schedule.");
+            }
+
+            // 如果您想在刪除後返回某個頁面，可以像這樣返回 Route 詳細頁面
+            return RedirectToAction(nameof(Details), new { id = schedule.Route.RouteId });
+        }
+
+        public ActionResult EditSchedule(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // 查找需要編輯的行程
+            var schedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == id);
+            if (schedule == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // 如果找到了行程，返回該行程到 View
+            return View(schedule);
+        }
+        [HttpPost]
+        public ActionResult EditSchedule(Schedule schedule)
+        {
+            if (ModelState.IsValid)
+            {
+                // 查找數據庫中要更新的 Schedule
+                var dbSchedule = _context.Schedules.FirstOrDefault(s => s.ScheduleId == schedule.ScheduleId);
+                if (dbSchedule == null)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // 更新 Schedule 的屬性
+                dbSchedule.DepartureTime = schedule.DepartureTime;
+                dbSchedule.ArrivalTime = schedule.ArrivalTime;
+                dbSchedule.Seats = schedule.Seats;
+                dbSchedule.Capacity = schedule.Capacity;
+
+                // 保存更改
+                _context.Entry(dbSchedule).State = EntityState.Modified;
+                _context.SaveChanges();
+
+                // 重定向到詳細頁面
+                return RedirectToAction("Details",  new { id = dbSchedule.RouteId });
+            }
+
+            // 如果 ModelState 無效，返回原表單並顯示錯誤訊息
+            return View(schedule);
+        }
 
 
 

@@ -1,31 +1,71 @@
 ﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Schedule>
 
-<h3>Schedules</h3>
+<!-- 確保頁面有 CSRF token -->
+<form id="csrfTokenForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    async function deleteSchedule(scheduleId) {
+        if (confirm("Are you sure you want to delete this schedule?")) {
+            try {
+                // 獲取 CSRF token 的值
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                const response = await fetch(`/Schedule/DeleteSchedule/${scheduleId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token  // 包含 CSRF token
+                    }
+                });
+
+                if (response.ok) {
+                    // 成功後，從頁面中移除該行
+                    const row = document.getElementById(`schedule-${scheduleId}`);
+                    if (row) {
+                        row.remove();
+                    }
+                    alert("Schedule deleted successfully!");
+                } else {
+                    alert("Failed to delete schedule. Please try again.");
+                }
+            } catch (error) {
+                console.error('Error deleting schedule:', error);
+                alert("An error occurred while deleting the schedule.");
+            }
+        }
+    }
+</script>
+
+<h3>航班列表</h3>
 <table class="table">
     <thead>
         <tr>
-            <th>Departure Time</th>
-            <th>Arrival Time</th>
-            <th>Capacity</th>
-            <th>Seats</th>
-            <th>Actions</th>
+            <th>出發時間</th>
+            <th>到達時間</th>
+            <th>剩餘座位數</th>
+            <th>總座位數</th>
+            <th>功能</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var schedule in Model)
+        @foreach (var item in Model)
         {
-            <tr>
-                <td>@schedule.DepartureTime</td>
-                <td>@schedule.ArrivalTime</td>
-                <td>@schedule.Capacity</td>
-                <td>@schedule.Seats</td>
+            <tr id="schedule-@item.ScheduleId">
+                <td>@item.DepartureTime</td>
+                <td>@item.ArrivalTime</td>
+                <td>@item.Seats</td>
+                <td>@item.Capacity</td>
                 <td>
-                    @Html.ActionLink("Edit", "EditSchedule", new { id = schedule.ScheduleId }) |
-                    @Html.ActionLink("Delete", "DeleteSchedule", new { id = schedule.ScheduleId }, new { onclick = "return confirm('Are you sure?')" })
+                    <!-- 編輯連結 -->
+                    @Html.ActionLink("修改", "EditSchedule", new { id = item.ScheduleId }) |
+                    @Html.ActionLink("刪除", "deleteSchedule", new { id = item.ScheduleId }, new { onclick = "return confirm('確定要刪除嗎')" })
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="CreateSchedule" asp-route-routeId="@ViewBag.RouteId">Create New Schedule</a>
+<!-- 新增行程連結 -->
+<a asp-action="CreateSchedule" asp-route-routeId="@ViewBag.RouteId" class="btn btn-primary">新增航班</a>

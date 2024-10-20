@@ -1,0 +1,56 @@
+﻿@model prjJapanTravel_BackendMVC.Models.Schedule
+
+<h1>修改航班</h1>
+<form asp-action="EditSchedule">
+    <input type="hidden" asp-for="ScheduleId" /> <!-- 隱藏的 ScheduleId 欄位 -->
+
+    <div class="form-group">
+        <label asp-for="DepartureTime" class="control-label">出發時間</label>
+        <input asp-for="DepartureTime" class="form-control" placeholder="Enter Departure Time"
+               value="@Model.DepartureTime.ToString("yyyy-MM-dd HH:mm")" />
+        <span asp-validation-for="DepartureTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ArrivalTime" class="control-label">到達時間</label>
+        <input asp-for="ArrivalTime" class="form-control" placeholder="Enter Arrival Time"
+               value="@Model.ArrivalTime.ToString("yyyy-MM-dd HH:mm")" />
+        <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Seats" class="control-label">剩餘座位數</label>
+        <input asp-for="Seats" class="form-control" placeholder="Enter Seats Available" />
+        <span asp-validation-for="Seats" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Capacity" class="control-label">總座位數</label>
+        <input asp-for="Capacity" class="form-control" placeholder="Enter Capacity" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="儲存變更" class="btn btn-primary" />
+        <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
+    </div>
+</form>
+
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">取消並返回</a>
+</div>
+<script>
+    function fillDemoData() {
+        // 假資料
+        const demoData = {
+            seats: 2000, // 假設的剩餘座位數
+            capacity: 5000 // 假設的總座位數
+        };
+
+        // 填入假資料
+        document.getElementsByName("Seats")[0].value = demoData.seats;
+        document.getElementsByName("Capacity")[0].value = demoData.capacity;
+    }
+</script>

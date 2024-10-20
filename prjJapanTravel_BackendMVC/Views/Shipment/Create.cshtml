@@ -1,23 +1,45 @@
 ﻿@model prjJapanTravel_BackendMVC.Models.Route
 
-<h2>Create</h2>
+<h2>新增航線</h2>
 
 <form asp-action="Create">
     <div class="form-group">
-        <label asp-for="OriginPortId"></label>
+        <label asp-for="OriginPortId">出航港口</label>
         <select asp-for="OriginPortId" class="form-control" asp-items="@(new SelectList(ViewBag.Ports, "PortId", "PortName"))"></select>
     </div>
     <div class="form-group">
-        <label asp-for="DestinationPortId"></label>
+        <label asp-for="DestinationPortId">目的地</label>
         <select asp-for="DestinationPortId" class="form-control" asp-items="@(new SelectList(ViewBag.Ports, "PortId", "PortName"))"></select>
     </div>
     <div class="form-group">
-        <label asp-for="Price"></label>
+        <label asp-for="Price">票價</label>
         <input asp-for="Price" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="RouteDescription"></label>
+        <label asp-for="RouteDescription">簡介</label>
         <input asp-for="RouteDescription" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">新增</button>
+    <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
 </form>
+<div>
+    <a asp-action="Index" class="btn btn-secondary">返回</a>
+</div>
+<script>
+    function fillDemoData() {
+        // 假資料
+        const demoData = {
+            originPortId: 1018, // 假設的出發港ID
+            destinationPortId: 3, // 假設的目的地港ID
+            price: 100.00, // 假設的價格
+            routeDescription: "這是一個測試航線。" // 假設的航線描述
+        };
+
+        // 填入假資料
+        document.getElementById("OriginPortId").value = demoData.originPortId;
+        document.getElementById("DestinationPortId").value = demoData.destinationPortId;
+        document.getElementById("Price").value = demoData.price;
+        document.getElementById("RouteDescription").value = demoData.routeDescription;
+    }
+</script>

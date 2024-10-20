@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.RouteImage>
 
-<h3>Route Images</h3>
+<h3>航線圖片</h3>
 <div class="row">
     @foreach (var image in Model)
     {
@@ -16,11 +16,11 @@
                 <p>@image.RouteImageDescription</p> <!-- 敘述 -->
             </div>
             <div>
-                @Html.ActionLink("Edit", "EditRouteImage", new { id = image.RouteImageId }, new { @class = "btn btn-warning btn-sm" }) |
-                @Html.ActionLink("Delete", "DeleteRouteImage", new { id = image.RouteImageId }, new { onclick = "return confirm('Are you sure?')", @class = "btn btn-danger btn-sm" })
+                @Html.ActionLink("修改", "EditRouteImage", new { id = image.RouteImageId },"") |
+                @Html.ActionLink("刪除", "DeleteRouteImage", new { id = image.RouteImageId }, new { onclick = "return confirm('Are you sure?')"})
             </div>
         </div>
     }
 </div>
 
-<a asp-action="CreateRouteImage" asp-route-routeId="@ViewBag.RouteId" class="btn btn-primary">Create New Route Image</a>
+<a asp-action="CreateRouteImage" asp-route-routeId="@ViewBag.RouteId" class="btn btn-primary">新增圖片</a>

@@ -69,6 +69,22 @@
 
                 <span asp-validation-for="行程圖片" class="text-danger"></span>
             </div>
+            <label>行程日期</label>
+            <ul id="dateList">
+                @for (int i = 0; i < Model.行程日期.Count; i++)
+                {
+                    <li>
+                        @Html.HiddenFor(m => m.行程日期[i].DepartureDate)
+                        @Model.行程日期[i].DepartureDate.ToString()
+                        <button type="button" onclick="removeDate(this)">刪除</button>
+                    </li>
+                }
+            </ul>
+            <div class="form-group">
+                <label for="newDate">新增行程日期</label>
+                <input type="date" id="newDate" />
+                <button type="button" onclick="addDate()">新增</button>
+            </div>
             <div class="form-group">
                 <label asp-for="行程詳情" class="control-label"></label>
                 <input asp-for="行程詳情" class="form-control" />
@@ -110,6 +126,19 @@
                 output.style.display = 'block';  // 顯示預覽圖片
             };
             reader.readAsDataURL(event.target.files[0]);  // 讀取檔案內容
+        }
+        function addDate() {
+            var newDate = document.getElementById("newDate").value;
+            if (newDate) {
+                var dateList = document.getElementById("dateList");
+                var listItem = document.createElement("li");
+                listItem.innerHTML = `<input type="hidden" name="行程日期[index].Date" value="${newDate}" /> ${newDate} <button type="button" onclick="removeDate(this)">刪除</button>`;
+                dateList.appendChild(listItem);
+            }
+        }
+
+        function removeDate(button) {
+            button.parentElement.remove();
         }
     </script>
 }

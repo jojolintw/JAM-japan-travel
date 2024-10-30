@@ -131,6 +131,21 @@ function enabled() {
     btnphoto.disabled = false;
 }
 
+function addDemoEvent()
+{
+    const DemoAdmin = document.getElementById('DemoAdmin');
+    const AdminName = document.getElementById('AdminName');
+    const Account = document.getElementById('Account');
+    const Password = document.getElementById('Password')
+    //========================================================================
+    DemoAdmin.addEventListener('click', () => {
+        AdminName.value = '麵包超人';
+        Account.value = 'bread1234';
+        Password.value = 'b12345';
+    })
+}
+
+
 
 function addCardEvent() {
 

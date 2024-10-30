@@ -11,13 +11,13 @@ public partial class ArticleMain
 
     public int MemberId { get; set; }
 
-    public DateOnly ArticleLaunchtime { get; set; }
+    public DateTime ArticleLaunchtime { get; set; }
 
     public int ArticleStatusnumber { get; set; }
 
     public string ArticleTitle { get; set; }
 
-    public DateOnly ArticleUpdatetime { get; set; }
+    public DateTime ArticleLastupatetime { get; set; }
 
     public string ArticleContent { get; set; }
 

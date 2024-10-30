@@ -1,4 +1,6 @@
-﻿namespace prjJapanTravel_BackendMVC.ViewModels.MemberViewModels
+﻿using Microsoft.AspNetCore.OpenApi;
+using Microsoft.AspNetCore.Http.HttpResults;
+namespace prjJapanTravel_BackendMVC.ViewModels.MemberViewModels
 {
     public class MemberViewModel
     {

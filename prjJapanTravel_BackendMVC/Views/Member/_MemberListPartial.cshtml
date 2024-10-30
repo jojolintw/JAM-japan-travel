@@ -13,7 +13,7 @@
                     <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
                 </div>
                 <input type="Text" id="Keyword" name="Keyword" class="form-control mb-5" value="" placeholder="請輸入關鍵字" />
-                <input type="text" id="MemberId" name="會員編號" class="form-control" value="" />
+                <input type="hidden" id="MemberId" name="會員編號" class="form-control" value="" />
                 <div class="mb-3">
                     <label for="MemberName" class="form-label" style="font-size:20px">會員姓名</label>
                     <input type="text" id="MemberName" name="會員姓名" class="form-control" aria-describedby="emailHelp" disabled="disabled">
@@ -39,6 +39,7 @@
                 <button type="button" id="btnSubmit" class="btn btn-primary" disabled="disabled">儲存</button>
                 <button type="button" id="btnCancel" class="btn btn-primary">取消</button>
                 <button type="button" id="btnDelete" class="btn btn-danger" disabled="disabled">刪除會員</button>
+                <button type="button" id="btnDemoMember" >Demo</button>
             </div>
 
             @* ================================================================================================================== *@
@@ -60,7 +61,7 @@
                 <div class="mt-5">
                     <div class="mb-3">
                         <label for="Birthday" class="form-label " style="font-size:20px">生日</label>
-                        <input type="date" id="Birthday" name="生日" class="form-control" aria-describedby="emailHelp" disabled="disabled">
+                        <input type="date" id="Birthday" name="生日" class="form-control" aria-describedby="emailHelp" value="1990-01-01" disabled="disabled">
                         <div id="emailHelp" class="form-text"></div>
                     </div>
                 </div>
@@ -181,249 +182,4 @@
         }
     </tbody>
 </table>
-
-    <script>
-        window.onload = async () => {
-          
-        }
-        //============圖片預覽=====================================================
-        btnphoto.addEventListener('change', async (event) => {
-
-            const file = event.target.files[0];
-            const allowtype = 'image.*';
-            if (file.type.match(allowtype)) {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    let dataURL = reader.result;
-                    MemberPhoto.src = `${dataURL}`;
-                }
-                reader.readAsDataURL(file);
-                btnSubmit.disabled = false;
-            }
-            else {
-                alert('圖片格式錯誤');
-                btnSubmit.disabled = true;
-            }
-
-        })
-        //=================新增按鈕============================================================
-        btnInsert.addEventListener('click', (event) => {
-            lastbtnclick = event.target;
-
-                    
-
-            reset();
-            enable();
-            btnInsert.disable = true;
-        })
-        //=============修改按鈕=====================================================================
-        btnAlter.addEventListener('click', (event) => {
-            lastbtnclick = event.target;
-            enable();
-        })
-        //==============Submit====================================================================
-        btnSubmit.addEventListener('click', async () => {
-            let form = new FormData(memberform);
-            //=============Insert=====================================================================
-            if (lastbtnclick.id == 'btnInsert') {
-
-                const Insertresponse = await fetch(`${doman}/MemberApi/InsertMember`,
-                    {
-                        method: "POST",
-                        body: form,
-                    })
-                const allmemberdatas = await Insertresponse.json();
-
-                const eleallmembers = allmemberdatas.map(mem => {
-                    const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-                    return (`<tr class="newrow" data-memberid="${mem.會員編號}">
-                                <td>
-                                    <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
-                                </td>
-                                <td>
-                                    <p>${mem.會員姓名}</p>
-                                </td>
-                                <td>
-                                    <p>${(mem.性別 ? "男" : "女")}</p>
-                                </td>
-                                <td>
-                                    <p>${birthday}</p>
-                                </td>
-                                <td>
-                                    <p>${mem.城市}</p>
-                                </td>
-                                <td>
-                                    <p>${mem.手機號碼}</p>
-                                </td>
-                                <td>
-                                    <p>${mem.email}</p>
-                                </td>
-                                <td>
-                                    <p>${mem.會員等級}</p>
-                                </td>
-                                <td>
-                                    <p>${mem.會員狀態}</p>
-                                </td>
-                            </tr>`)
-                })
-                membertable.innerHTML = eleallmembers.join("");
-                addrowEvent();
-            }
-            else if (lastbtnclick.id == 'btnAlter') {
-                const Alterresponse = await fetch(`${doman}/MemberApi/AlterMember`,
-                    {
-                        method: "POST",
-                        body: form,
-                    })
-                const allmemberdatas = await Alterresponse.json();
-                const eleallmembers = allmemberdatas.map(mem => 
-                    {
-                    const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-                    return (`<tr class="newrow" data-memberid="${mem.會員編號}">
-                                        <td>
-                                            <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.會員姓名}</p>
-                                        </td>
-                                        <td>
-                                            <p>${(mem.性別 ? "男" : "女")}</p>
-                                        </td>
-                                        <td>
-                                            <p>${birthday}</p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.城市}</p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.手機號碼}</p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.email}</p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.會員等級}</p>
-                                        </td>
-                                        <td>
-                                            <p>${mem.會員狀態}</p>
-                                        </td>
-                                    </tr>`)
-
-                    })
-                membertable.innerHTML = eleallmembers.join("");
-                addrowEvent();
-            }
-            reset();
-        })
-        //=======================刪除會員==========================================================
-        btnDelete.addEventListener('click', async () => {
-            const memberId = MemberId.value;
-            if (confirm('刪除確認')) {
-                const response = await fetch(`${doman}/MemberApi/DeleteMember/${memberId}`,
-                    {
-                        method: "Get",
-                    })
-                if (response.ok) {
-                    alert('資料已刪除');
-                
-                    const allmemberdatas = await response.json();
-                    const eleallmembers = allmemberdatas.map(mem => {
-                        const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-                        return (`<tr class="newrow" data-memberid="${mem.會員編號}">
-                                                <td>
-                                                    <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.會員姓名}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${(mem.性別 ? "男" : "女")}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${birthday}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.城市}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.手機號碼}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.email}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.會員等級}</p>
-                                                </td>
-                                                <td>
-                                                    <p>${mem.會員狀態}</p>
-                                                </td>
-                                            </tr>`)
-
-                    })
-                    membertable.innerHTML = eleallmembers.join("");
-                    addrowEvent();
-                }
-                else {
-                    alert('刪除失敗');
-                }
-                reset();
-            }
-        })
-        //======================取消============================================================a
-        btnCancel.addEventListener('click', () => {
-            reset();
-        })
-        //=========================關鍵字搜尋==============================================
-        txtKeyword.addEventListener('keydown', async (event) => 
-        {
-            const Keyword = txtKeyword.value;
-            if (event.keyCode == 13 && Keyword.value != '') {
-                const response = await fetch(`https://localhost:7146/MemberApi/Search/?keyword=${Keyword}`, {
-                    method: "Get",
-                })
-                if (response.ok) {
-                    const allmembers = await response.json();
-                    const eleallmembers = allmembers.map(mem => {
-                        const birthday = new Date(mem.生日).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-                        return (`<tr class="newrow" data-memberid="${mem.會員編號}">
-                                                        <td>
-                                                            <p><img src="/images/Member/${mem.頭像路徑}" style="height:100px;width:100px" onerror="this.onerror=null; this.src='/images/Member/Noimage.png';"/></p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.會員姓名}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${(mem.性別 ? "男" : "女")}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${birthday}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.城市}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.手機號碼}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.email}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.會員等級}</p>
-                                                        </td>
-                                                        <td>
-                                                            <p>${mem.會員狀態}</p>
-                                                        </td>
-                                                    </tr>`)
-
-                    })
-                    membertable.innerHTML = eleallmembers.join("");
-                    addrowEvent();
-                }
-            }
-
-
-
-        })
-
-    </script>
     

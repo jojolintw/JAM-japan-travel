@@ -13,7 +13,7 @@ public partial class ItineraryDate
 
     public string DepartureDate { get; set; }
 
-    public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
+    public virtual ICollection<ItineraryOrderItem> ItineraryOrderItems { get; set; } = new List<ItineraryOrderItem>();
 
     public virtual Itinerary ItinerarySystem { get; set; }
 }

@@ -29,6 +29,8 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
+    public virtual DbSet<CityArea> CityAreas { get; set; }
+
     public virtual DbSet<Coupon> Coupons { get; set; }
 
     public virtual DbSet<HashtagMain> HashtagMains { get; set; }
@@ -41,6 +43,8 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<ItineraryOrder> ItineraryOrders { get; set; }
 
+    public virtual DbSet<ItineraryOrderItem> ItineraryOrderItems { get; set; }
+
     public virtual DbSet<Member> Members { get; set; }
 
     public virtual DbSet<MemberCouponList> MemberCouponLists { get; set; }
@@ -51,9 +55,9 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<MyCollection> MyCollections { get; set; }
 
-    public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<Passenger> Passengers { get; set; }
+    public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
 
     public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
 
@@ -141,9 +145,9 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("ArticleMain");
 
-            entity.Property(e => e.ArticleContent)
-                .IsRequired()
-                .HasMaxLength(500);
+            entity.Property(e => e.ArticleContent).IsRequired();
+            entity.Property(e => e.ArticleLastupatetime).HasColumnType("datetime");
+            entity.Property(e => e.ArticleLaunchtime).HasColumnType("datetime");
             entity.Property(e => e.ArticleTitle)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -163,12 +167,10 @@ public partial class JapanTravelContext : DbContext
 
             entity.Property(e => e.PicNumber).ValueGeneratedNever();
             entity.Property(e => e.ArticleNumber).ValueGeneratedOnAdd();
-            entity.Property(e => e.Pic)
-                .IsRequired()
-                .HasColumnType("image");
             entity.Property(e => e.PicDescription)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.PicPath).HasMaxLength(50);
 
             entity.HasOne(d => d.ArticleNumberNavigation).WithMany(p => p.ArticlePics)
                 .HasForeignKey(d => d.ArticleNumber)
@@ -193,11 +195,21 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("City");
 
             entity.Property(e => e.CityId).HasColumnName("CityID");
-            entity.Property(e => e.City1)
+            entity.Property(e => e.CityName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("City");
-            entity.Property(e => e.CityCode)
+                .HasMaxLength(50);
+
+            entity.HasOne(d => d.CityArea).WithMany(p => p.Cities)
+                .HasForeignKey(d => d.CityAreaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_City_CityArea");
+        });
+
+        modelBuilder.Entity<CityArea>(entity =>
+        {
+            entity.ToTable("CityArea");
+
+            entity.Property(e => e.CityAreaName)
                 .IsRequired()
                 .HasMaxLength(50);
         });
@@ -291,35 +303,21 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.ReveiwContent).HasMaxLength(50);
             entity.Property(e => e.ReviewTime).HasColumnType("datetime");
             entity.Property(e => e.TotalAmount).HasColumnType("money");
+        });
 
-            entity.HasOne(d => d.Coupon).WithMany(p => p.ItineraryOrders)
-                .HasForeignKey(d => d.CouponId)
-                .HasConstraintName("FK_ItineraryOrder_Coupon");
+        modelBuilder.Entity<ItineraryOrderItem>(entity =>
+        {
+            entity.ToTable("ItineraryOrderItem");
 
-            entity.HasOne(d => d.ItineraryDateSystem).WithMany(p => p.ItineraryOrders)
+            entity.Property(e => e.CommentContent).HasMaxLength(50);
+
+            entity.HasOne(d => d.ItineraryDateSystem).WithMany(p => p.ItineraryOrderItems)
                 .HasForeignKey(d => d.ItineraryDateSystemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ItineraryOrder_ItineraryDate");
+                .HasConstraintName("FK_ItineraryOrderItem_ItineraryDate");
 
-            entity.HasOne(d => d.Member).WithMany(p => p.ItineraryOrders)
-                .HasForeignKey(d => d.MemberId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ItineraryOrder_Member");
-
-            entity.HasOne(d => d.OrderStatus).WithMany(p => p.ItineraryOrders)
-                .HasForeignKey(d => d.OrderStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ItineraryOrder_OrderStatus");
-
-            entity.HasOne(d => d.PaymentMethod).WithMany(p => p.ItineraryOrders)
-                .HasForeignKey(d => d.PaymentMethodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ItineraryOrder_PaymentMethod");
-
-            entity.HasOne(d => d.PaymentStatus).WithMany(p => p.ItineraryOrders)
-                .HasForeignKey(d => d.PaymentStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ItineraryOrder_PaymentStatus");
+            entity.HasOne(d => d.Order).WithMany(p => p.ItineraryOrderItems)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_ItineraryOrderItem_Order");
         });
 
         modelBuilder.Entity<Member>(entity =>
@@ -332,6 +330,7 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.EnglishName).HasMaxLength(50);
             entity.Property(e => e.ImagePath)
                 .HasMaxLength(50)
                 .HasColumnName("imagePath");
@@ -419,7 +418,34 @@ public partial class JapanTravelContext : DbContext
             entity.HasOne(d => d.Member).WithMany(p => p.MyCollections)
                 .HasForeignKey(d => d.MemberId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MyFavorite我的最愛_Member");
+                .HasConstraintName("FK_MyCollection_Member");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.ToTable("Order");
+
+            entity.Property(e => e.OrderNumber).HasMaxLength(50);
+            entity.Property(e => e.OrderTime).HasColumnType("datetime");
+            entity.Property(e => e.PaymentTime).HasColumnType("datetime");
+            entity.Property(e => e.Remarks).HasMaxLength(50);
+            entity.Property(e => e.TotalAmount).HasColumnType("money");
+
+            entity.HasOne(d => d.Coupon).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.CouponId)
+                .HasConstraintName("FK_Order_Coupon");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.MemberId)
+                .HasConstraintName("FK_Order_Member");
+
+            entity.HasOne(d => d.OrderStatus).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.OrderStatusId)
+                .HasConstraintName("FK_Order_OrderStatus");
+
+            entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.PaymentMethodId)
+                .HasConstraintName("FK_Order_PaymentMethod");
         });
 
         modelBuilder.Entity<OrderStatus>(entity =>
@@ -432,35 +458,6 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("OrderStatus");
-        });
-
-        modelBuilder.Entity<Passenger>(entity =>
-        {
-            entity.HasKey(e => e.PassengerId).HasName("PK_航班旅客資料");
-
-            entity.ToTable("Passenger");
-
-            entity.Property(e => e.PassengerId).ValueGeneratedNever();
-            entity.Property(e => e.PassengerFirstName)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.PassengerIdNumber)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.PassengerLastName)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.PassportNumber)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            entity.HasOne(d => d.TicketOrderItem).WithMany(p => p.Passengers)
-                .HasForeignKey(d => d.TicketOrderItemId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Passenger_TicketOrderItem");
         });
 
         modelBuilder.Entity<PaymentMethod>(entity =>
@@ -591,30 +588,6 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.ReviewTime).HasColumnType("datetime");
             entity.Property(e => e.TicketOrderNumber).HasMaxLength(50);
             entity.Property(e => e.TotalAmount).HasColumnType("money");
-
-            entity.HasOne(d => d.Coupon).WithMany(p => p.TicketOrders)
-                .HasForeignKey(d => d.CouponId)
-                .HasConstraintName("FK_TicketOrder_Coupon");
-
-            entity.HasOne(d => d.Member).WithMany(p => p.TicketOrders)
-                .HasForeignKey(d => d.MemberId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TicketOrder_Member");
-
-            entity.HasOne(d => d.OrderStatus).WithMany(p => p.TicketOrders)
-                .HasForeignKey(d => d.OrderStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TicketOrder_OrderStatus");
-
-            entity.HasOne(d => d.PaymentMethod).WithMany(p => p.TicketOrders)
-                .HasForeignKey(d => d.PaymentMethodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TicketOrder_PaymentMethod");
-
-            entity.HasOne(d => d.PaymentStatus).WithMany(p => p.TicketOrders)
-                .HasForeignKey(d => d.PaymentStatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TicketOrder_PaymentStatus");
         });
 
         modelBuilder.Entity<TicketOrderItem>(entity =>
@@ -623,15 +596,18 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("TicketOrderItem");
 
+            entity.Property(e => e.CommentContent).HasMaxLength(50);
+            entity.Property(e => e.CommentTime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.TicketOrderItems)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TicketOrderItem_Order");
+
             entity.HasOne(d => d.Schedule).WithMany(p => p.TicketOrderItems)
                 .HasForeignKey(d => d.ScheduleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_航班訂單Detail_渡輪航班1");
-
-            entity.HasOne(d => d.TicketOrder).WithMany(p => p.TicketOrderItems)
-                .HasForeignKey(d => d.TicketOrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_TicketOrderItem_TicketOrder");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -15,9 +15,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
         {
             _context = context;
         }
+        [HttpGet]
         public IActionResult LoginPage()
         {
-            return View();
+            return PartialView("_LoginPartial");
         }
         [HttpPost]
         public IActionResult LoginPage(LoginViewModel login)
@@ -44,6 +45,20 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
 
             return Json(new { result = "OK" });
+        }
+        [HttpGet]
+        public IActionResult LoginToHome()
+        {
+            return PartialView("_HomePartial");
+        }
+        public IActionResult Loginout()
+        {
+            if (HttpContext.Session.Keys.Contains(CDictionary.SK_LoginAdmin)) 
+            {
+                HttpContext.Session.Remove(CDictionary.SK_LoginAdmin);
+            }
+
+                return PartialView("_HomePartial");
         }
     }
 }

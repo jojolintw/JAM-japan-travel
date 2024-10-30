@@ -47,6 +47,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[CityArea]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Coupon]",
          "ObjectType": 0
       },
@@ -71,6 +75,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ItineraryOrderItem]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Member]",
          "ObjectType": 0
       },
@@ -91,11 +99,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrderStatus]",
+         "Name": "[dbo].[Order]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Passenger]",
+         "Name": "[dbo].[OrderStatus]",
          "ObjectType": 0
       },
       {

@@ -9,15 +9,19 @@ public partial class TicketOrderItem
 {
     public int TicketOrderItemId { get; set; }
 
-    public int TicketOrderId { get; set; }
+    public int OrderId { get; set; }
 
     public int ScheduleId { get; set; }
 
     public int Quantity { get; set; }
 
-    public virtual ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
+    public int? CommentStar { get; set; }
+
+    public string CommentContent { get; set; }
+
+    public DateTime? CommentTime { get; set; }
+
+    public virtual Order Order { get; set; }
 
     public virtual Schedule Schedule { get; set; }
-
-    public virtual TicketOrder TicketOrder { get; set; }
 }

@@ -9,9 +9,11 @@ public partial class City
 {
     public int CityId { get; set; }
 
-    public string City1 { get; set; }
+    public int CityAreaId { get; set; }
 
-    public string CityCode { get; set; }
+    public string CityName { get; set; }
+
+    public virtual CityArea CityArea { get; set; }
 
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 }

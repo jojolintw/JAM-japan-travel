@@ -11,7 +11,5 @@ public partial class OrderStatus
 
     public string OrderStatus1 { get; set; }
 
-    public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
-
-    public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

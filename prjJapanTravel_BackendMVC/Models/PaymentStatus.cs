@@ -10,8 +10,4 @@ public partial class PaymentStatus
     public int PaymentStatusId { get; set; }
 
     public string PaymentStatus1 { get; set; }
-
-    public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
-
-    public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
 }

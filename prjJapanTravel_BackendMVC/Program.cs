@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Data;
 using prjJapanTravel_BackendMVC.Models;
+using prjJapanTravel_BackendMVC.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,18 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+//���\CORS
+string policyName = "All";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: policyName, policy =>
+    {
+        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+    });
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession();
@@ -27,16 +40,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-//有問題刪這段
-// 啟用靜態文件中間件，確保靜態資源（如 CSS、JS）可以正常被加載
-//app.UseStaticFiles();
-//app.UseRouting();
 
 
-
-// Swagger
-app.UseSwagger();
-app.UseSwaggerUI();
+//// Swagger
+//app.UseSwagger();
+//app.UseSwaggerUI();
 
 
 // Configure the HTTP request pipeline.
@@ -53,10 +61,20 @@ else
     app.UseHsts();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
+
+app.UseCors();
+app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 

@@ -46,16 +46,4 @@ public partial class TicketOrder
     public string RepresentativePassportNumber { get; set; }
 
     public string RepresentativePhoneNumber { get; set; }
-
-    public virtual Coupon Coupon { get; set; }
-
-    public virtual Member Member { get; set; }
-
-    public virtual OrderStatus OrderStatus { get; set; }
-
-    public virtual PaymentMethod PaymentMethod { get; set; }
-
-    public virtual PaymentStatus PaymentStatus { get; set; }
-
-    public virtual ICollection<TicketOrderItem> TicketOrderItems { get; set; } = new List<TicketOrderItem>();
 }

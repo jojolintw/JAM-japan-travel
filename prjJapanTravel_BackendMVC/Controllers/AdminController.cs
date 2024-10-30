@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Models;
 using System.Reflection.Metadata.Ecma335;
@@ -6,6 +7,7 @@ using System.Text.Json;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
+  
     public class AdminController : Controller
     {
         public JapanTravelContext _context;

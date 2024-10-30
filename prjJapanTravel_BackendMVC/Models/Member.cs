@@ -11,6 +11,8 @@ public partial class Member
 
     public string MemberName { get; set; }
 
+    public string EnglishName { get; set; }
+
     public bool? Gender { get; set; }
 
     public DateTime? Birthday { get; set; }
@@ -31,8 +33,6 @@ public partial class Member
 
     public virtual City City { get; set; }
 
-    public virtual ICollection<ItineraryOrder> ItineraryOrders { get; set; } = new List<ItineraryOrder>();
-
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();
 
     public virtual MemberLevel MemberLevel { get; set; }
@@ -41,5 +41,5 @@ public partial class Member
 
     public virtual ICollection<MyCollection> MyCollections { get; set; } = new List<MyCollection>();
 
-    public virtual ICollection<TicketOrder> TicketOrders { get; set; } = new List<TicketOrder>();
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

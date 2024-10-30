@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace prjJapanTravel_BackendMVC.Models;
 
-public partial class OrderStatus
+public partial class CityArea
 {
-    public int OrderStatusId { get; set; }
+    public int CityAreaId { get; set; }
 
-    public string OrderStatus1 { get; set; }
+    public string CityAreaName { get; set; }
 
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<City> Cities { get; set; } = new List<City>();
 }

@@ -1,0 +1,6 @@
+@JP_FrontWebAPI_HostAddress = http://localhost:5245
+
+GET {{JP_FrontWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Data;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using prjJapanTravel_BackendMVC.Service.JWTservice;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +30,44 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: policyName, policy =>
     {
-        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+        policy.WithOrigins("http://localhost:4200").WithMethods("*").WithHeaders("*");
     });
 });
+//  JWT
+ void ConfigureServices(IServiceCollection services)
+{
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true, //是誰核發的 false不驗證
+            ValidateAudience = true, //那些用戶可以使用 false不驗證
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:7146",
+            ValidAudience = "https://localhost:4200",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+                return context.Response.WriteAsync("{\"error\": \"Unauthorized\"}");
+            }
+        };
+
+    });
+}
+
+builder.Services.AddControllers();
 
 builder.Services.AddControllersWithViews();
 
@@ -40,12 +79,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-
-//// Swagger
-//app.UseSwagger();
-//app.UseSwaggerUI();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -72,10 +105,10 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 
-app.UseCors();
+app.UseCors("All");
 app.UseHttpsRedirection();
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

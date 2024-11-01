@@ -6,6 +6,7 @@ using NuGet.Protocol.Resources;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
 using System.Collections.Generic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -146,6 +147,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 體驗項目 = n.ActivitySystem.ActivityName,
                 總團位 = n.Stock,
                 價格 = n.Price,
+                行程日期 = n.ItineraryDates.ToList(),// 加入行程日期
                 體驗主題編號 = n.ThemeSystemId,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
@@ -181,6 +183,32 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;
+
+            var existingDates = _JP.ItineraryDates.Where(d => d.ItinerarySystemId == itinerary.ItinerarySystemId).ToList();
+
+            // 刪除已移除的日期
+            foreach (var date in existingDates)
+            {
+                if (!itiModel.行程日期.Any(d => d.DepartureDate == date.DepartureDate))
+                {
+                    _JP.ItineraryDates.Remove(date);
+                }
+            }
+
+            // 新增新的日期
+            foreach (var newDate in itiModel.行程日期)
+            {
+                
+                _JP.ItineraryDates.Add(new ItineraryDate
+                {
+                    ItinerarySystemId = itinerary.ItinerarySystemId,
+                    DepartureDate = newDate.DepartureDate
+                });
+                
+            }
+
+            _JP.SaveChanges();
+            
 
             if (itiModel.imageViewModel != null && itiModel.imageViewModel.Count > 0 && itiModel.imageViewModel[0].ImageFile != null && itiModel.imageViewModel[0].ImageFile.Length > 0)
             {

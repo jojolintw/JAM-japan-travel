@@ -69,6 +69,29 @@
 
                 <span asp-validation-for="行程圖片" class="text-danger"></span>
             </div>
+            <div style="margin-bottom: 10px;">
+                <label>請選擇出發日期</label>
+                <input type="date" id="departureDateInput">
+                <button type="button" onclick="addDepartureDate()">添加日期</button>
+            </div>
+
+            <label>已添加的出發日期</label>
+            <table id="departureDateTable">
+                <tbody>
+                    <!-- 從後端加載的日期會在這裡顯示 -->
+                    @for (int i = 0; i < Model.行程日期.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.行程日期[i].DepartureDate.ToString()</td>
+                            <td>
+                                <!-- 創建隱藏輸入以傳遞這些已經存在的日期 -->
+                                <input type="hidden" name="行程日期[@i].DepartureDate" value="@Model.行程日期[i].DepartureDate.ToString()" />
+                                <button type="button" onclick="removeRow(this)">刪除</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
             <div class="form-group">
                 <label asp-for="行程詳情" class="control-label"></label>
                 <input asp-for="行程詳情" class="form-control" />
@@ -110,6 +133,35 @@
                 output.style.display = 'block';  // 顯示預覽圖片
             };
             reader.readAsDataURL(event.target.files[0]);  // 讀取檔案內容
+        }
+        function addDepartureDate() {
+            var dateInput = document.getElementById('departureDateInput');
+            var selectedDate = dateInput.value;
+            if (selectedDate) {
+                var table = document.getElementById("departureDateTable").getElementsByTagName('tbody')[0];
+                var newRow = table.insertRow(-1); // 在表格末尾插入新行
+                var cell = newRow.insertCell(0); // 插入新儲存格
+                cell.textContent = selectedDate; // 設定儲存格的文本為選擇的日期
+
+                var cell2 = newRow.insertCell(1); // 第二個儲存格，用來放刪除按鈕
+                var deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "刪除";
+                deleteBtn.type = "button";
+                deleteBtn.onclick = function () { removeRow(this); };
+                cell2.appendChild(deleteBtn);
+
+                // 創建隱藏輸入欄位以傳遞每個日期
+                var index = table.rows.length - 1; // 當前行數作為索引
+                var hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = "行程日期[" + index + "].DepartureDate"; // 確保索引正確
+                hiddenInput.value = selectedDate;
+                document.forms[0].appendChild(hiddenInput); // 將隱藏欄位添加到表單中
+            }
+        }
+
+        function removeDate(button) {
+            button.parentElement.remove();
         }
     </script>
 }

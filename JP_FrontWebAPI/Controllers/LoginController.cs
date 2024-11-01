@@ -1,4 +1,5 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
+using JP_FrontWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +16,12 @@ namespace JP_FrontWebAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        private JapanTravelContext _context;
+        public LoginController(JapanTravelContext context) 
+        {
+            _context = context;
+        }
+
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginInput l)
         {
@@ -46,6 +53,7 @@ namespace JP_FrontWebAPI.Controllers
         [Authorize]
         public IActionResult GetLoginMember()
         {
+            var members = _context.Members;
             //var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
             //if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
@@ -66,7 +74,7 @@ namespace JP_FrontWebAPI.Controllers
             //}
 
             //return Unauthorized(new { Message = "無法取得 Token 或 Token 格式不正確" });
-            return Ok("123");
+            return Ok(members);
         }
     }
 }

@@ -1,10 +1,17 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
+using JP_FrontWebAPI.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<JapanTravelContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("JapanTravel")));
+
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

@@ -1,4 +1,5 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
+using JP_FrontWebAPI.DTOs.Shared;
 using JP_FrontWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -25,8 +27,28 @@ namespace JP_FrontWebAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginInput l)
         {
+            string ErroMSg = "";
+            Member logmem = _context.Members.FirstOrDefault(m => m.Email == l.Email);
+            if (logmem == null)
+            {
+                ErroMSg = "找不到帳號";
+
+                return Ok(new { result = "ErrorAccount", message = ErroMSg });
+            }
+            if (!l.Password.Equals(logmem.Password))
+            {
+                ErroMSg = "密碼錯誤";
+                
+
+                return Ok(new { result = "ErrorPassword", message = ErroMSg });
+            }
+            var sessionId = HttpContext.Session.Id;
+            //string loginjson = JsonSerializer.Serialize(logmem);
+            //HttpContext.Session.SetString(CDictionary.SK_LoginMember, loginjson);
+            //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
+
             // 驗證用戶名和密碼
-            if (l.Email == "winnie1945" && l.Password == "w12345") // 這裡用真實驗證邏輯
+            if (l.Email == logmem.Email && l.Password == logmem.Password) // 這裡用真實驗證邏輯
             {
                 var claims = new[]
                 {
@@ -44,37 +66,10 @@ namespace JP_FrontWebAPI.Controllers
                     expires: DateTime.Now.AddHours(1),
                     signingCredentials: creds);
 
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new { result = "success" ,token = new JwtSecurityTokenHandler().WriteToken(token) });
             }
 
             return Unauthorized();
-        }
-        [HttpGet("GetLoginMember")]
-        [Authorize]
-        public IActionResult GetLoginMember()
-        {
-            var members = _context.Members;
-            //var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-
-            //if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
-            //{
-            //    // 取出 JWT Token
-            //    var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-
-            //    // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-            //    var handler = new JwtSecurityTokenHandler();
-            //    var jwtToken = handler.ReadJwtToken(token);
-
-            //    // 取得 Token 的相關資訊 (如使用者名稱等)
-
-            //    //var member = JsonSerializer.Deserialize<>(jwtToken);
-            //    var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-            //    return Ok(new { Message = "Token 解析成功" });
-            //}
-
-            //return Unauthorized(new { Message = "無法取得 Token 或 Token 格式不正確" });
-            return Ok(members);
         }
     }
 }

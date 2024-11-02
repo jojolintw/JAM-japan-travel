@@ -9,13 +9,13 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<JapanTravelContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("JapanTravel")));
+options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("JapanTravel")));
 
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // 設定 session 超時時間
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // 設定 session 超時時間
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });

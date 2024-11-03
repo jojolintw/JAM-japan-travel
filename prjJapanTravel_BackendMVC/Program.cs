@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Data;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.Controllers;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +73,7 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 
-app.UseCors();
+app.UseCors("All");
 app.UseHttpsRedirection();
 
 

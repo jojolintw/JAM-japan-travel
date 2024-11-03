@@ -93,7 +93,7 @@ namespace JP_FrontWebAPI.Controllers
             _context.Members.Add(newmember);
             _context.SaveChanges();
 
-            return Ok((new { result = "success", message = "註冊成功" }));
+            return Ok((new { result = "success", message = "註冊成功" }));//
         }
     }
 }

@@ -46,14 +46,17 @@
             </select>
         </div>
         <div style="margin-bottom: 10px;">
-            <label for="exampleDataList" class="form-label">體驗</label>
-            @* <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="請輸入體驗關鍵字"> *@
-            <select class="form-select" name="ActivitySystem.ActivitySystemId" style="width:800px">
-                <option value="">請選擇體驗項目</option>
-                @foreach (var item in Model.activityList)
+            <label for="exampleDataList" class="form-label">主題</label>
+            <select class="form-select" name="ThemeSystem.ThemeSystemId" id="themeSelect" style="width:800px" onchange="filterActivities()">
+                <option value="">請選擇體驗主題</option>
+                @foreach (var item in Model.themeList)
                 {
-                    <option value="@item.ActivitySystemId">@item.ActivityName</option>
+                    <option value="@item.ThemeSystemId">@item.ThemeName</option>
                 }
+            </select>
+            <label for="activitySelect" class="form-label">體驗</label>
+            <select class="form-select" name="ActivitySystem.ActivitySystemId" id="activitySelect" style="width:800px">
+                <option value="">請選擇體驗項目</option>
             </select>
         </div>
         <div style="margin-bottom: 10px;">
@@ -125,7 +128,26 @@
             document.getElementById('itineraryBrief').value = '穿上精美的和服，感受傳統日本文化';
             document.getElementById('itineraryDetail').value = '穿上傳統的和服，走在京都的古街小巷，感受日本文化的深厚底蘊。專業和服師將幫助您選擇適合的和服款式，並仔細穿戴每一層衣物。體驗期間，您可以拍攝多張照片，留下珍貴的紀念。除了穿著和服，導遊還會帶您參觀著名景點如金閣寺和清水寺，並介紹這些地方的歷史和傳統意義。這是一次深度體驗日本文化的機會。';
             document.getElementById('itineraryNote').value = '預約需提前一週，取消將收取30%費用'
-        }
+        };
+        function filterActivities() {
+        var themeId = document.getElementById('themeSelect').value;
+        var activitySelect = document.getElementById('activitySelect');
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FilterActivities", "Product")',
+            data: { themeId: themeId },
+            success: function(data) {
+                activitySelect.innerHTML = '<option value="">請選擇體驗項目</option>';
+                data.forEach(activity => {
+                    const option = document.createElement('option');
+                    option.value = activity.ActivitySystemId;
+                    option.textContent = activity.ActivityName;
+                    activitySelect.appendChild(option);
+                });
+            }
+        });
+    } 
         // let imageIndex = 1;
         document.getElementById('fileInput').addEventListener('change', function (event) {
             var output = document.getElementById('output');

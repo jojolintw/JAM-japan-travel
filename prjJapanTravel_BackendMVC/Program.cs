@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using prjJapanTravel_BackendMVC.Data;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.Controllers;
+using System.Text.Json.Serialization;
 
 
 

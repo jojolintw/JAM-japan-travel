@@ -19,8 +19,6 @@ public partial class Itinerary
 
     public decimal? Price { get; set; }
 
-    public int? ThemeSystemId { get; set; }
-
     public int? AreaSystemId { get; set; }
 
     public string ItineraryDetail { get; set; }

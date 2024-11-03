@@ -43,11 +43,24 @@ namespace prjJapanTravel_BackendMVC.Controllers
             });
             return View(datas);
         }
+        [HttpPost]
+        public IActionResult FilterActivities(int themeId)
+        {
+            var activities = _JP.Activities.Where(n => n.ThemeSystemId == themeId)
+                                          .Select(a => new
+                                          {
+                                              ActivitySystemId = a.ActivitySystemId,
+                                              ActivityName = a.ActivityName
+                                          }).ToList();
+
+            return Json(activities);
+        }
 
         public IActionResult ItineraryCreate()
         {
             CreateListViewModel c = new CreateListViewModel();
             c.areaList = _JP.Areas.ToList();
+            c.themeList = _JP.Themes.ToList();
             c.activityList = _JP.Activities.ToList();
             return View(c);
         }
@@ -59,10 +72,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             itinerary.ItineraryId = itimodel.行程編號;
             itinerary.ItineraryName = itimodel.行程名稱;
+            itinerary.ActivitySystem.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
             itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
             itinerary.Stock = itimodel.總團位;
             itinerary.Price = itimodel.價格;
-            //itinerary.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
             itinerary.AreaSystemId = itimodel.AreaSystem.AreaSystemId;
             itinerary.ItineraryDetail = itimodel.行程詳情;
             itinerary.ItineraryBrief = itimodel.行程簡介;
@@ -70,6 +83,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             _JP.Itineraries.Add(itinerary);
             _JP.SaveChanges();
+
 
             if (itimodel.行程日期 != null && itimodel.行程日期.Count > 0)
             {
@@ -148,7 +162,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 總團位 = n.Stock,
                 價格 = n.Price,
                 行程日期 = n.ItineraryDates.ToList(),// 加入行程日期
-                體驗主題編號 = n.ThemeSystemId,
+                體驗主題編號 = n.ActivitySystem.ThemeSystemId,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
                 行程圖片 = n.Images.Where(pic => pic.ItinerarySystemId == n.ItinerarySystemId).ToList(),
@@ -160,7 +174,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 查詢地區和體驗項目選單資料
             data.地區選項 = new SelectList(_JP.Areas, "AreaSystemId", "AreaName", data.地區編號);
             data.體驗項目選項 = new SelectList(_JP.Activities, "ActivitySystemId", "ActivityName", data.體驗項目編號);
-
+        
             return View(data);
 
         }
@@ -178,7 +192,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ActivitySystemId = itiModel.體驗項目編號;
             itinerary.Stock = itiModel.總團位;
             itinerary.Price = itiModel.價格;
-            itinerary.ThemeSystemId = itiModel.體驗主題編號;
+            itinerary.ActivitySystem.ThemeSystemId = itiModel.體驗主題編號;
             itinerary.AreaSystemId = itiModel.地區編號;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;

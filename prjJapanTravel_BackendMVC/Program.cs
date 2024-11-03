@@ -5,6 +5,8 @@ using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.Controllers;
 using System.Text.Json.Serialization;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: policyName, policy =>
     {
-        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+        policy.WithOrigins("http://localhost:4200").WithMethods("*").WithHeaders("*");
     });
 });
 
@@ -41,12 +43,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-
-//// Swagger
-//app.UseSwagger();
-//app.UseSwaggerUI();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -75,7 +71,6 @@ app.UseRouting();
 
 app.UseCors("All");
 app.UseHttpsRedirection();
-
 
 app.UseAuthorization();
 

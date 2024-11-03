@@ -135,6 +135,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
         //---------------------Detail------------------------------------------
         public async Task<IActionResult> Details(int id)
         {
+            ViewBag.RouteId = id;
+
             var route = await _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)

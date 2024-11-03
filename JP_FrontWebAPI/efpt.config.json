@@ -1,0 +1,174 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "JapanTravelContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "JP_FrontWebAPI",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Admin]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Area]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ArticleHashtag]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ArticleMain]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ArticlePic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ArticleStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[City]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CityArea]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Coupon]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HashtagMain]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Image]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Itinerary]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ItineraryDate]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ItineraryOrder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ItineraryOrderItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Member]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MemberCouponList]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MemberLevel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MemberStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MyCollection]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[OrderStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentMethod]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Port]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PortImage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Route]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RouteImage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Schedule]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Theme]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TicketOrder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TicketOrderItem]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

@@ -28,32 +28,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: policyName, policy =>
     {
-        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+        policy.WithOrigins("http://localhost:4200").AllowCredentials() .WithMethods("*").WithHeaders("*");
     });
 });
 
-//void ConfigureServices(IServiceCollection services)
-//{
-//    services.AddAuthentication(options =>
-//    {
-//        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//    })
-//    .AddJwtBearer(options =>
-//    {
-
-//        options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = true, //是誰核發的 false不驗證
-//            ValidateAudience = true, //那些用戶可以使用 false不驗證
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ValidIssuer = "https://localhost:7100",
-//            ValidAudience = "https://localhost:4200",
-//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret))
-//        };
-//    });
-//}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -69,7 +47,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = "https://localhost:7100", // 設定與生成Token時的發行者一致
-        ValidAudience = "https://localhost:4200", // 設定與生成Token時的受眾一致
+        ValidAudience = "http://localhost:4200", // 設定與生成Token時的受眾一致
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret)) // 設定與生成Token時的密鑰一致
     };
 });

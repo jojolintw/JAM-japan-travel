@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -42,7 +43,6 @@ namespace JP_FrontWebAPI.Controllers
 
                 return Ok(new { result = "ErrorPassword", message = ErroMSg });
             }
-            var sessionId = HttpContext.Session.Id;
             //string loginjson = JsonSerializer.Serialize(logmem);
             //HttpContext.Session.SetString(CDictionary.SK_LoginMember, loginjson);
             //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
@@ -61,15 +61,39 @@ namespace JP_FrontWebAPI.Controllers
 
                 var token = new JwtSecurityToken(
                     issuer: "https://localhost:7100",
-                    audience: "https://localhost:4200",
+                    audience: "http://localhost:4200",
                     claims: claims,
                     expires: DateTime.Now.AddHours(1),
                     signingCredentials: creds);
 
                 return Ok(new { result = "success" ,token = new JwtSecurityTokenHandler().WriteToken(token) });
             }
-
             return Unauthorized();
+        }
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody] RegisterDTO regDTO) 
+        {
+            string ErrorMessage = "";
+            var AllMemberEmails = _context.Members.Select(m => m.Email);
+            if (AllMemberEmails.Contains(regDTO.RegisterEmail)) 
+            {
+                ErrorMessage = "有重複的帳號";
+                return Ok(new { result = "repeataccount", message= ErrorMessage });
+            }
+
+            Member newmember = new Member()
+            {
+                MemberName = regDTO.RegisterName,
+                Email = regDTO.RegisterEmail,
+                Password = regDTO.RegisterPassword,
+                MemberLevelId = 1,
+                MemberStatusId = 1
+            };
+
+            _context.Members.Add(newmember);
+            _context.SaveChanges();
+
+            return Ok((new { result = "success", message = "註冊成功" }));
         }
     }
 }

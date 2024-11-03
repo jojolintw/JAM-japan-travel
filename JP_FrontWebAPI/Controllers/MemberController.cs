@@ -28,8 +28,7 @@ namespace JP_FrontWebAPI.Controllers
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
-            {
-                var sessionId = HttpContext.Session.Id;
+            {        
                 // 取出 JWT Token
                 var token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
@@ -48,7 +47,7 @@ namespace JP_FrontWebAPI.Controllers
                 //驗證後端Session及JWT Token中的email是相同的
                 //if (loginMember.Email == email) 
                 //{
-                    var login = _context.Members.FirstOrDefault(m => m.Email == email);
+                var login = _context.Members.FirstOrDefault(m => m.Email == email);
                 LoginMemberDTO loginDTO = new LoginMemberDTO();
                 loginDTO.MemberId = login.MemberId;
                 loginDTO.ChineseName = login.MemberName;
@@ -83,6 +82,18 @@ namespace JP_FrontWebAPI.Controllers
             }
 
             return Unauthorized(new { result = "noLogin" });
+        }
+
+        [HttpGet("GetCityArea")]
+        [Authorize]
+        public IActionResult GetCityArea() 
+        {
+            var GetCityAreas = _context.CityAreas.Select(s => new CityAreaDTO 
+            {
+                CityAreaId = s.CityAreaId,
+                CityAreaName = s.CityAreaName,
+            });
+            return Ok(GetCityAreas);
         }
     }
 }

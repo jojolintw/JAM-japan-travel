@@ -1,9 +1,11 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
 using JP_FrontWebAPI.DTOs.Shared;
 using JP_FrontWebAPI.Models;
+using JP_FrontWebAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -19,12 +21,14 @@ namespace JP_FrontWebAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private JapanTravelContext _context;
-        public LoginController(JapanTravelContext context) 
+        private readonly JapanTravelContext _context;
+        private readonly EmailService _emailService;
+        public LoginController(JapanTravelContext context, EmailService emailService) 
         {
             _context = context;
+            _emailService = emailService;
         }
-
+        //登入
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginInput l)
         {
@@ -43,9 +47,6 @@ namespace JP_FrontWebAPI.Controllers
 
                 return Ok(new { result = "ErrorPassword", message = ErroMSg });
             }
-            //string loginjson = JsonSerializer.Serialize(logmem);
-            //HttpContext.Session.SetString(CDictionary.SK_LoginMember, loginjson);
-            //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
 
             // 驗證用戶名和密碼
             if (l.Email == logmem.Email && l.Password == logmem.Password) // 這裡用真實驗證邏輯
@@ -54,7 +55,7 @@ namespace JP_FrontWebAPI.Controllers
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, l.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+                };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -70,6 +71,7 @@ namespace JP_FrontWebAPI.Controllers
             }
             return Unauthorized();
         }
+        //註冊
         [HttpPost("Register")]
         public IActionResult Register([FromBody] RegisterDTO regDTO) 
         {
@@ -93,8 +95,34 @@ namespace JP_FrontWebAPI.Controllers
             _context.Members.Add(newmember);
             _context.SaveChanges();
 
-            return Ok((new { result = "success", message = "註冊成功" }));//
+            //產生JWT Token
+            var claims = new[]
+               {
+                new Claim(JwtRegisteredClaimNames.Sub, regDTO.RegisterEmail),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+               };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "https://localhost:7100",
+                audience: "http://localhost:4200",
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds);
+
+            return Ok(new { result = "success", message = "註冊成功", token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
-    }
+        [HttpGet("sendEmail")]
+        public IActionResult sendEmail()
+        {
+
+
+
+            _emailService.SendEmailAsync("chaosabyss73@gmail.com", "456", "456");
+            return Ok((new { result = "success"}));
+        }
+    }  
 }
 

@@ -1,5 +1,6 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
 using JP_FrontWebAPI.Models;
+using JP_FrontWebAPI.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -51,6 +52,9 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret)) // 設定與生成Token時的密鑰一致
     };
 });
+
+// 註冊EmailServic
+builder.Services.AddScoped<EmailService>();
 
 
 

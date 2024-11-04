@@ -1,4 +1,4 @@
-﻿namespace prjJapanTravel_BackendMVC.DTOs.Itinerary
+﻿namespace JP_FrontWebAPI.DTOs.Itinerary
 {
     public class Itinerary_List
     {

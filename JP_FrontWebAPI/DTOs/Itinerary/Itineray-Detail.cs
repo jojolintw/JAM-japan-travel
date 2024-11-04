@@ -1,4 +1,5 @@
-﻿using prjJapanTravel_BackendMVC.DTOs.Itinerary;
+﻿using Microsoft.AspNetCore.Http;
+
 namespace JP_FrontWebAPI.DTOs.DTOs.Itinerary
 {
     public class Itineray_Detail

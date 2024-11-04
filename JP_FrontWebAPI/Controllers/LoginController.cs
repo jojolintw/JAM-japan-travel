@@ -114,14 +114,58 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(new { result = "success", message = "註冊成功", token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
-        [HttpGet("sendEmail")]
-        public IActionResult sendEmail()
+        //寄認證信
+        [HttpGet("sendCertificationEmail")]
+        public IActionResult sendCertificationEmail()
         {
+            string subject = "會員認證信";
+            string body = "<a href=\"http://localhost:4200/login/certificationsuccess\">點擊完成認證</a>";
 
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+                // 取出 JWT Token
+                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
+                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
 
-            _emailService.SendEmailAsync("chaosabyss73@gmail.com", "456", "456");
-            return Ok((new { result = "success"}));
+                // 取得 Token 的相關資訊 (如使用者名稱等)
+
+                //var member = JsonSerializer.Deserialize<>(jwtToken);
+                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
+                _emailService.SendEmailAsync("chaosabyss73@gmail.com", subject, body);
+                return Ok((new { result = "success" }));
+            }
+            return Ok((new { result = "fail" }));
+        }
+        //會員認證
+        [HttpGet("memberCertification")]
+        public IActionResult memberCertification()
+        {
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+                // 取出 JWT Token
+                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // 取得 Token 的相關資訊 (如使用者名稱等)
+
+                //var member = JsonSerializer.Deserialize<>(jwtToken);
+                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
+
+                //找會員
+                Member certificationmem = _context.Members.FirstOrDefault(m => m.Email == useremail);
+                certificationmem.MemberStatusId = 2;
+                _context.SaveChanges();
+                return Ok((new { result = "success" }));
+            }
+            return Ok((new { result = "fail" }));
         }
     }  
 }

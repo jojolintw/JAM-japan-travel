@@ -27,7 +27,7 @@ namespace JP_FrontWebAPI.Controllers
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
-            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
             {        
                 // 取出 JWT Token
                 var token = authorizationHeader.Substring("Bearer ".Length).Trim();
@@ -39,7 +39,7 @@ namespace JP_FrontWebAPI.Controllers
                 // 取得 Token 的相關資訊 (如使用者名稱等)
 
                 //var member = JsonSerializer.Deserialize<>(jwtToken);
-                var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
+                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
 
                 //從後端Session中取出登入者資料
                 //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
@@ -47,7 +47,7 @@ namespace JP_FrontWebAPI.Controllers
                 //驗證後端Session及JWT Token中的email是相同的
                 //if (loginMember.Email == email) 
                 //{
-                var login = _context.Members.FirstOrDefault(m => m.Email == email);
+                var login = _context.Members.FirstOrDefault(m => m.Email == useremail);
                 LoginMemberDTO loginDTO = new LoginMemberDTO();
                 loginDTO.MemberId = login.MemberId;
                 loginDTO.ChineseName = login.MemberName;
@@ -57,13 +57,13 @@ namespace JP_FrontWebAPI.Controllers
                     loginDTO.Gender = login.Gender;
                 if (login.Birthday != null)
                     loginDTO.Birthday = login.Birthday;
-                if (login.City.CityAreaId != null)
+                if (login.City?.CityAreaId != null)
                     loginDTO.CityAreaId = login.City.CityAreaId;
-                if (login.City.CityName != null)
+                if (login.City?.CityName != null)
                     loginDTO.CityAreaName = login.City.CityArea.CityAreaName;
                 if (login.CityId != null)
                     loginDTO.CityId = login.CityId;
-                if (login.City.CityName != null)
+                if (login.City?.CityName != null)
                     loginDTO.CityName = login.City.CityName;
                 if (login.Phone != null)
                     loginDTO.Phone = login.Phone;
@@ -83,7 +83,6 @@ namespace JP_FrontWebAPI.Controllers
 
             return Unauthorized(new { result = "noLogin" });
         }
-
         [HttpGet("GetCityArea")]
         [Authorize]
         public IActionResult GetCityArea() 

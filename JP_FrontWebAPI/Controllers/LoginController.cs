@@ -28,7 +28,7 @@ namespace JP_FrontWebAPI.Controllers
             _context = context;
             _emailService = emailService;
         }
-        //登入
+        //登入==============================================================================================================
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginInput l)
         {
@@ -71,7 +71,7 @@ namespace JP_FrontWebAPI.Controllers
             }
             return Unauthorized();
         }
-        //註冊
+        //註冊===============================================================================================================
         [HttpPost("Register")]
         public IActionResult Register([FromBody] RegisterDTO regDTO) 
         {
@@ -114,8 +114,9 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(new { result = "success", message = "註冊成功", token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
-        //寄認證信
+        //寄認證信==============================================================================================================
         [HttpGet("sendCertificationEmail")]
+        [Authorize]
         public IActionResult sendCertificationEmail()
         {
             string subject = "會員認證信";
@@ -140,8 +141,9 @@ namespace JP_FrontWebAPI.Controllers
             }
             return Ok((new { result = "fail" }));
         }
-        //會員認證
+        //修改會員認證=============================================================================================================
         [HttpGet("memberCertification")]
+        [Authorize]
         public IActionResult memberCertification()
         {
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -166,6 +168,26 @@ namespace JP_FrontWebAPI.Controllers
                 return Ok((new { result = "success" }));
             }
             return Ok((new { result = "fail" }));
+        }
+        //忘記密碼驗證信
+        [HttpPost("forgetpasswordEmail")]
+        public IActionResult forgetpasswordEmail([FromBody] LoginInput l)
+        {
+                //找會員
+                Member forgetpasswordmember = _context.Members.FirstOrDefault(m => m.Email == l.Email);
+            if (forgetpasswordmember == null) 
+            {
+                return Ok((new { result = "fail", message="查無此人" }));
+            }
+
+            string recipientEmail = "chaosabyss73@gmail.com";
+            string subject = "重設密碼";
+            string body = "<a href=\"http://localhost:4200/login/resetpassword\">點擊重設密碼</a>";
+
+            _emailService.SendEmailAsync(recipientEmail, subject, body);
+
+               return Ok((new { result = "success" }));
+            
         }
     }  
 }

@@ -72,8 +72,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             itinerary.ItineraryId = itimodel.行程編號;
             itinerary.ItineraryName = itimodel.行程名稱;
-            itinerary.ActivitySystem.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
-            itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
+            //itinerary.ActivitySystem.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
+            //itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
             itinerary.Stock = itimodel.總團位;
             itinerary.Price = itimodel.價格;
             itinerary.AreaSystemId = itimodel.AreaSystem.AreaSystemId;

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
 using JP_FrontWebAPI.DTOs.DTOs.Itinerary;
 using static JP_FrontWebAPI.Controllers.ProductController;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -60,7 +62,7 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(datas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("detail/{id}")]
         public ActionResult<Itineray_Detail> GetItineraryById(int id)
         {
             var data = _JP.Itineraries.Where(n => n.ItinerarySystemId == id)
@@ -143,5 +145,27 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("related/{activityId}")]
+        public async Task<ActionResult<IEnumerable<Itinerary_List>>> GetRelatedItineraries(int activityId)
+        {
+            var relatedItineraries = await _JP.Itineraries
+                .Where(i => i.ActivitySystem.ActivitySystemId == activityId)
+                .Take(4)  // 多取一個，因為前端會過濾掉當前行程
+                .Select(i => new Itinerary_List
+                {
+                    ItinerarySystemId = i.ItinerarySystemId,
+                    ItineraryName = i.ItineraryName,
+                    ItineraryDate = i.ItineraryDates.Select(d => d.DepartureDate.ToString()).ToList(),
+                    ActivityId = i.ActivitySystem.ActivitySystemId,
+                    AreaName = i.AreaSystem.AreaName,
+                    ImagePath = i.Images.Where(i => i.ItinerarySystemId == i.ItinerarySystemId)
+                                    .Select(i => i.ImagePath)
+                                    .FirstOrDefault(),
+                    Stock = i.Stock,
+                    Price = i.Price
+                }).ToListAsync();
+
+            return Ok(relatedItineraries);
+        }
     }
 }

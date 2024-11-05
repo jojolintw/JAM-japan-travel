@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-public class Activities
+public class Activity
 {
     public int ActivitySystemId { get; set; }
-    [Required]
+    
     public string ActivityName { get; set; }
 }

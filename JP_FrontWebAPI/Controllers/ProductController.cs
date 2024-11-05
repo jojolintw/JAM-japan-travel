@@ -8,27 +8,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Text.Json;
 using JP_FrontWebAPI.DTOs.DTOs.Itinerary;
+using static JP_FrontWebAPI.Controllers.ProductController;
 
 namespace JP_FrontWebAPI.Controllers
 {
     [Route("api/Product")]
-    [EnableCors ("All")]
+    [EnableCors("All")]
     [ApiController]
     public class ProductController : ControllerBase
     {
         private JapanTravelContext _JP;
         IWebHostEnvironment _enviroment;
-        
+
         public ProductController(JapanTravelContext context, IWebHostEnvironment environment)
         {
             _JP = context;
             _enviroment = environment;
         }
 
-         [HttpGet("activityNames")]
+        [HttpGet("activity")]
         public ActionResult<IEnumerable<Activity>> GetActivityNames()
         {
-            var activityNames = _JP.Activities
+            var activity = _JP.Activities
                 .Select(a => new Activity
                 {
                     ActivitySystemId = a.ActivitySystemId,
@@ -37,7 +38,7 @@ namespace JP_FrontWebAPI.Controllers
                 .Distinct()
                 .ToList();
 
-            return Ok(activityNames);
+            return Ok(activity);
         }
 
         [HttpGet("list")]
@@ -83,6 +84,63 @@ namespace JP_FrontWebAPI.Controllers
                 return NotFound(new { message = "找不到該行程" });
 
             return Ok(data);
+        }
+
+        [HttpPost("search")]
+        public ActionResult<IEnumerable<Itinerary_List>> Search([FromBody] SearchForm searchForm)
+
+        {
+
+            var query = _JP.Itineraries.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchForm.Name))
+            {
+                query = query.Where(i => i.ItineraryName.Contains(searchForm.Name));
+            }
+
+            if (!string.IsNullOrEmpty(searchForm.Location))
+            {
+                query = query.Where(i => i.AreaSystem.AreaName.Contains(searchForm.Location));
+            }
+
+            if (!string.IsNullOrEmpty(searchForm.Month))
+            {
+                query = query.Where(i => i.ItineraryDates.Any(d => d.DepartureDate.Substring(5, 7) == searchForm.Month));
+            }
+
+            if (searchForm.ActivityId != 0)  // 使用 HasValue 檢查
+            {
+                query = query.Where(i => i.ActivitySystem.ActivitySystemId == searchForm.ActivityId);
+            }
+
+            var result = query.Select(n => new Itinerary_List
+            {
+                ItinerarySystemId = n.ItinerarySystemId,
+                ItineraryName = n.ItineraryName ?? "",
+                ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                ActivityId = n.ActivitySystem.ActivitySystemId,
+                AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
+                Stock = n.Stock ?? 0,
+                Price = n.Price ?? 0m,
+                ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
+                                   .Select(i => i.ImagePath)
+                                   .FirstOrDefault()
+            }).ToList();
+
+            switch (searchForm.SortBy?.ToLower())
+            {
+                case "trendy":  // 最近期
+                    result = result.OrderBy(i => i.ItineraryDate.FirstOrDefault()).ToList();
+                    break;
+                case "latest":  // 最優惠
+                    result = result.OrderBy(i => i.Price).ToList();
+                    break;
+                default:  // "popular" 或其他 - 最熱門
+                    result = result.OrderBy(i => i.ItineraryName).ToList();  // 這裡可以改成依照您的熱門定義來排序
+                    break;
+            }
+
+            return Ok(result);
         }
 
     }

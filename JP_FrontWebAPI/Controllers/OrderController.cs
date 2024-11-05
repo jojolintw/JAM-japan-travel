@@ -87,35 +87,35 @@ namespace JP_FrontWebAPI.Controllers
             return Unauthorized(new { result = "noLogin" });
         }
 
+        [HttpGet("sendEmail")]
+        public void sendEmail(string to, string subject, string body)
+        {
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("myemail@gmail.com", "password"),
+                EnableSsl = true,
+            };
 
-        //public void sendEmail(string to, string subject, string body)
-        //{
-        //    var smtpClient = new SmtpClient("smtp.gmail.com")
-        //    {
-        //        Port = 587,
-        //        Credentials = new NetworkCredential("myemail@gmail.com", "password"),
-        //        EnableSsl = true,
-        //    };
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("myemail@gmail.com"),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true,
+            };
 
-        //    var mailMessage = new MailMessage
-        //    {
-        //        From = new MailAddress("myemail@gmail.com"),
-        //        Subject = subject,
-        //        Body = body,
-        //        IsBodyHtml = true,
-        //    };
+            mailMessage.To.Add(to);
 
-        //    mailMessage.To.Add(to);
-
-        //    try
-        //    {
-        //        smtpClient.Send(mailMessage);
-        //        Console.WriteLine("郵件發送成功");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"發送錯誤: {ex.Message}");
-        //    }
-        //}
+            try
+            {
+                smtpClient.Send(mailMessage);
+                Console.WriteLine("郵件發送成功");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"發送錯誤: {ex.Message}");
+            }
+        }
     }
 }

@@ -7,7 +7,6 @@
     public string RouteDescription { get; set; }
     public PortDetailViewModel OriginPort { get; set; }
     public PortDetailViewModel DestinationPort { get; set; }
-
 }
 
 public class PortDetailViewModel
@@ -18,6 +17,4 @@ public class PortDetailViewModel
     public string CityDescription1 { get; set; }
     public string CityDescription2 { get; set; }
     public string PortGoogleMap { get; set; }
-
-
 }

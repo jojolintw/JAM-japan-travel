@@ -119,6 +119,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PortImage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Route]",
          "ObjectType": 0
       },

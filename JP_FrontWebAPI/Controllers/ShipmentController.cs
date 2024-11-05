@@ -71,6 +71,48 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(new { ImageUrl = imageSrc });
         }
 
+        [HttpGet("{routeId}")]
+        public async Task<ActionResult<ShipmentDetailViewModel>> GetShipmentDetail(int routeId)
+        {
+            var shipmentDetail = await _context.Routes
+                .Include(r => r.OriginPort)
+                .Include(r => r.DestinationPort)
+                .Where(r => r.RouteId == routeId)
+                .Select(r => new ShipmentDetailViewModel
+                {
+                    RouteId = r.RouteId,
+                    OriginPortName = r.OriginPort.PortName,
+                    DestinationPortName = r.DestinationPort.PortName,
+                    Price = r.Price,
+                    RouteDescription = r.RouteDescription,
+                    OriginPort = new PortDetailViewModel
+                    {
+                        PortId = r.OriginPort.PortId,
+                        PortName = r.OriginPort.PortName,
+                        City = r.OriginPort.City,
+                        CityDescription1 = r.OriginPort.CityDescription1,
+                        CityDescription2 = r.OriginPort.CityDescription2,
+                        PortGoogleMap = r.OriginPort.PortGoogleMap
+                    },
+                    DestinationPort = new PortDetailViewModel
+                    {
+                        PortId = r.DestinationPort.PortId,
+                        PortName = r.DestinationPort.PortName,
+                        City = r.DestinationPort.City,
+                        CityDescription1 = r.DestinationPort.CityDescription1,
+                        CityDescription2 = r.DestinationPort.CityDescription2,
+                        PortGoogleMap = r.DestinationPort.PortGoogleMap
+                    }
+                })
+                .FirstOrDefaultAsync();
+
+            if (shipmentDetail == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(shipmentDetail);
+        }
 
 
 

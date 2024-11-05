@@ -13,6 +13,12 @@ public partial class Port
 
     public string City { get; set; }
 
+    public string CityDescription1 { get; set; }
+
+    public string CityDescription2 { get; set; }
+
+    public string PortGoogleMap { get; set; }
+
     public virtual ICollection<Route> RouteDestinationPorts { get; set; } = new List<Route>();
 
     public virtual ICollection<Route> RouteOriginPorts { get; set; } = new List<Route>();

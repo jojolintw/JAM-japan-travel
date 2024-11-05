@@ -65,6 +65,8 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<Port> Ports { get; set; }
 
+    public virtual DbSet<PortImage> PortImages { get; set; }
+
     public virtual DbSet<Route> Routes { get; set; }
 
     public virtual DbSet<RouteImage> RouteImages { get; set; }
@@ -265,7 +267,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.HasOne(d => d.ActivitySystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.ActivitySystemId)
-                .HasConstraintName("FK_Itinerary行程_Activity體驗");
+                .HasConstraintName("FK_Itinerary_Activity");
 
             entity.HasOne(d => d.AreaSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.AreaSystemId)
@@ -278,7 +280,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("ItineraryDate");
 
-            entity.Property(e => e.DepartureDate).HasMaxLength(20);
+            entity.Property(e => e.DepartureDate).HasMaxLength(50);
 
             entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.ItineraryDates)
                 .HasForeignKey(d => d.ItinerarySystemId)
@@ -496,8 +498,15 @@ public partial class JapanTravelContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.PortName)
                 .IsRequired()
-                .HasMaxLength(50)
-                .IsUnicode(false);
+                .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<PortImage>(entity =>
+        {
+            entity.ToTable("PortImage");
+
+            entity.Property(e => e.PortId).HasColumnName("PortID");
+            entity.Property(e => e.PortImageDes).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Route>(entity =>

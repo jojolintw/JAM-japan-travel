@@ -11,7 +11,7 @@ namespace JP_FrontWebAPI.Service
     public class LinePayService
     {
         private readonly string channelId = "2006530351";  // LINE Pay Channel ID
-        private readonly string channelSecret = "96f3c66527b68f45c7dee92962c58855";  // LINE Pay Channel Secret
+        private readonly string channelSecret = "LINE Pay Channel Secret";  // LINE Pay Channel Secret
         private readonly string apiUrl = "https://sandbox-api-pay.line.me/v3/payments/request";  // Sandbox API URL
 
         public async Task<string> RequestPayment(decimal amount, string orderId)

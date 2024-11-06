@@ -49,12 +49,12 @@ namespace JP_FrontWebAPI.Controllers
             var datas = _JP.Itineraries.Select(n => new Itinerary_List
             {
                 ItinerarySystemId = n.ItinerarySystemId,
-                ItineraryName = n.ItineraryName ?? "",  // 使用空合并运算符
+                ItineraryName = n.ItineraryName,  
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",  // 添加空检查
-                ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(), // 添加日期列表
+                ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(), //添加日期列表
                 ActivityId = n.ActivitySystem.ActivitySystemId,  // 添加活动ID
-                Stock = n.Stock ?? 0,  // 使用空合并运算符
-                Price = n.Price ?? 0m,  // 使用空合并运算符
+                Stock = n.Stock,
+                Price = n.Price,
                 ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
                                     .Select(i => i.ImagePath)
                                     .FirstOrDefault()
@@ -71,9 +71,12 @@ namespace JP_FrontWebAPI.Controllers
                     ItinerarySystemId = n.ItinerarySystemId,
                     ItineraryName = n.ItineraryName,
                     ActivityName = n.ActivitySystem.ActivityName,
+                    ActivityId = n.ActivitySystem.ActivitySystemId,
                     Stock = (int)n.Stock,
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
+                    ItineraryDateSystemId = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId)
+                                                            .Select(d => d.ItineraryDateSystemId).FirstOrDefault(),
                     ItineraryDates = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
                     ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
                                         .Select(i => i.ImagePath).ToList(),
@@ -122,8 +125,8 @@ namespace JP_FrontWebAPI.Controllers
                 ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
                 ActivityId = n.ActivitySystem.ActivitySystemId,
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
-                Stock = n.Stock ?? 0,
-                Price = n.Price ?? 0m,
+                Stock = n.Stock,
+                Price = n.Price,
                 ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
                                    .Select(i => i.ImagePath)
                                    .FirstOrDefault()

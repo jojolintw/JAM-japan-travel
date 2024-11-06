@@ -83,16 +83,74 @@ namespace JP_FrontWebAPI.Controllers
 
             return Unauthorized(new { result = "noLogin" });
         }
+        [HttpGet("AlterMemberinformation")]
+        [Authorize]
+        public IActionResult AlterMemberinformation(AlterMemberDTO memberDTO)
+        {
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+                // 取出 JWT Token
+                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // 取得 Token 的相關資訊 (如使用者名稱等)
+
+                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
+
+                // 更改會員
+                var member = _context.Members.FirstOrDefault(m => m.Email == useremail);
+
+                if(memberDTO != null)
+                    member.MemberName = memberDTO.MemberName;
+                if (memberDTO.EnglishName != null)
+                    member.EnglishName = memberDTO.EnglishName;
+                if (memberDTO.Gender != null)
+                    member.Gender = memberDTO.Gender;
+                if (memberDTO.Birthday != null)
+                    member.Birthday = Convert.ToDateTime(memberDTO.Birthday);
+                if (memberDTO.CityId != null)
+                    member.CityId = memberDTO.CityId;
+                if (memberDTO.Phone != null)
+                    member.Phone = memberDTO.Phone;
+                if (memberDTO.Email != null)
+                    member.Email = memberDTO.Email;
+                if (memberDTO.Password != null)
+                    member.Password = memberDTO.Password;
+                if (memberDTO.ImagePath != null)
+                    member.ImagePath = memberDTO.ImagePath;
+
+                return Ok(new { result = "succcess", memberinformation = useremail });
+
+            }
+            return Unauthorized(new { result = "noLogin" });
+        }
         [HttpGet("GetCityArea")]
         [Authorize]
         public IActionResult GetCityArea() 
         {
-            var GetCityAreas = _context.CityAreas.Select(s => new CityAreaDTO 
+            var CityAreas = _context.CityAreas.Select(s => new CityAreaDTO 
             {
                 CityAreaId = s.CityAreaId,
                 CityAreaName = s.CityAreaName,
             });
-            return Ok(GetCityAreas);
+            return Ok(CityAreas);
+        }
+        [HttpGet("GetCity/{id}")]
+        //[Authorize]
+        public IActionResult GetCity(int id)
+        {
+            var Citys = _context.Cities.Where(c => c.CityAreaId == id).Select(s => new CityDTO
+            {
+                CityId = s.CityAreaId,
+                CityName = s.CityName,
+            });
+            return Ok(Citys);
         }
     }
 }

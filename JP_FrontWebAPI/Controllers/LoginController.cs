@@ -186,8 +186,20 @@ namespace JP_FrontWebAPI.Controllers
 
             _emailService.SendEmailAsync(recipientEmail, subject, body);
 
-               return Ok((new { result = "success" }));
-            
+               return Ok((new { result = "success" }));         
+        }
+        [HttpPost("resetPassword")]
+        public IActionResult resetPassword([FromBody] LoginInput l)
+        {
+            //找會員
+            Member forgetpasswordmember = _context.Members.FirstOrDefault(m => m.Email == l.Email);
+            if (forgetpasswordmember == null)
+            {
+                return Ok((new { result = "fail", message = "查無此人" }));
+            }
+            forgetpasswordmember.Password = l.Password;
+            _context.SaveChanges();
+            return Ok((new { result = "success" }));
         }
     }  
 }

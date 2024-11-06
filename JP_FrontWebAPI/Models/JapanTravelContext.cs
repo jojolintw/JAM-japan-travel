@@ -504,13 +504,10 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<PortImage>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("PortImage");
+            entity.ToTable("PortImage");
 
             entity.Property(e => e.PortId).HasColumnName("PortID");
             entity.Property(e => e.PortImageDes).HasMaxLength(50);
-            entity.Property(e => e.PortImageId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Route>(entity =>

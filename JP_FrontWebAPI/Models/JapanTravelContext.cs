@@ -263,6 +263,7 @@ public partial class JapanTravelContext : DbContext
             entity.Property(e => e.ItineraryId)
                 .IsRequired()
                 .HasMaxLength(20);
+            entity.Property(e => e.ItineraryName).IsRequired();
             entity.Property(e => e.Price).HasColumnType("money");
 
             entity.HasOne(d => d.ActivitySystem).WithMany(p => p.Itineraries)

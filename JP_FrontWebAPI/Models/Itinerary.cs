@@ -15,9 +15,9 @@ public partial class Itinerary
 
     public int? ActivitySystemId { get; set; }
 
-    public int? Stock { get; set; }
+    public int Stock { get; set; }
 
-    public decimal? Price { get; set; }
+    public decimal Price { get; set; }
 
     public int? AreaSystemId { get; set; }
 

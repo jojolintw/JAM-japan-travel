@@ -14,7 +14,6 @@
         public string? CityName { get; set; }
         public string? Phone { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public int MemberLevelId { get; set; }
         public string MemberLevel { get; set; }
         public int MemberStatusId { get; set; }

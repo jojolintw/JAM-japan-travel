@@ -71,7 +71,6 @@ namespace JP_FrontWebAPI.Controllers
                 if (login.Phone != null)
                     loginDTO.Phone = login.Phone;
                 loginDTO.Email = login.Email;
-                loginDTO.Password = login.Password;
                 loginDTO.MemberLevelId = login.MemberLevelId;
                 loginDTO.MemberLevel = login.MemberLevel.MemberLevelName;
                 loginDTO.MemberStatusId = login.MemberStatusId;

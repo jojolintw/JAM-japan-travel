@@ -68,7 +68,6 @@ namespace JP_FrontWebAPI.Controllers
                 if (login.Phone != null)
                     loginDTO.Phone = login.Phone;
                 loginDTO.Email = login.Email;
-                loginDTO.Password = login.Password;
                 loginDTO.MemberLevelId = login.MemberLevelId;
                 loginDTO.MemberLevel = login.MemberLevel.MemberLevelName;
                 loginDTO.MemberStatusId = login.MemberStatusId;
@@ -76,14 +75,14 @@ namespace JP_FrontWebAPI.Controllers
                 if (login.ImagePath != null)
                     loginDTO.Photopath = login.ImagePath;
 
-                    return Ok(new { result = "succcess", loginmember = loginDTO });
+                    return Ok(new { result = "success", loginmember = loginDTO });
                 //}
                 //return Ok(new { result = "inconsistent" });
             }
 
             return Unauthorized(new { result = "noLogin" });
         }
-        [HttpGet("AlterMemberinformation")]
+        [HttpPost("AlterMemberinformation")]
         [Authorize]
         public IActionResult AlterMemberinformation(AlterMemberDTO memberDTO)
         {
@@ -120,12 +119,12 @@ namespace JP_FrontWebAPI.Controllers
                     member.Phone = memberDTO.Phone;
                 if (memberDTO.Email != null)
                     member.Email = memberDTO.Email;
-                if (memberDTO.Password != null)
-                    member.Password = memberDTO.Password;
                 if (memberDTO.ImagePath != null)
                     member.ImagePath = memberDTO.ImagePath;
 
-                return Ok(new { result = "succcess", memberinformation = useremail });
+                _context.SaveChanges();
+
+                return Ok(new { result = "success", memberinformation = useremail });
 
             }
             return Unauthorized(new { result = "noLogin" });
@@ -147,7 +146,7 @@ namespace JP_FrontWebAPI.Controllers
         {
             var Citys = _context.Cities.Where(c => c.CityAreaId == id).Select(s => new CityDTO
             {
-                CityId = s.CityAreaId,
+                CityId = s.CityId,
                 CityName = s.CityName,
             });
             return Ok(Citys);

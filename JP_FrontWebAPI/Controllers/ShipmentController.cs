@@ -144,6 +144,29 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(schedules);
         }
 
+        [HttpGet("schedules/{scheduleId}")]
+        public async Task<ActionResult<ScheduleViewModel>> GetScheduleById(int scheduleId)
+        {
+            var schedule = await _context.Schedules
+                .Where(s => s.ScheduleId == scheduleId)
+                .Select(s => new ScheduleViewModel
+                {
+                    ScheduleId = s.ScheduleId,
+                    RouteId = s.RouteId,
+                    DepartureTime = s.DepartureTime,
+                    ArrivalTime = s.ArrivalTime,
+                    Seats = s.Seats,
+                    Capacity = s.Capacity
+                })
+                .FirstOrDefaultAsync();
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(schedule);
+        }
 
 
 

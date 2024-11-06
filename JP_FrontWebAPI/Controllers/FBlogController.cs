@@ -85,10 +85,10 @@ namespace JP_FrontWebAPI.Controllers
             }
 
             var articles = await _context.ArticleMains
-                .Where(a => a.ArticleTitle.Contains(keyword))  // 根据标题进行模糊查询
-                .Include(a => a.ArticleHashtags)
-                .ThenInclude(h => h.HashtagNumberNavigation)
-                .ToListAsync();
+            .Where(a => a.ArticleTitle.Contains(keyword) || a.ArticleContent.Contains(keyword)) // 查找标题或内容包含关键字的文章
+            .Include(a => a.ArticleHashtags) // 关联查询 ArticleHashtags
+            .ThenInclude(h => h.HashtagNumberNavigation) // 进一步关联 Hashtag
+            .ToListAsync(); // 异步查询
 
 
 

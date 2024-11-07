@@ -17,9 +17,11 @@ namespace JP_FrontWebAPI.Controllers
     public class MemberController : ControllerBase
     {
         private JapanTravelContext _context;
-        public MemberController(JapanTravelContext context)
+        public readonly IWebHostEnvironment _environ;
+        public MemberController(JapanTravelContext context, IWebHostEnvironment environ)
         {
             _context = context;
+            _environ = environ;
         }
         [HttpGet("GetLoginMember")]
         [Authorize]
@@ -84,15 +86,13 @@ namespace JP_FrontWebAPI.Controllers
                     loginDTO.Photopath = login.ImagePath;
 
                     return Ok(new { result = "success", loginmember = loginDTO });
-                //}
-                //return Ok(new { result = "inconsistent" });
             }
 
             return Unauthorized(new { result = "noLogin" });
         }
         [HttpPost("AlterMemberinformation")]
         [Authorize]
-        public IActionResult AlterMemberinformation([FromBody] AlterMemberDTO memberDTO)
+        public IActionResult AlterMemberinformation([FromForm] AlterMemberDTO memberDTO)
         {
             //取出JWT
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -133,8 +133,14 @@ namespace JP_FrontWebAPI.Controllers
                     member.CityId = memberDTO.CityId;
                 if (memberDTO.Phone != null)
                     member.Phone = memberDTO.Phone;
-                if (memberDTO.Email != null)
-                    member.Email = memberDTO.Email;
+
+                //照片處理=============================================================
+                if (memberDTO.file != null)
+                {
+                    string photoname = Guid.NewGuid() + ".jpg";
+                    memberDTO.file.CopyTo(new FileStream(_environ.WebRootPath + "/images/Member/" + photoname, FileMode.Create));
+                    member.ImagePath = photoname;
+                }
 
                 _context.SaveChanges();
 

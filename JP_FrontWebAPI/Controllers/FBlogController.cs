@@ -107,6 +107,48 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(articleDtos);
         }
+
+        [HttpGet("hashtags")]
+        public async Task<ActionResult<IEnumerable<string>>> GetHashtags()
+        {
+            var hashtags = await _context.HashtagMains
+                .Select(h => h.HashtagName)
+                .Distinct()
+                .ToListAsync();
+
+            return Ok(hashtags);
+        }
+        //获取某个标签相关的文章
+        [HttpGet("articles-by-hashtag")]
+        public async Task<ActionResult<IEnumerable<ArticleDTO>>> GetArticlesByHashtag(string hashtag)
+        {
+            if (string.IsNullOrEmpty(hashtag))
+            {
+                return BadRequest("Hashtag cannot be empty.");
+            }
+
+            var articles = await _context.ArticleMains
+                .Where(a => a.ArticleHashtags.Any(ah => ah.HashtagNumberNavigation.HashtagName == hashtag))
+                .Include(a => a.ArticleHashtags)
+                .ThenInclude(ah => ah.HashtagNumberNavigation)
+                .ToListAsync();
+
+            var articleDtos = articles.Select(a => new ArticleDTO
+            {
+                ArticleId = a.ArticleNumber,
+                MemberId = a.MemberId,
+                LaunchTime = a.ArticleLaunchtime,
+                ArticleTitle = a.ArticleTitle,
+                LastUpdateTime = a.ArticleLastupatetime,
+                ArticleContent = a.ArticleContent,
+                ArticleHashtags = a.ArticleHashtags
+                    .Select(ah => ah.HashtagNumberNavigation.HashtagName)
+                    .ToList()
+            }).ToList();
+
+            return Ok(articleDtos);
+        }
+
     }
 }
 

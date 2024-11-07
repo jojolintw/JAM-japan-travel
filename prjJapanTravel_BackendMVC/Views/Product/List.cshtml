@@ -39,7 +39,7 @@
                 @Html.DisplayNameFor(model => model.體驗項目)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.總團位)
+                @Html.DisplayNameFor(model => model.是否可報名)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.價格)
@@ -48,7 +48,7 @@
                 @Html.DisplayNameFor(model => model.地區)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.行程日期)
+                @Html.DisplayNameFor(model => model.行程批次)
             </th>
             <th >
                 @Html.DisplayNameFor(model => model.行程圖片)
@@ -76,7 +76,7 @@
                         @Html.DisplayFor(modelItem => item.體驗項目)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.總團位)
+                        @Html.DisplayFor(modelItem => item.是否可報名)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.價格)
@@ -85,9 +85,9 @@
                         @Html.DisplayFor(modelItem => item.地區)
                     </td>
                     <td>
-                        @if (item.行程日期 != null && item.行程日期.Any())
+                        @if (item.行程批次 != null && item.行程批次.Any())
                         {
-                            foreach (var date in item.行程日期)
+                            foreach (var date in item.行程批次)
                             {
                                 <span>@date.DepartureDate</span>
                                 <br />

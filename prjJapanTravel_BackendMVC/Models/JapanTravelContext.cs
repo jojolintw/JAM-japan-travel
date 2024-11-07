@@ -260,9 +260,13 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("Itinerary");
 
+            entity.Property(e => e.Avaiable)
+                .IsRequired()
+                .HasMaxLength(50);
             entity.Property(e => e.ItineraryId)
                 .IsRequired()
                 .HasMaxLength(20);
+            entity.Property(e => e.ItineraryName).IsRequired();
             entity.Property(e => e.Price).HasColumnType("money");
 
             entity.HasOne(d => d.ActivitySystem).WithMany(p => p.Itineraries)
@@ -271,6 +275,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.HasOne(d => d.AreaSystem).WithMany(p => p.Itineraries)
                 .HasForeignKey(d => d.AreaSystemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Itinerary行程_Area地區");
         });
 
@@ -284,6 +289,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.ItineraryDates)
                 .HasForeignKey(d => d.ItinerarySystemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ItineraryDate_Itinerary");
         });
 
@@ -503,10 +509,13 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<PortImage>(entity =>
         {
-            entity.ToTable("PortImage");
+            entity
+                .HasNoKey()
+                .ToTable("PortImage");
 
             entity.Property(e => e.PortId).HasColumnName("PortID");
             entity.Property(e => e.PortImageDes).HasMaxLength(50);
+            entity.Property(e => e.PortImageId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Route>(entity =>

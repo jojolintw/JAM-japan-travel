@@ -10,7 +10,7 @@ namespace JP_FrontWebAPI.DTOs.DTOs.Itinerary
       public string ActivityName { get; set; }
       public List<string> ImagePath { get; set; }
       public List<string> ItineraryDates { get; set; }
-      public int Stock {  get; set; }
+      public string Avaible {  get; set; }
       public decimal Price { get; set; }
       public string? ItineraryDetail {  get; set; }
       public string? ItineraryBrief {  get; set; }

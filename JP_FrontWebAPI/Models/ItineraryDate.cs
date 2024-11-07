@@ -9,9 +9,11 @@ public partial class ItineraryDate
 {
     public int ItineraryDateSystemId { get; set; }
 
-    public int? ItinerarySystemId { get; set; }
+    public int ItinerarySystemId { get; set; }
 
     public string DepartureDate { get; set; }
+
+    public int? Stock { get; set; }
 
     public virtual ICollection<ItineraryOrderItem> ItineraryOrderItems { get; set; } = new List<ItineraryOrderItem>();
 

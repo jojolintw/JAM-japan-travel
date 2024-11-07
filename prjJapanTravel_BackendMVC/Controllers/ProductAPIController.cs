@@ -55,9 +55,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     ItineraryId = itimodel.行程編號,
                     ItineraryName = itimodel.行程名稱,
                     ActivitySystemId = itimodel.體驗項目編號,
-                    Stock = itimodel.總團位,
-                    Price = itimodel.價格,
-                    AreaSystemId = itimodel.地區編號,
+                    Avaiable = itimodel.是否可報名,
+                    Price = (int)itimodel.價格,
+                    AreaSystemId = (int)itimodel.地區編號,
                     ItineraryDetail = itimodel.行程詳情,
                     ItineraryBrief = itimodel.行程簡介,
                     ItineraryNotes = itimodel.行程注意事項
@@ -67,9 +67,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 _JP.SaveChanges();
 
                 // 行程日期
-                if (itimodel.行程日期 != null && itimodel.行程日期.Count > 0)
+                if (itimodel.行程批次 != null && itimodel.行程批次.Count > 0)
                 {
-                    foreach (var date in itimodel.行程日期)
+                    foreach (var date in itimodel.行程批次)
                     {
                         _JP.ItineraryDates.Add(new ItineraryDate
                         {
@@ -122,7 +122,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                    ItinerarySystemId = n.ItinerarySystemId,
                     ItineraryName = n.ItineraryName,
                     ActivityName = n.ActivitySystem.ActivityName,
-                    Stock = (int)n.Stock,
+                    Avaible = n.Avaiable,
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
                     ItineraryDates = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
@@ -155,9 +155,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 itinerary.ItineraryId = itiModel.行程編號;
                 itinerary.ItineraryName = itiModel.行程名稱;
                 itinerary.ActivitySystemId = itiModel.體驗項目編號;
-                itinerary.Stock = itiModel.總團位;
-                itinerary.Price = itiModel.價格;
-                itinerary.AreaSystemId = itiModel.地區編號;
+                itinerary.Avaiable = itiModel.是否可報名;
+                itinerary.Price = (int)itiModel.價格;
+                itinerary.AreaSystemId = (int)itiModel.地區編號;
                 itinerary.ItineraryDetail = itiModel.行程詳情;
                 itinerary.ItineraryBrief = itiModel.行程簡介;
                 itinerary.ItineraryNotes = itiModel.行程注意事項;
@@ -166,9 +166,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 var existingDates = _JP.ItineraryDates.Where(d => d.ItinerarySystemId == id).ToList();
                 _JP.ItineraryDates.RemoveRange(existingDates);
 
-                if (itiModel.行程日期 != null)
+                if (itiModel.行程批次 != null)
                 {
-                    foreach (var date in itiModel.行程日期)
+                    foreach (var date in itiModel.行程批次)
                     {
                         _JP.ItineraryDates.Add(new ItineraryDate
                         {

@@ -15,11 +15,11 @@ public partial class Itinerary
 
     public int? ActivitySystemId { get; set; }
 
-    public int Stock { get; set; }
+    public string Available { get; set; }
 
     public decimal Price { get; set; }
 
-    public int? AreaSystemId { get; set; }
+    public int AreaSystemId { get; set; }
 
     public string ItineraryDetail { get; set; }
 

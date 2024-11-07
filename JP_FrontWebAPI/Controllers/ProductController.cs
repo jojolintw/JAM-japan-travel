@@ -4,17 +4,14 @@ using JP_FrontWebAPI.DTOs.Shared;
 using JP_FrontWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text.Json;
-using JP_FrontWebAPI.DTOs.DTOs.Itinerary;
 using static JP_FrontWebAPI.Controllers.ProductController;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace JP_FrontWebAPI.Controllers
 {
-    [Route("api/Product")]
+    [Route("api/[controller]")]
     [EnableCors("All")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -49,13 +46,13 @@ namespace JP_FrontWebAPI.Controllers
             var datas = _JP.Itineraries.Select(n => new Itinerary_List
             {
                 ItinerarySystemId = n.ItinerarySystemId,
-                ItineraryName = n.ItineraryName,  
-                AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",  // 添加空检查
-                ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(), //添加日期列表
-                ActivityId = n.ActivitySystem.ActivitySystemId,  // 添加活动ID
-                Stock = n.Stock,
+                ItineraryName = n.ItineraryName,
+                AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
+                DepartureDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                ActivityId = n.ActivitySystem.ActivitySystemId,
+                AvailableDate = n.Available,
                 Price = n.Price,
-                ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
+                ImagePath = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId)
                                     .Select(i => i.ImagePath)
                                     .FirstOrDefault()
             }).ToList();
@@ -72,12 +69,15 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = n.ItineraryName,
                     ActivityName = n.ActivitySystem.ActivityName,
                     ActivityId = n.ActivitySystem.ActivitySystemId,
-                    Stock = (int)n.Stock,
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
-                    ItineraryDateSystemId = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId)
-                                                            .Select(d => d.ItineraryDateSystemId).FirstOrDefault(),
-                    ItineraryDates = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                    ItineraryBatch = n.ItineraryDates.Where(batch => batch.ItinerarySystemId == n.ItinerarySystemId)
+                                                     .Select(d => new ItineraryDate
+                                                     {
+                                                         ItineraryDateSystemId = d.ItineraryDateSystemId,
+                                                         DepartureDate = d.DepartureDate,
+                                                         Stock = d.Stock
+                                                     }).ToList(),
                     ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
                                         .Select(i => i.ImagePath).ToList(),
                     ItineraryDetail = n.ItineraryDetail,
@@ -122,10 +122,10 @@ namespace JP_FrontWebAPI.Controllers
             {
                 ItinerarySystemId = n.ItinerarySystemId,
                 ItineraryName = n.ItineraryName ?? "",
-                ItineraryDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                DepartureDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
                 ActivityId = n.ActivitySystem.ActivitySystemId,
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
-                Stock = n.Stock,
+                AvailableDate = n.Available,
                 Price = n.Price,
                 ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
                                    .Select(i => i.ImagePath)
@@ -135,7 +135,7 @@ namespace JP_FrontWebAPI.Controllers
             switch (searchForm.SortBy?.ToLower())
             {
                 case "trendy":  // 最近期
-                    result = result.OrderBy(i => i.ItineraryDate.FirstOrDefault()).ToList();
+                    result = result.OrderBy(i => i.DepartureDate.FirstOrDefault()).ToList();
                     break;
                 case "latest":  // 最優惠
                     result = result.OrderBy(i => i.Price).ToList();
@@ -153,18 +153,18 @@ namespace JP_FrontWebAPI.Controllers
         {
             var relatedItineraries = await _JP.Itineraries
                 .Where(i => i.ActivitySystem.ActivitySystemId == activityId)
-                .Take(4)  // 多取一個，因為前端會過濾掉當前行程
+                .Take(5)  // 多取一個，因為前端會過濾掉當前行程
                 .Select(i => new Itinerary_List
                 {
                     ItinerarySystemId = i.ItinerarySystemId,
                     ItineraryName = i.ItineraryName,
-                    ItineraryDate = i.ItineraryDates.Select(d => d.DepartureDate.ToString()).ToList(),
+                    DepartureDate = i.ItineraryDates.Select(d => d.DepartureDate).ToList(),
                     ActivityId = i.ActivitySystem.ActivitySystemId,
                     AreaName = i.AreaSystem.AreaName,
                     ImagePath = i.Images.Where(i => i.ItinerarySystemId == i.ItinerarySystemId)
                                     .Select(i => i.ImagePath)
                                     .FirstOrDefault(),
-                    Stock = i.Stock,
+                    AvailableDate = i.Available,
                     Price = i.Price
                 }).ToListAsync();
 

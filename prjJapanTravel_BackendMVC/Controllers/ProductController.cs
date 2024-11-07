@@ -27,10 +27,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程編號 = n.ItineraryId,
                 行程名稱 = n.ItineraryName,
                 體驗項目 = n.ActivitySystem.ActivityName,
-                總團位 = n.Stock,
+                是否可報名 = n.Avaiable,
                 價格 = n.Price,
                 地區 = n.AreaSystem.AreaName,
-                行程日期 = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
+                行程批次 = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
                 行程圖片 = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId).Select(img => new Image
                 {
                     ItineraryPicSystemId = img.ItineraryPicSystemId,
@@ -74,8 +74,8 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryName = itimodel.行程名稱;
             //itinerary.ActivitySystem.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
             //itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
-            itinerary.Stock = itimodel.總團位;
-            itinerary.Price = itimodel.價格;
+            itinerary.Avaiable = itimodel.是否可報名;
+            itinerary.Price = (int)itimodel.價格;
             itinerary.AreaSystemId = itimodel.AreaSystem.AreaSystemId;
             itinerary.ItineraryDetail = itimodel.行程詳情;
             itinerary.ItineraryBrief = itimodel.行程簡介;
@@ -85,9 +85,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             _JP.SaveChanges();
 
 
-            if (itimodel.行程日期 != null && itimodel.行程日期.Count > 0)
+            if (itimodel.行程批次 != null && itimodel.行程批次.Count > 0)
             {
-                foreach (var date in itimodel.行程日期)
+                foreach (var date in itimodel.行程批次)
                 {
                     ItineraryDate itineraryDate = new ItineraryDate
                     {
@@ -159,9 +159,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程名稱 = n.ItineraryName,
                 體驗項目編號 = n.ActivitySystemId,
                 體驗項目 = n.ActivitySystem.ActivityName,
-                總團位 = n.Stock,
+                是否可報名 = n.Avaiable,
                 價格 = n.Price,
-                行程日期 = n.ItineraryDates.ToList(),// 加入行程日期
+                行程批次 = n.ItineraryDates.ToList(),// 加入行程日期
                 體驗主題編號 = n.ActivitySystem.ThemeSystemId,
                 地區編號 = n.AreaSystemId,
                 地區 = n.AreaSystem.AreaName,
@@ -190,10 +190,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryId = itiModel.行程編號;
             itinerary.ItineraryName = itiModel.行程名稱;
             itinerary.ActivitySystemId = itiModel.體驗項目編號;
-            itinerary.Stock = itiModel.總團位;
-            itinerary.Price = itiModel.價格;
+            itinerary.Avaiable = itiModel.是否可報名;
+            itinerary.Price = (int)itiModel.價格;
             //itinerary.ActivitySystem.ThemeSystemId = itiModel.體驗主題編號;
-            itinerary.AreaSystemId = itiModel.地區編號;
+            itinerary.AreaSystemId = (int)itiModel.地區編號;
             itinerary.ItineraryDetail = itiModel.行程詳情;
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;
@@ -203,26 +203,46 @@ namespace prjJapanTravel_BackendMVC.Controllers
             // 刪除已移除的日期
             foreach (var date in existingDates)
             {
-                if (!itiModel.行程日期.Any(d => d.DepartureDate == date.DepartureDate))
+                if (!itiModel.行程批次.Any(d => d.DepartureDate == date.DepartureDate))
                 {
                     _JP.ItineraryDates.Remove(date);
                 }
             }
 
             // 新增新的日期
-            foreach (var newDate in itiModel.行程日期)
+            if (itiModel.行程批次 == null || !itiModel.行程批次.Any())
             {
-                
+                // 如果itiModel.行程日期是空的，新增一個默認日期
+                var defaultDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
                 _JP.ItineraryDates.Add(new ItineraryDate
                 {
                     ItinerarySystemId = itinerary.ItinerarySystemId,
-                    DepartureDate = newDate.DepartureDate
+                    DepartureDate = defaultDate
                 });
-                
+            }
+            else
+            {
+                foreach (var newDate in itiModel.行程批次)
+                {
+                    var existingDate = existingDates.FirstOrDefault(d => d.DepartureDate == newDate.DepartureDate);
+                    if (existingDate != null)
+                    {
+                        existingDate.DepartureDate = newDate.DepartureDate;
+                        existingDates.Remove(existingDate); // 從 existingDates 中移除已更新的日期
+                    }
+                    else
+                    {
+                        _JP.ItineraryDates.Add(new ItineraryDate
+                        {
+                            ItinerarySystemId = itinerary.ItinerarySystemId,
+                            DepartureDate = newDate.DepartureDate
+                        });
+                    }
+                }
             }
 
             _JP.SaveChanges();
-            
+
 
             if (itiModel.imageViewModel != null && itiModel.imageViewModel.Count > 0 && itiModel.imageViewModel[0].ImageFile != null && itiModel.imageViewModel[0].ImageFile.Length > 0)
             {

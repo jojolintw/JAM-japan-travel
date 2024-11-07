@@ -62,11 +62,13 @@
         <div style="margin-bottom: 10px;">
             <label>請選擇出發日期</label>
             <input type="date" id="departureDateInput">
-            <button type="button" onclick="addDepartureDate()">添加日期</button>
-            <label>出發日期</label>
+            <label>請選擇出發時間</label>
+            <input type="time" id="departureTimeInput">
+            <button type="button" onclick="addDepartureDateTime()">添加日期和時間</button>
+            <label>出發日期和時間</label>
             <table id="departureDateTable">
                 <tbody>
-                    <!-- 新增的日期會被插入到這裡 -->
+                    <!-- 新增的日期和時間會被插入到這裡 -->
                 </tbody>
             </table>
         </div>
@@ -212,21 +214,25 @@
         //         reader.readAsDataURL(file); // 開始讀取文件
         //     }
         // }
-        function addDepartureDate() {
+        function addDepartureDateTime() {
             var dateInput = document.getElementById("departureDateInput");
+            var timeInput = document.getElementById("departureTimeInput");
+            var dateTime = `${dateInput.value} ${timeInput.value}`;
             var selectedDate = dateInput.value;
-            if (selectedDate) {
+            var selectedTime = timeInput.value;
+
+            if (selectedDate && selectedTime) {
                 var table = document.getElementById("departureDateTable").getElementsByTagName('tbody')[0];
                 var newRow = table.insertRow(-1); // 在表格末尾插入新行
                 var cell = newRow.insertCell(0); // 插入新儲存格
-                cell.textContent = selectedDate; // 設定儲存格的文本為選擇的日期
+                cell.textContent = dateTime; // 設定儲存格的文本為選擇的日期和時間
 
-                // 創建隱藏輸入欄位以傳遞每個日期
+                // 創建隱藏輸入欄位以傳遞每個日期和時間
                 var index = table.rows.length - 1; // 當前行數作為索引
                 var hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
-                hiddenInput.name = "行程日期[" + index + "].DepartureDate"; // 確保索引正確
-                hiddenInput.value = selectedDate;
+                hiddenInput.name = "行程日期[" + index + "].DepartureDateTime"; // 確保索引正確
+                hiddenInput.value = dateTime;
                 document.forms[0].appendChild(hiddenInput); // 將隱藏欄位添加到表單中
             }
         }

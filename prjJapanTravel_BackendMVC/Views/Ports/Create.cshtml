@@ -57,4 +57,14 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function fillDemoData() {
+            // 填入假資料
+            document.querySelector('[name="PortName"]').value = "下關港";
+            document.querySelector('[name="City"]').value = "山口縣下關市";
+            document.querySelector('[name="CityDescription1"]').value = "下關市為本州最西端的都市，其主要市區過去曾稱為馬關，擁有豐富的文化和歷史。";
+            document.querySelector('[name="CityDescription2"]').value = "主要市區位於關門海峽北岸的下關港周邊，與海峽對岸的北九州市之間有關門鐵路隧道、關門國道隧道、關門橋可以往來，兩地也因此共同形成關門都市圈。。";
+            document.querySelector('[name="PortGoogleMap"]').value = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3309.793167223637!2d130.93093217649522!3d33.946447473197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3543bdbf5a838757%3A0xcebf22b49055d759!2sShimonoseki%20Port!5e0!3m2!1szh-TW!2stw!4v1730967171581!5m2!1szh-TW!2stw";
+        }
+    </script>
 }

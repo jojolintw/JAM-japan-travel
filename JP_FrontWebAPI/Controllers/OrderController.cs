@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Net;
 using System.Net.Mail;
+using JP_FrontWebAPI.Service;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -20,9 +21,11 @@ namespace JP_FrontWebAPI.Controllers
     public class OrderController : ControllerBase
     {
         private JapanTravelContext _context;
-        public OrderController(JapanTravelContext context)
+        private readonly EmailService _emailService;
+        public OrderController(JapanTravelContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
         [HttpGet("GetLoginMember")]
         [Authorize]
@@ -86,35 +89,16 @@ namespace JP_FrontWebAPI.Controllers
             return Unauthorized(new { result = "noLogin" });
         }
 
-        [HttpGet("sendEmail")]
-        public void sendEmail(string to, string subject, string body)
+        [HttpGet("sendOrderInfoEmail")]
+        public IActionResult sendOrderInfoEmail()
         {
-            var smtpClient = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential("myemail@gmail.com", "password"),
-                EnableSsl = true,
-            };
+            string to = "qwe58912@gmail.com";
+            string subject = "test";
+            string body = "hi";
 
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("myemail@gmail.com"),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true,
-            };
+            _emailService.SendEmailAsync(to, subject, body);
 
-            mailMessage.To.Add(to);
-
-            try
-            {
-                smtpClient.Send(mailMessage);
-                Console.WriteLine("郵件發送成功");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"發送錯誤: {ex.Message}");
-            }
+            return Ok((new {result="success"}));
         }
     }
 }

@@ -42,5 +42,81 @@ namespace prjJapanTravel_BackendMVC.Controllers
             return View(port);
         }
 
+        // GET: Ports/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var port = await _context.Ports.FindAsync(id);
+            if (port == null)
+            {
+                return NotFound();
+            }
+            return View(port);
+        }
+
+        // POST: Ports/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("PortId,PortName,City,CityDescription1,CityDescription2,PortGoogleMap")] Port port)
+        {
+            if (id != port.PortId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(port);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PortExists(port.PortId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(port);
+        }
+
+        // Helper method to check if a Port exists
+        private bool PortExists(int id)
+        {
+            return _context.Ports.Any(e => e.PortId == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var port = await _context.Ports.FindAsync(id);
+            if (port != null)
+            {
+                _context.Ports.Remove(port);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
     }
 }

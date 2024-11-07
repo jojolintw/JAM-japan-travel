@@ -7,7 +7,7 @@
 <h1>港口列表</h1>
 
 <p>
-    <a asp-action="Port" class="btn btn-primary">新增港口</a>   
+    <a asp-action="Create" class="btn btn-primary">新增港口</a>   
 </p>
 <table class="table">
     <thead>
@@ -62,8 +62,12 @@
             </td>
 
             <td>
-                    @Html.ActionLink("修改", "Edit", new { id = item.PortId }) |
-                    @Html.ActionLink("刪除", "Delete", new { id = item.PortId }, new { onclick = "return confirm('確定要刪除嗎')" })
+                        <form asp-action="Edit" asp-route-id="@item.PortId" method="get" style="display:inline;">
+                            <button type="submit" class="btn btn-primary">修改</button>
+                        </form> |
+                        <form asp-action="Delete" asp-route-id="@item.PortId" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除嗎？')">刪除</button>
+                        </form>
             </td>
         </tr>
 }}

@@ -54,7 +54,15 @@ namespace JP_FrontWebAPI.Controllers
                 if(login.EnglishName!= null)
                     loginDTO.EnglishName = login.EnglishName;
                 if (login.Gender != null)
-                    loginDTO.Gender = login.Gender;
+                    if (login.Gender == true)
+                    {
+                        loginDTO.Gender = "true";
+                    }
+                    else 
+                    {
+                        loginDTO.Gender = "false";
+                    }
+                    
                 if (login.Birthday != null)
                     loginDTO.Birthday = login.Birthday;
                 if (login.City?.CityAreaId != null)
@@ -84,7 +92,7 @@ namespace JP_FrontWebAPI.Controllers
         }
         [HttpPost("AlterMemberinformation")]
         [Authorize]
-        public IActionResult AlterMemberinformation(AlterMemberDTO memberDTO)
+        public IActionResult AlterMemberinformation([FromBody] AlterMemberDTO memberDTO)
         {
             //取出JWT
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
@@ -103,14 +111,22 @@ namespace JP_FrontWebAPI.Controllers
                 var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
 
                 // 更改會員
-                var member = _context.Members.FirstOrDefault(m => m.Email == useremail);
+                 var member = _context.Members.FirstOrDefault(m => m.Email == useremail);
 
                 if(memberDTO != null)
                     member.MemberName = memberDTO.MemberName;
                 if (memberDTO.EnglishName != null)
                     member.EnglishName = memberDTO.EnglishName;
-                if (memberDTO.Gender != null)
-                    member.Gender = memberDTO.Gender;
+                if (memberDTO.Gender != null) 
+                {
+                    bool gender = true;
+                    if (memberDTO.Gender == "false") 
+                    {
+                        gender = !gender;
+                    }
+                    member.Gender = gender;
+                }
+               
                 if (memberDTO.Birthday != null)
                     member.Birthday = Convert.ToDateTime(memberDTO.Birthday);
                 if (memberDTO.CityId != null)
@@ -119,8 +135,6 @@ namespace JP_FrontWebAPI.Controllers
                     member.Phone = memberDTO.Phone;
                 if (memberDTO.Email != null)
                     member.Email = memberDTO.Email;
-                if (memberDTO.ImagePath != null)
-                    member.ImagePath = memberDTO.ImagePath;
 
                 _context.SaveChanges();
 

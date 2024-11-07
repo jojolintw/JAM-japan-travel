@@ -4,11 +4,11 @@
     {
         public string MemberName { get; set; }
         public string? EnglishName { get; set; }
-        public bool? Gender { get; set; }
+        public string? Gender { get; set; }
         public string? Birthday { get; set; }
         public int? CityId { get; set; }
         public string? Phone { get; set; }
         public string Email { get; set; }
-        public string ImagePath { get; set; }
+        //public IFormFile Memberphoto { get; set; }
     }
 }

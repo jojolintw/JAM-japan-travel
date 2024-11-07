@@ -56,8 +56,8 @@ namespace JP_FrontWebAPI.Controllers
                 loginDTO.ChineseName = login.MemberName;
                 if (login.EnglishName != null)
                     loginDTO.EnglishName = login.EnglishName;
-                if (login.Gender != null)
-                    loginDTO.Gender = login.Gender;
+                //if (login.Gender != null)
+                //    loginDTO.Gender = login.Gender;
                 if (login.Birthday != null)
                     loginDTO.Birthday = login.Birthday;
                 if (login.City.CityAreaId != null)

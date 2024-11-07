@@ -5,7 +5,7 @@
         public int MemberId { get; set; }
         public string ChineseName { get; set; }
         public string? EnglishName { get; set; }
-        public bool? Gender { get; set; }
+        public string? Gender { get; set; }
         public DateTime? Birthday { get; set; }
         public int? CityAreaId { get; set; }
         public string? CityAreaName { get; set; }

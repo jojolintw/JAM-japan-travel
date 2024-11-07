@@ -1,0 +1,75 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.Models.Port>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>港口列表</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">新增港口</a>   
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               序號
+            </th>
+            <th>
+                港口名稱
+            </th>
+            <th>
+                城市名稱
+            </th>
+            <th>
+                城市描述1
+            </th>
+            <th>
+                城市描述2
+            </th>
+            <th>
+                GoogleMap位置
+            </th>
+            <th>
+                功能
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PortName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CityDescription1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CityDescription2)
+            </td>
+            <td>
+                        <iframe src="@item.PortGoogleMap"></iframe>
+            </td>
+
+            <td>
+                        <form asp-action="Edit" asp-route-id="@item.PortId" method="get" style="display:inline;">
+                            <button type="submit" class="btn btn-primary">修改</button>
+                        </form> |
+                        <form asp-action="Delete" asp-route-id="@item.PortId" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除嗎？')">刪除</button>
+                        </form>
+            </td>
+        </tr>
+}}
+    </tbody>
+</table>

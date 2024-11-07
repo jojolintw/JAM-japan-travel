@@ -1,0 +1,70 @@
+﻿@model prjJapanTravel_BackendMVC.Models.Port
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>新增港口</h1>
+
+<h4>港口資料</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input hidden asp-for="PortId" class="form-control" />
+                <span asp-validation-for="PortId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PortName" class="control-label">港口名稱</label>
+                <input asp-for="PortName" class="form-control" />
+                <span asp-validation-for="PortName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label">城市名稱</label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CityDescription1" class="control-label">城市描述1</label>
+                <input asp-for="CityDescription1" class="form-control" />
+                <span asp-validation-for="CityDescription1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CityDescription2" class="control-label">城市描述2</label>
+                <input asp-for="CityDescription2" class="form-control" />
+                <span asp-validation-for="CityDescription2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PortGoogleMap" class="control-label">GoogleMap位置</label>
+                <input asp-for="PortGoogleMap" class="form-control" />
+                <span asp-validation-for="PortGoogleMap" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">新增</button>
+
+                <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">返回</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function fillDemoData() {
+            // 填入假資料
+            document.querySelector('[name="PortName"]').value = "下關港";
+            document.querySelector('[name="City"]').value = "山口縣下關市";
+            document.querySelector('[name="CityDescription1"]').value = "下關市為本州最西端的都市，其主要市區過去曾稱為馬關，擁有豐富的文化和歷史。";
+            document.querySelector('[name="CityDescription2"]').value = "主要市區位於關門海峽北岸的下關港周邊，與海峽對岸的北九州市之間有關門鐵路隧道、關門國道隧道、關門橋可以往來，兩地也因此共同形成關門都市圈。。";
+            document.querySelector('[name="PortGoogleMap"]').value = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3309.793167223637!2d130.93093217649522!3d33.946447473197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3543bdbf5a838757%3A0xcebf22b49055d759!2sShimonoseki%20Port!5e0!3m2!1szh-TW!2stw!4v1730967171581!5m2!1szh-TW!2stw";
+        }
+    </script>
+}

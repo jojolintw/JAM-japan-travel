@@ -72,7 +72,7 @@ namespace JP_FrontWebAPI.Controllers
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
                     ItineraryBatch = n.ItineraryDates.Where(batch => batch.ItinerarySystemId == n.ItinerarySystemId)
-                                                     .Select(d => new ItineraryDate
+                                                     .Select(d => new Itinerary_Date
                                                      {
                                                          ItineraryDateSystemId = d.ItineraryDateSystemId,
                                                          DepartureDate = d.DepartureDate,
@@ -153,7 +153,7 @@ namespace JP_FrontWebAPI.Controllers
         {
             var relatedItineraries = await _JP.Itineraries
                 .Where(i => i.ActivitySystem.ActivitySystemId == activityId)
-                .Take(5)  // 多取一個，因為前端會過濾掉當前行程
+                .Take(4)  // 多取一個，因為前端會過濾掉當前行程
                 .Select(i => new Itinerary_List
                 {
                     ItinerarySystemId = i.ItinerarySystemId,

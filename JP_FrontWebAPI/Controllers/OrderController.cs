@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Net;
 using System.Net.Mail;
 using JP_FrontWebAPI.Service;
+using JP_FrontWebAPI.DTOs.Order;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -100,5 +101,41 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok((new {result="success"}));
         }
+
+        [HttpPost]
+        public IActionResult CreateOrder([FromBody] OrderItemDTO orderItemDTO)
+        {
+
+            //Order order = new Order()
+            //{
+            //    OrderNumber = '1' + DateTime.Now.ToString(),
+            //    MemberId = 1,
+            //    OrderTime = DateTime.Now,
+            //    PaymentMethodId = 2,                 // LinePay的付款方式id為2
+            //    OrderStatusId = 3,                   // 付款狀態id3為以付款
+            //    CouponId = 1,                        // 優惠券id1為驚喜大禮包 折扣100
+            //    //TotalAmount = orderDTO.TotalAmount,
+            //    //Remarks = orderDTO.Remarks,
+            //    ItineraryOrderItems = new List<ItineraryOrderItem>()
+            //};
+
+            //foreach (var item in orderDTO.Items)
+            //{
+            //    var orderItem = new ItineraryOrderItem
+            //    {
+            //        OrderId = item.OrderId,
+            //        ItineraryDateSystemId = item.ItineraryDateSystemId,
+            //        Quantity = item.Quantity
+            //    };
+            //    order.ItineraryOrderItems.Add(orderItem);
+            //}
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+
+            return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, order);
+        }
+
     }
 }

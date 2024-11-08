@@ -30,11 +30,38 @@ namespace JP_FrontWebAPI.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShipmentListViewModel>>> GetShipments()
+        public async Task<ActionResult<IEnumerable<ShipmentListViewModel>>> GetShipments(
+    string? originPort = null,
+    string? destinationPort = null,
+    string? sortBy = null,
+    bool isAscending = true,
+    int pageNumber = 1,
+    int pageSize = 12)
         {
-            var shipments = await _context.Routes
+            var query = _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(originPort))
+            {
+                query = query.Where(r => r.OriginPort.PortName.Contains(originPort));
+            }
+            if (!string.IsNullOrEmpty(destinationPort))
+            {
+                query = query.Where(r => r.DestinationPort.PortName.Contains(destinationPort));
+            }
+
+            query = sortBy switch
+            {
+                "Price" => isAscending ? query.OrderBy(r => r.Price) : query.OrderByDescending(r => r.Price),
+                _ => query.OrderBy(r => r.RouteId)
+            };
+
+            var totalRecords = await query.CountAsync();
+            var shipments = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .Select(r => new ShipmentListViewModel
                 {
                     RouteId = r.RouteId,
@@ -45,8 +72,17 @@ namespace JP_FrontWebAPI.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(shipments);
+            return Ok(new
+            {
+                Data = shipments,
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
         }
+
+
+
 
 
         [HttpGet("GetRouteImage/{routeId}")]

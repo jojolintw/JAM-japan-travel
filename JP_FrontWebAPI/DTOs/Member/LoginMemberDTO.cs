@@ -18,7 +18,6 @@
         public string MemberLevel { get; set; }
         public int MemberStatusId { get; set; }
         public string MemberStatus { get; set; }
-        public string Photopath { get; set; }
-        public IFormFile? photo { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

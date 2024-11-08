@@ -20,7 +20,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 //���\CORS
@@ -105,7 +105,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(policyName);
 app.UseHttpsRedirection();
 
-
+app.UseStaticFiles();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

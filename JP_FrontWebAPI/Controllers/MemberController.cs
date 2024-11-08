@@ -18,15 +18,21 @@ namespace JP_FrontWebAPI.Controllers
     {
         private JapanTravelContext _context;
         public readonly IWebHostEnvironment _environ;
-        public MemberController(JapanTravelContext context, IWebHostEnvironment environ)
+        public readonly IHttpContextAccessor _httpContextAccessor;
+        public MemberController(JapanTravelContext context, IWebHostEnvironment environ, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _environ = environ;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet("GetLoginMember")]
         [Authorize]
         public IActionResult GetLoginMember()
         {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+
+
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
@@ -83,9 +89,9 @@ namespace JP_FrontWebAPI.Controllers
                 loginDTO.MemberStatusId = login.MemberStatusId;
                 loginDTO.MemberStatus = login.MemberStatus.MemberStatusName;
                 if (login.ImagePath != null)
-                    loginDTO.Photopath = login.ImagePath;
+                    loginDTO.ImageUrl = $"{baseUrl}/images/Member/{login.ImagePath}";
 
-                    return Ok(new { result = "success", loginmember = loginDTO });
+                return Ok(new { result = "success", loginmember = loginDTO });
             }
 
             return Unauthorized(new { result = "noLogin" });

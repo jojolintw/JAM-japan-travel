@@ -78,8 +78,8 @@ namespace JP_FrontWebAPI.Controllers
                 loginDTO.MemberLevel = login.MemberLevel.MemberLevelName;
                 loginDTO.MemberStatusId = login.MemberStatusId;
                 loginDTO.MemberStatus = login.MemberStatus.MemberStatusName;
-                if (login.ImagePath != null)
-                    loginDTO.Photopath = login.ImagePath;
+                //if (login.ImagePath != null)
+                //    loginDTO.Photopath = login.ImagePath;
 
                 return Ok(new { result = "succcess", loginmember = loginDTO });
                 //}

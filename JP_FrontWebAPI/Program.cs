@@ -54,6 +54,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // 註冊EmailServic
+builder.Services.AddScoped<JWTService>();
 builder.Services.AddScoped<EmailService>();
 
 

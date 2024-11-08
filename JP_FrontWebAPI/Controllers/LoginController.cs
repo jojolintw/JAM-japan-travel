@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -23,10 +24,12 @@ namespace JP_FrontWebAPI.Controllers
     {
         private readonly JapanTravelContext _context;
         private readonly EmailService _emailService;
-        public LoginController(JapanTravelContext context, EmailService emailService) 
+        private readonly JWTService _jwtService;
+        public LoginController(JapanTravelContext context, EmailService emailService, JWTService jwtService) 
         {
             _context = context;
             _emailService = emailService;
+            _jwtService = jwtService;
         }
         //登入==============================================================================================================
         [HttpPost("Login")]
@@ -51,21 +54,7 @@ namespace JP_FrontWebAPI.Controllers
             // 驗證用戶名和密碼
             if (l.Email == logmem.Email && l.Password == logmem.Password) // 這裡用真實驗證邏輯
             {
-                var claims = new[]
-                {
-                new Claim(JwtRegisteredClaimNames.Sub, l.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                };
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                var token = new JwtSecurityToken(
-                    issuer: "https://localhost:7100",
-                    audience: "http://localhost:4200",
-                    claims: claims,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials: creds);
+                JwtSecurityToken token = _jwtService.ProduceJWTToken(logmem);
 
                 return Ok(new { result = "success" ,token = new JwtSecurityTokenHandler().WriteToken(token) });
             }
@@ -96,21 +85,8 @@ namespace JP_FrontWebAPI.Controllers
             _context.SaveChanges();
 
             //產生JWT Token
-            var claims = new[]
-               {
-                new Claim(JwtRegisteredClaimNames.Sub, regDTO.RegisterEmail),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-               };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Setting.Secret));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: "https://localhost:7100",
-                audience: "http://localhost:4200",
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds);
+            JwtSecurityToken token = _jwtService.ProduceJWTToken(newmember);
 
             return Ok(new { result = "success", message = "註冊成功", token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
@@ -125,17 +101,10 @@ namespace JP_FrontWebAPI.Controllers
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
             {
-                // 取出 JWT Token
-                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
 
-                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
+                Member member = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
 
-                // 取得 Token 的相關資訊 (如使用者名稱等)
-
-                //var member = JsonSerializer.Deserialize<>(jwtToken);
-                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
                 _emailService.SendEmailAsync("chaosabyss73@gmail.com", subject, body);
                 return Ok((new { result = "success" }));
             }
@@ -146,24 +115,13 @@ namespace JP_FrontWebAPI.Controllers
         [Authorize]
         public IActionResult memberCertification()
         {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+            string authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
             {
-                // 取出 JWT Token
-                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
 
-                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // 取得 Token 的相關資訊 (如使用者名稱等)
-
-                //var member = JsonSerializer.Deserialize<>(jwtToken);
-                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-                //找會員
-                Member certificationmem = _context.Members.FirstOrDefault(m => m.Email == useremail);
-                certificationmem.MemberStatusId = 2;
+                Member member = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
+                member.MemberStatusId = 2;
                 _context.SaveChanges();
                 return Ok((new { result = "success" }));
             }

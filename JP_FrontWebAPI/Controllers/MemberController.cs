@@ -1,6 +1,7 @@
 ﻿using JP_FrontWebAPI.DTOs.Member;
 using JP_FrontWebAPI.DTOs.Shared;
 using JP_FrontWebAPI.Models;
+using JP_FrontWebAPI.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,13 @@ namespace JP_FrontWebAPI.Controllers
     public class MemberController : ControllerBase
     {
         private JapanTravelContext _context;
+        JWTService _jwtService;
         public readonly IWebHostEnvironment _environ;
         public readonly IHttpContextAccessor _httpContextAccessor;
-        public MemberController(JapanTravelContext context, IWebHostEnvironment environ, IHttpContextAccessor httpContextAccessor)
+        public MemberController(JapanTravelContext context, JWTService jwtService, IWebHostEnvironment environ, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _jwtService = jwtService;
             _environ = environ;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -36,26 +39,9 @@ namespace JP_FrontWebAPI.Controllers
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
-            {        
-                // 取出 JWT Token
-                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-
-                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // 取得 Token 的相關資訊 (如使用者名稱等)
-
-                //var member = JsonSerializer.Deserialize<>(jwtToken);
-                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-                //從後端Session中取出登入者資料
-                //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
-                //Member loginMember = JsonSerializer.Deserialize<Member>(memberjson);
-                //驗證後端Session及JWT Token中的email是相同的
-                //if (loginMember.Email == email) 
-                //{
-                var login = _context.Members.FirstOrDefault(m => m.Email == useremail);
+            {
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
+                var login = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
                 LoginMemberDTO loginDTO = new LoginMemberDTO();
                 loginDTO.MemberId = login.MemberId;
                 loginDTO.ChineseName = login.MemberName;
@@ -96,6 +82,8 @@ namespace JP_FrontWebAPI.Controllers
 
             return Unauthorized(new { result = "noLogin" });
         }
+
+        // 修改會員資料==================================================================================================================
         [HttpPost("AlterMemberinformation")]
         [Authorize]
         public IActionResult AlterMemberinformation([FromForm] AlterMemberDTO memberDTO)
@@ -105,19 +93,10 @@ namespace JP_FrontWebAPI.Controllers
 
             if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
             {
-                // 取出 JWT Token
-                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
 
-                // 取得 Token 的相關資訊 (如使用者名稱等)
-
-                var useremail = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-                // 更改會員
-                 var member = _context.Members.FirstOrDefault(m => m.Email == useremail);
+                var member = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
 
                 if(memberDTO != null)
                     member.MemberName = memberDTO.MemberName;
@@ -139,6 +118,7 @@ namespace JP_FrontWebAPI.Controllers
                     member.CityId = memberDTO.CityId;
                 if (memberDTO.Phone != null)
                     member.Phone = memberDTO.Phone;
+                member.Email = memberDTO.Email;
 
                 //照片處理=============================================================
                 if (memberDTO.file != null)
@@ -150,11 +130,20 @@ namespace JP_FrontWebAPI.Controllers
 
                 _context.SaveChanges();
 
-                return Ok(new { result = "success", memberinformation = useremail });
+                return Ok(new { result = "success"});
 
             }
             return Unauthorized(new { result = "noLogin" });
         }
+
+
+
+
+
+
+
+
+        //===============================================================================================================================
         [HttpGet("GetCityArea")]
         [Authorize]
         public IActionResult GetCityArea() 

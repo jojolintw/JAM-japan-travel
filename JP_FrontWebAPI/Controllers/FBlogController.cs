@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using static JP_FrontWebAPI.DTOs.Blog.ArticleDTO;
 
@@ -47,9 +48,11 @@ namespace JP_FrontWebAPI.Controllers
         }
 
         //根據id獲取文章
-       [HttpGet("{id}")]
-            public async Task<ActionResult<ArticleDTO>> GetArticleById(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ArticleDTO>> GetArticleById(int id)
         {
+            int a = GetMemberId();
+
             var article = await _context.ArticleMains
         .Include(a => a.ArticleHashtags) // 加载 ArticleHashtags
         .ThenInclude(h => h.HashtagNumberNavigation) // 加载 HashtagMain
@@ -75,7 +78,7 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(articleDto);
         }
-        // 搜索文章（根据标题进行搜索）
+        // 搜索文章（根據標題和內容搜索）
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<ArticleDTO>>> SearchArticles(string keyword)
         {
@@ -118,9 +121,10 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(hashtags);
         }
-        //获取某个标签相关的文章
+        //獲取某個標籤相關的文章
         [HttpGet("articles-by-hashtag")]
         public async Task<ActionResult<IEnumerable<ArticleDTO>>> GetArticlesByHashtag(string hashtag)
+
         {
             if (string.IsNullOrEmpty(hashtag))
             {
@@ -148,6 +152,51 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(articleDtos);
         }
+
+        // 假设这是一个控制器方法，用于删除指定的文章
+        [HttpDelete("{articleNumber}")]
+        public async Task<IActionResult> DeleteArticle(int articleNumber)
+        {
+            // 查找要删除的文章
+            var article = await _context.ArticleMains.FindAsync(articleNumber);
+
+            // 如果文章不存在，返回 404 Not Found
+            if (article == null)
+            {
+                return NotFound($"Article with number {articleNumber} not found.");
+            }
+
+            // 删除与该文章相关的记录（如果有外键约束需要删除）
+            var articleHashtags = _context.ArticleHashtags.Where(a => a.ArticleNumber == articleNumber);
+            _context.ArticleHashtags.RemoveRange(articleHashtags);
+
+            // 删除文章本身
+            _context.ArticleMains.Remove(article);
+
+            // 保存更改到数据库
+            await _context.SaveChangesAsync();
+
+            // 返回 204 No Content，表示删除成功
+            return NoContent();
+        }
+
+
+        private int GetMemberId()
+        {
+
+
+
+            // 1.抓到使用者
+            var email = User.Claims.FirstOrDefault(e => e.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
+
+            //_context.Members  找=>id
+            // 比對MemberId
+
+            // 2.判定是否有修改權限
+
+            return 1;
+        }
+
 
     }
 }

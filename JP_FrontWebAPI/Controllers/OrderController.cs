@@ -102,9 +102,9 @@ namespace JP_FrontWebAPI.Controllers
             return Ok((new {result="success"}));
         }
 
-        [HttpPost]
-        public IActionResult CreateOrder([FromBody] OrderItemDTO orderItemDTO)
-        {
+        //[HttpPost]
+        //public IActionResult CreateOrder([FromBody] OrderItemDTO orderItemDTO)
+        //{
 
             //Order order = new Order()
             //{
@@ -130,12 +130,12 @@ namespace JP_FrontWebAPI.Controllers
             //    order.ItineraryOrderItems.Add(orderItem);
             //}
 
-            _context.Orders.Add(order);
-            _context.SaveChanges();
+        //    _context.Orders.Add(order);
+        //    _context.SaveChanges();
 
 
-            return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, order);
-        }
+        //    return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, order);
+        //}
 
     }
 }

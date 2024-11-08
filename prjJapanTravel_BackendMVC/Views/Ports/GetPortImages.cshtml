@@ -1,0 +1,13 @@
+﻿@model IEnumerable<dynamic> 
+<!-- 這裡的 Model 是 IEnumerable<dynamic>，所以可以用 foreach 來迭代 Model 中的元素 -->
+<h2>Port Images</h2>
+
+<div>
+    @foreach (var image in Model)
+    {
+        <div>
+            <img src="data:image/jpeg;base64,@image.Base64Image" alt="@image.PortImageDes" style="width:200px; height:auto;" />
+            <p>@image.PortImageDes</p>
+        </div>
+    }
+</div>

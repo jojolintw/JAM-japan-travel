@@ -30,23 +30,51 @@ namespace JP_FrontWebAPI.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShipmentListViewModel>>> GetShipments()
+        public async Task<ActionResult<IEnumerable<ShipmentListViewModel>>> GetShipments(
+    string? originPort = null,
+    string? destinationPort = null,
+    string? sortBy = null,
+    bool isAscending = true)
         {
-            var shipments = await _context.Routes
+            // 初始化查詢，包含關聯的港口資訊
+            var query = _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
-                .Select(r => new ShipmentListViewModel
-                {
-                    RouteId = r.RouteId,
-                    OriginPortName = r.OriginPort.PortName,
-                    DestinationPortName = r.DestinationPort.PortName,
-                    Price = r.Price,
-                    RouteDescription = r.RouteDescription
-                })
-                .ToListAsync();
+                .AsQueryable();
+
+            // 根據出發地進行篩選
+            if (!string.IsNullOrEmpty(originPort))
+            {
+                query = query.Where(r => r.OriginPort.PortName.Contains(originPort));
+            }
+
+            // 根據目的地進行篩選
+            if (!string.IsNullOrEmpty(destinationPort))
+            {
+                query = query.Where(r => r.DestinationPort.PortName.Contains(destinationPort));
+            }
+
+            // 根據排序條件進行排序
+            query = sortBy switch
+            {
+                "Price" => isAscending ? query.OrderBy(r => r.Price) : query.OrderByDescending(r => r.Price),
+                _ => query.OrderBy(r => r.RouteId) // 預設排序
+            };
+
+            // 將結果投影到視圖模型中
+            var shipments = await query.Select(r => new ShipmentListViewModel
+            {
+                RouteId = r.RouteId,
+                OriginPortName = r.OriginPort.PortName,
+                DestinationPortName = r.DestinationPort.PortName,
+                Price = r.Price,
+                RouteDescription = r.RouteDescription
+            }).ToListAsync();
 
             return Ok(shipments);
         }
+
+
 
 
         [HttpGet("GetRouteImage/{routeId}")]

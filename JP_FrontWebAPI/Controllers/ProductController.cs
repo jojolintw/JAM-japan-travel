@@ -5,7 +5,6 @@ using JP_FrontWebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
-using static JP_FrontWebAPI.Controllers.ProductController;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -87,8 +86,26 @@ namespace JP_FrontWebAPI.Controllers
 
             if (data == null)
                 return NotFound(new { message = "找不到該行程" });
+            var itineraryDetailList = data.ItineraryDetail.Split('#')
+                                                          .Select(segment => segment.Trim())
+                                                          .Where(segment => !string.IsNullOrEmpty(segment))
+                                                          .ToList();
+            var result = new Itineray_Detail
+            {
+                ItinerarySystemId = data.ItinerarySystemId,
+                ItineraryName = data.ItineraryName,
+                ActivityName = data.ActivityName,
+                ActivityId = data.ActivityId,
+                Price = data.Price,
+                AreaName = data.AreaName,
+                ItineraryBatch = data.ItineraryBatch,
+                ImagePath = data.ImagePath,
+                ItineraryDetails = itineraryDetailList,
+                ItineraryBrief = data.ItineraryBrief,
+                ItineraryNote = data.ItineraryNote
+            };
 
-            return Ok(data);
+            return Ok(result);
         }
 
         [HttpPost("search")]

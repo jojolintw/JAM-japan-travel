@@ -15,7 +15,7 @@ public partial class Itinerary
 
     public int? ActivitySystemId { get; set; }
 
-    public string Avaiable { get; set; }
+    public string Available { get; set; }
 
     public decimal Price { get; set; }
 

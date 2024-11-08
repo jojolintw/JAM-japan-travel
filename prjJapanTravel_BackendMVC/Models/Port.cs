@@ -19,6 +19,8 @@ public partial class Port
 
     public string PortGoogleMap { get; set; }
 
+    public virtual ICollection<PortImage> PortImages { get; set; } = new List<PortImage>();
+
     public virtual ICollection<Route> RouteDestinationPorts { get; set; } = new List<Route>();
 
     public virtual ICollection<Route> RouteOriginPorts { get; set; } = new List<Route>();

@@ -55,7 +55,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     ItineraryId = itimodel.行程編號,
                     ItineraryName = itimodel.行程名稱,
                     ActivitySystemId = itimodel.體驗項目編號,
-                    Avaiable = itimodel.是否可報名,
+                    Available = itimodel.是否可報名,
                     Price = (int)itimodel.價格,
                     AreaSystemId = (int)itimodel.地區編號,
                     ItineraryDetail = itimodel.行程詳情,
@@ -122,7 +122,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                    ItinerarySystemId = n.ItinerarySystemId,
                     ItineraryName = n.ItineraryName,
                     ActivityName = n.ActivitySystem.ActivityName,
-                    Avaible = n.Avaiable,
+                    Avaible = n.Available,
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
                     ItineraryDates = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
@@ -155,7 +155,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 itinerary.ItineraryId = itiModel.行程編號;
                 itinerary.ItineraryName = itiModel.行程名稱;
                 itinerary.ActivitySystemId = itiModel.體驗項目編號;
-                itinerary.Avaiable = itiModel.是否可報名;
+                itinerary.Available = itiModel.是否可報名;
                 itinerary.Price = (int)itiModel.價格;
                 itinerary.AreaSystemId = (int)itiModel.地區編號;
                 itinerary.ItineraryDetail = itiModel.行程詳情;

@@ -6,7 +6,6 @@ using NuGet.Protocol.Resources;
 using prjJapanTravel_BackendMVC.Models;
 using prjJapanTravel_BackendMVC.ViewModels.ProductViewModels;
 using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjJapanTravel_BackendMVC.Controllers
 {
@@ -27,7 +26,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程編號 = n.ItineraryId,
                 行程名稱 = n.ItineraryName,
                 體驗項目 = n.ActivitySystem.ActivityName,
-                是否可報名 = n.Avaiable,
+                是否可報名 = n.Available,
                 價格 = n.Price,
                 地區 = n.AreaSystem.AreaName,
                 行程批次 = n.ItineraryDates.Where(date => date.ItinerarySystemId == n.ItinerarySystemId).ToList(),
@@ -74,7 +73,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryName = itimodel.行程名稱;
             //itinerary.ActivitySystem.ThemeSystemId = itimodel.ThemeSystem.ThemeSystemId;
             //itinerary.ActivitySystemId = itimodel.ActivitySystem.ActivitySystemId;
-            itinerary.Avaiable = itimodel.是否可報名;
+            itinerary.Available = itimodel.是否可報名;
             itinerary.Price = (int)itimodel.價格;
             itinerary.AreaSystemId = itimodel.AreaSystem.AreaSystemId;
             itinerary.ItineraryDetail = itimodel.行程詳情;
@@ -159,7 +158,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                 行程名稱 = n.ItineraryName,
                 體驗項目編號 = n.ActivitySystemId,
                 體驗項目 = n.ActivitySystem.ActivityName,
-                是否可報名 = n.Avaiable,
+                是否可報名 = n.Available,
                 價格 = n.Price,
                 行程批次 = n.ItineraryDates.ToList(),// 加入行程日期
                 體驗主題編號 = n.ActivitySystem.ThemeSystemId,
@@ -190,7 +189,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryId = itiModel.行程編號;
             itinerary.ItineraryName = itiModel.行程名稱;
             itinerary.ActivitySystemId = itiModel.體驗項目編號;
-            itinerary.Avaiable = itiModel.是否可報名;
+            itinerary.Available = itiModel.是否可報名;
             itinerary.Price = (int)itiModel.價格;
             //itinerary.ActivitySystem.ThemeSystemId = itiModel.體驗主題編號;
             itinerary.AreaSystemId = (int)itiModel.地區編號;
@@ -198,7 +197,9 @@ namespace prjJapanTravel_BackendMVC.Controllers
             itinerary.ItineraryBrief = itiModel.行程簡介;
             itinerary.ItineraryNotes = itiModel.行程注意事項;
 
+            
             var existingDates = _JP.ItineraryDates.Where(d => d.ItinerarySystemId == itinerary.ItinerarySystemId).ToList();
+            
 
             // 刪除已移除的日期
             foreach (var date in existingDates)

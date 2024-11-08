@@ -14,7 +14,8 @@ namespace JP_FrontWebAPI.DTOs.Itinerary
         public List<string> ImagePath { get; set; }
         public List<Itinerary_Date> ItineraryBatch { get; set; }
         public decimal Price { get; set; }
-        public string? ItineraryDetail { get; set; }
+        public string ItineraryDetail { get; set; }
+        public List<string?> ItineraryDetails { get; set; }
         public string? ItineraryBrief { get; set; }
         public string? ItineraryNote { get; set; }
     }

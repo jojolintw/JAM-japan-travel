@@ -87,7 +87,7 @@
                             <td>@Model.行程批次[i].DepartureDate</td>
                             <td>
                                 <!-- 創建隱藏輸入以傳遞這些已經存在的日期和時間 -->
-                                <input type="hidden" name="行程日期[@i].DepartureDate" value="@Model.行程批次[i].DepartureDate" />
+                                <input type="hidden" name="行程批次[@i].DepartureDate" value="@Model.行程批次[i].DepartureDate" />
                                 <button type="button" onclick="removeRow(this)">刪除</button>
                             </td>
                         </tr>
@@ -160,7 +160,7 @@
                 var index = table.rows.length - 1; // 當前行數作為索引
                 var hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
-                hiddenInput.name = "行程日期[" + index + "].DepartureDate"; // 確保索引正確
+                hiddenInput.name = "行程批次[" + index + "].DepartureDate"; // 確保索引正確
                 hiddenInput.value = dateTime;
                 document.forms[0].appendChild(hiddenInput); // 將隱藏欄位添加到表單中
             }

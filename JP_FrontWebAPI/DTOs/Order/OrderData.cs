@@ -1,9 +1,10 @@
 ﻿namespace JP_FrontWebAPI.DTOs.Order
 {
-    public class Order
+    public class OrderData
     {
         public int? couponId { get; set; }
         public string? remarks { get; set; }
-        public List<CartItems>? items { get; set; }
+        public decimal? totalAmount { get; set; }
+        public List<CartItems>? cart { get; set; }
     }
 }

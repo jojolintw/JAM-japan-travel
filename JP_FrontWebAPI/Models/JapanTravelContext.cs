@@ -347,9 +347,7 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.MemberStatusId).HasColumnName("MemberStatusID");
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.Phone).HasMaxLength(50);
 
             entity.HasOne(d => d.City).WithMany(p => p.Members)

@@ -1,4 +1,5 @@
-﻿using JP_FrontWebAPI.DTOs.Member;
+﻿using Google.Apis.Auth;
+using JP_FrontWebAPI.DTOs.Member;
 using JP_FrontWebAPI.DTOs.Shared;
 using JP_FrontWebAPI.Models;
 using JP_FrontWebAPI.Service;
@@ -30,6 +31,60 @@ namespace JP_FrontWebAPI.Controllers
             _context = context;
             _emailService = emailService;
             _jwtService = jwtService;
+        }
+
+        //驗證是否有登入
+        [HttpGet("islogin")]
+        [Authorize]
+        public IActionResult islogin()
+        {
+            return Ok(new {result = "successlogin" });
+        }
+        //google登入及註冊
+        [HttpPost("googlelogin")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginInput gl)
+        {
+            try
+            {
+                var payload = await GoogleJsonWebSignature.ValidateAsync(gl.token);
+                // 驗證成功後處理使用者資訊，例如建立 JWT Token 或登入邏輯
+                var userId = payload.Subject;
+                var name = payload.Name;
+                var email = payload.Email;
+              
+
+                var allemails = _context.Members.Select(e => e.Email).ToList();
+
+                if (!allemails.Contains(email)) 
+                {
+                    Member newmember = new Member()
+                    {
+                        MemberName = name,
+                        Email = email,
+                        MemberLevelId = 1,
+                        MemberStatusId = 1,
+                        GoogleLink = true
+                    };
+                    _context.Members.Add(newmember);
+                    _context.SaveChanges();
+                    //找尋剛剛加入的member
+                    var member = _context.Members.FirstOrDefault(e => e.Email == email);
+
+                    JwtSecurityToken token=_jwtService.ProduceJWTToken(member);
+                    return Ok(new { result = "successregester", token = new JwtSecurityTokenHandler().WriteToken(token) });
+                }
+
+                var mem = _context.Members.FirstOrDefault(e => e.Email == email);
+                JwtSecurityToken tok = _jwtService.ProduceJWTToken(mem);
+
+                // 返回或處理登入成功的結果
+                return Ok(new { result = "successlogin", token = new JwtSecurityTokenHandler().WriteToken(tok) });
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { Message = "Invalid Google token", Error = ex.Message });
+            }
+            return Ok();
         }
         //登入==============================================================================================================
         [HttpPost("Login")]
@@ -78,7 +133,8 @@ namespace JP_FrontWebAPI.Controllers
                 Email = regDTO.RegisterEmail,
                 Password = regDTO.RegisterPassword,
                 MemberLevelId = 1,
-                MemberStatusId = 1
+                MemberStatusId = 1,
+                GoogleLink = false
             };
 
             _context.Members.Add(newmember);

@@ -34,6 +34,7 @@ builder.Services.AddCors(options =>
 });
 
 
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

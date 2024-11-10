@@ -51,7 +51,7 @@ namespace JP_FrontWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ArticleDTO>> GetArticleById(int id)
         {
-            int a = GetMemberId();
+            //int a = GetMemberId();
 
             var article = await _context.ArticleMains
         .Include(a => a.ArticleHashtags) // 加载 ArticleHashtags
@@ -181,21 +181,21 @@ namespace JP_FrontWebAPI.Controllers
         }
 
 
-        private int GetMemberId()
-        {
+        //private int GetMemberId()
+        //{
 
 
 
             // 1.抓到使用者
-            var email = User.Claims.FirstOrDefault(e => e.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
+            //var email = User.Claims.FirstOrDefault(e => e.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").Value;
 
             //_context.Members  找=>id
             // 比對MemberId
 
             // 2.判定是否有修改權限
 
-            return 1;
-        }
+            //return 1;
+        //}
 
 
     }

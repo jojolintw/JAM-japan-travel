@@ -260,9 +260,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("Itinerary");
 
-            entity.Property(e => e.Available)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Available).HasMaxLength(50);
             entity.Property(e => e.ItineraryId)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -347,9 +345,7 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.MemberStatusId).HasColumnName("MemberStatusID");
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.Phone).HasMaxLength(50);
 
             entity.HasOne(d => d.City).WithMany(p => p.Members)
@@ -393,6 +389,7 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("MemberLevel");
 
             entity.Property(e => e.MemberLevelId).HasColumnName("MemberLevelID");
+            entity.Property(e => e.Condtition).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.MemberLevelName)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -431,7 +428,7 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable("Order");
+            entity.ToTable("Order", tb => tb.HasTrigger("trg_AfterInsertOrder"));
 
             entity.Property(e => e.OrderNumber).HasMaxLength(50);
             entity.Property(e => e.OrderTime).HasColumnType("datetime");
@@ -509,13 +506,19 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<PortImage>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("PortImage");
+            entity.ToTable("PortImage");
 
+            entity.Property(e => e.PortImageId).HasColumnName("PortImageID");
             entity.Property(e => e.PortId).HasColumnName("PortID");
-            entity.Property(e => e.PortImageDes).HasMaxLength(50);
-            entity.Property(e => e.PortImageId).ValueGeneratedOnAdd();
+            entity.Property(e => e.PortImageDescription)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.PortImageUrl).HasColumnName("PortImageURL");
+
+            entity.HasOne(d => d.Port).WithMany(p => p.PortImages)
+                .HasForeignKey(d => d.PortId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PortImage_Port");
         });
 
         modelBuilder.Entity<Route>(entity =>

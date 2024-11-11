@@ -11,5 +11,9 @@ public partial class PortImage
 
     public int PortId { get; set; }
 
-    public string PortImageDes { get; set; }
+    public string PortImageUrl { get; set; }
+
+    public string PortImageDescription { get; set; }
+
+    public virtual Port Port { get; set; }
 }

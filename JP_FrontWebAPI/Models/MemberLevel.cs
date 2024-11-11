@@ -11,5 +11,7 @@ public partial class MemberLevel
 
     public string MemberLevelName { get; set; }
 
+    public decimal? Condtition { get; set; }
+
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 }

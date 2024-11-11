@@ -145,6 +145,10 @@
       {
          "Name": "[dbo].[TicketOrderItem]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MemberTotalAmount]",
+         "ObjectType": 3
       }
    ],
    "UiHint": null,

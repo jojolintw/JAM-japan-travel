@@ -19,5 +19,6 @@
         public int MemberStatusId { get; set; }
         public string MemberStatus { get; set; }
         public string? ImageUrl { get; set; }
+        public decimal? TotalAmount { get; set; } = 0;
     }
 }

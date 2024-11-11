@@ -76,7 +76,9 @@ namespace JP_FrontWebAPI.Controllers
                 loginDTO.MemberStatus = login.MemberStatus.MemberStatusName;
                 if (login.ImagePath != null)
                     loginDTO.ImageUrl = $"{baseUrl}/images/Member/{login.ImagePath}";
-
+                var totoamount = _context.MemberTotalAmounts?.FirstOrDefault(m => m.MemberId == login.MemberId)?.TotalAmount;
+                if(totoamount!= null)
+                     loginDTO.TotalAmount = totoamount;
                 return Ok(new { result = "success", loginmember = loginDTO });
             }
 

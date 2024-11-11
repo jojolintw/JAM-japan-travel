@@ -11,7 +11,7 @@ public partial class PortImage
 
     public int PortId { get; set; }
 
-    public byte[] PortImageUrl { get; set; }
+    public string PortImageUrl { get; set; }
 
     public string PortImageDescription { get; set; }
 

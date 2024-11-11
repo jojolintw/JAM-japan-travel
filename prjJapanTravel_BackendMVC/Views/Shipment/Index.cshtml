@@ -6,11 +6,20 @@
 
 <h1>航線清單</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">新增航線</a>
-    <a asp-controller="Ports" class="btn btn-primary">港口管理</a>
+<div class="d-flex align-items-center mb-3">
+    <!-- 新增航線按鈕 -->
+    <a asp-action="Create" class="btn btn-primary me-2">新增航線</a>
 
-</p>
+    <!-- 港口管理按鈕 -->
+    <a asp-controller="Ports" class="btn btn-primary me-2">港口管理</a>
+
+    <!-- 搜尋表單 -->
+    <form asp-action="Index" method="get" class="d-flex align-items-center ms-auto">
+        <input type="text" name="searchTerm" class="form-control me-2" placeholder="搜尋出發地或目的地" value="@ViewData["CurrentFilter"]" />
+        <button type="submit" class="btn btn-primary">搜尋</button>
+    </form>
+</div>
+
 <table class="table">
     <thead>
         <tr>

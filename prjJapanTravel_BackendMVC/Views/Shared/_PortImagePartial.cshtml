@@ -1,0 +1,11 @@
+﻿@model IEnumerable<prjJapanTravel_BackendMVC.ViewModels.Ports.PortImageViewModel>
+
+<div class="port-images">
+    @foreach (var image in Model)
+    {
+        <div class="port-image">
+            <img src="@image.PortImageBase64" alt="@image.PortImageDescription" />
+            <p>@image.PortImageDescription</p>
+        </div>
+    }
+</div>

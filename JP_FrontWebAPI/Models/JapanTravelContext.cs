@@ -439,7 +439,7 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable("Order");
+            entity.ToTable("Order", tb => tb.HasTrigger("trg_AfterInsertOrder"));
 
             entity.Property(e => e.OrderNumber).HasMaxLength(50);
             entity.Property(e => e.OrderTime).HasColumnType("datetime");

@@ -62,12 +62,18 @@
             </td>
 
             <td>
+                        <form asp-action="Details" asp-route-id="@item.PortId" method="get" style="display:inline;">
+                            <button type="submit" class="btn btn-primary">詳細資料</button>
+                        </form>
+
                         <form asp-action="Edit" asp-route-id="@item.PortId" method="get" style="display:inline;">
-                            <button type="submit" class="btn btn-primary">修改</button>
-                        </form> |
+                            <button type="submit" class="btn btn-warning">修改</button>
+                        </form>
+
                         <form asp-action="Delete" asp-route-id="@item.PortId" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger" onclick="return confirm('確定要刪除嗎？')">刪除</button>
                         </form>
+
             </td>
         </tr>
 }}

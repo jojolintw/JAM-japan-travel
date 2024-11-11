@@ -2,44 +2,102 @@
 
 <h2>新增航線</h2>
 
-<form asp-action="Create">
+<form asp-action="Create" onsubmit="return validateForm()">
     <div class="form-group">
         <label asp-for="OriginPortId">出航港口</label>
-        <select asp-for="OriginPortId" class="form-control" asp-items="@(new SelectList(ViewBag.Ports, "PortId", "PortName"))"></select>
+        <select asp-for="OriginPortId" class="form-control" required>
+            <option value="">請選擇出航港口</option>
+            @foreach (var port in ViewBag.Ports)
+            {
+                <option value="@port.PortId">@port.PortName</option>
+            }
+        </select>
+        <span class="text-danger" id="originPortError"></span>
     </div>
     <div class="form-group">
         <label asp-for="DestinationPortId">目的地</label>
-        <select asp-for="DestinationPortId" class="form-control" asp-items="@(new SelectList(ViewBag.Ports, "PortId", "PortName"))"></select>
+        <select asp-for="DestinationPortId" class="form-control" required>
+            <option value="">請選擇目的地</option>
+            @foreach (var port in ViewBag.Ports)
+            {
+                <option value="@port.PortId">@port.PortName</option>
+            }
+        </select>
+        <span class="text-danger" id="destinationPortError"></span>
     </div>
     <div class="form-group">
         <label asp-for="Price">票價</label>
-        <input asp-for="Price" class="form-control" />
+        <input asp-for="Price" class="form-control" required pattern="^\d+(\.\d{1,2})?$" title="請輸入有效的票價" />
+        <span class="text-danger" id="priceError"></span>
     </div>
     <div class="form-group">
         <label asp-for="RouteDescription">簡介</label>
-        <input asp-for="RouteDescription" class="form-control" />
+        <input asp-for="RouteDescription" class="form-control" required />
+        <span class="text-danger" id="descriptionError"></span>
     </div>
     <button type="submit" class="btn btn-primary">新增</button>
     <button type="button" class="btn btn-secondary" onclick="fillDemoData()">DEMO</button>
-
 </form>
 <div>
     <a asp-action="Index" class="btn btn-secondary">返回</a>
 </div>
-<script>
-    function fillDemoData() {
-        // 假資料
-        const demoData = {
-            originPortId: 1018, // 假設的出發港ID
-            destinationPortId: 3, // 假設的目的地港ID
-            price: 100.00, // 假設的價格
-            routeDescription: "這是一個測試航線。" // 假設的航線描述
-        };
 
-        // 填入假資料
-        document.getElementById("OriginPortId").value = demoData.originPortId;
-        document.getElementById("DestinationPortId").value = demoData.destinationPortId;
-        document.getElementById("Price").value = demoData.price;
-        document.getElementById("RouteDescription").value = demoData.routeDescription;
+<script>
+    // 假資料自動填入
+    function fillDemoData() {
+        const demoData = {
+            originPortId: 1,
+            destinationPortId: 5,
+            price: 100.00,
+            routeDescription: "這是一個測試航線。"
+        };
+        document.querySelector("[name='OriginPortId']").value = demoData.originPortId;
+        document.querySelector("[name='DestinationPortId']").value = demoData.destinationPortId;
+        document.querySelector("[name='Price']").value = demoData.price;
+        document.querySelector("[name='RouteDescription']").value = demoData.routeDescription;
+    }
+
+    // 表單驗證
+    function validateForm() {
+        let isValid = true;
+
+        // 驗證出發港口
+        const originPort = document.querySelector("[name='OriginPortId']");
+        if (!originPort.value) {
+            document.getElementById("originPortError").textContent = "請選擇出發港口";
+            isValid = false;
+        } else {
+            document.getElementById("originPortError").textContent = "";
+        }
+
+        // 驗證目的地港口
+        const destinationPort = document.querySelector("[name='DestinationPortId']");
+        if (!destinationPort.value) {
+            document.getElementById("destinationPortError").textContent = "請選擇目的地";
+            isValid = false;
+        } else {
+            document.getElementById("destinationPortError").textContent = "";
+        }
+
+        // 驗證票價
+        const price = document.querySelector("[name='Price']");
+        const pricePattern = /^\d+(\.\d{1,2})?$/;
+        if (!price.value || !pricePattern.test(price.value)) {
+            document.getElementById("priceError").textContent = "請輸入有效的票價（正數，最多兩位小數）";
+            isValid = false;
+        } else {
+            document.getElementById("priceError").textContent = "";
+        }
+
+        // 驗證簡介
+        const description = document.querySelector("[name='RouteDescription']");
+        if (!description.value) {
+            document.getElementById("descriptionError").textContent = "請輸入航線簡介";
+            isValid = false;
+        } else {
+            document.getElementById("descriptionError").textContent = "";
+        }
+
+        return isValid;
     }
 </script>

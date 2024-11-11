@@ -52,11 +52,6 @@ namespace JP_FrontWebAPI.Controllers
                 query = query.Where(r => r.DestinationPort.PortName.Contains(destinationPort));
             }
 
-            query = sortBy switch
-            {
-                "Price" => isAscending ? query.OrderBy(r => r.Price) : query.OrderByDescending(r => r.Price),
-                _ => query.OrderBy(r => r.RouteId)
-            };
 
             var totalRecords = await query.CountAsync();
             var shipments = await query
@@ -71,6 +66,46 @@ namespace JP_FrontWebAPI.Controllers
                     RouteDescription = r.RouteDescription
                 })
                 .ToListAsync();
+
+            //query = sortBy switch
+            //{
+            //    "Price" => isAscending ? query.OrderBy(r => r.Price) : query.OrderByDescending(r => r.Price),
+            //    _ => query.OrderBy(r => r.RouteId)
+            //};
+
+            //switch (sortBy)
+            //{
+            //    case "Price":
+
+            //        //shipments = shipments.OrderBy(r => r.Price).ToList();
+            //        shipments = isAscending ? shipments.OrderBy(r => r.Price).ToList() : shipments.OrderByDescending(r => r.Price).ToList();
+            //        break;
+            //    default:
+            //        shipments = shipments.OrderBy(r => r.RouteId).ToList();
+            //        break;
+            //}
+            //switch (sortBy)
+            //{
+            //    case "priceAsc":
+            //        shipments = shipments.OrderBy(r => r.Price).ToList();
+            //        break;
+            //    case "priceDesc":
+            //        shipments = shipments.OrderByDescending(r => r.Price).ToList();
+            //        break;
+            //    case "latest":
+            //        shipments = shipments.OrderByDescending(r => r.RouteId).ToList();
+            //        break;
+            //    default:
+            //        shipments = isAscending ? shipments.OrderBy(r => r.RouteId).ToList() : shipments.OrderByDescending(r => r.RouteId).ToList();
+            //        break;
+            //}
+            shipments = sortBy switch
+            {
+                "priceAsc" => shipments.OrderBy(r => r.Price).ToList(),
+                "priceDesc" => shipments.OrderByDescending(r => r.Price).ToList(),
+                "latest" => shipments.OrderByDescending(r => r.RouteId).ToList(),
+                _ => isAscending ? shipments.OrderBy(r => r.RouteId).ToList() : shipments.OrderByDescending(r => r.RouteId).ToList()
+            };
 
             return Ok(new
             {

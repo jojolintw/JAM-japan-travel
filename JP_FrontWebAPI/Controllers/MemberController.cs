@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 
@@ -137,13 +138,123 @@ namespace JP_FrontWebAPI.Controllers
             }
             return Unauthorized(new { result = "noLogin" });
         }
+        //========加入我的最愛========================================================================================================================
+        [HttpGet("AddtoMyfavirite/{id}")]
+        [Authorize]
+        public IActionResult AddtoMyfavirite(int id)
+        {
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
 
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
 
+                Member mem = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
 
+                Itinerary iti = _context.Itineraries.FirstOrDefault(i => i.ItinerarySystemId == id);
 
+                MyCollection mc = new MyCollection
+                {
+                    MemberId = mem.MemberId,
+                    ItineraryId = iti.ItinerarySystemId
+                };
 
+                _context.MyCollections.Add(mc);
+                _context.SaveChanges();
 
+                return Ok(new { result = "success" });
+            }
+            return Unauthorized(new { result = "noLogin" });
+
+        }
+        //移除我的最愛
+        [HttpGet("RemoveMyfavirite/{id}")]
+        [Authorize]
+        public IActionResult RemoveMyfavirite(int id)
+        {
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
+
+                Member mem = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
+
+                Itinerary iti = _context.Itineraries.FirstOrDefault(i => i.ItinerarySystemId == id);
+
+                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItineraryId == iti.ItinerarySystemId);
+
+                _context.MyCollections.Remove(myCollection);
+
+                _context.SaveChanges();
+
+                return Ok(new { result = "success" });
+            }
+            return Unauthorized(new { result = "noLogin" });
+
+        }
+        //驗證是否為我的最愛
+        [HttpGet("IsMyfavirite/{id}")]
+        [Authorize]
+        public IActionResult IsMyfavirite(int id)
+        {
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
+
+                Member mem = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
+
+                Itinerary iti = _context.Itineraries.FirstOrDefault(i => i.ItinerarySystemId == id);
+
+                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItineraryId == iti.ItinerarySystemId);
+
+                if (myCollection != null) 
+                {
+                    return Ok(new { result = "ismyfavirite" });
+                }
+
+                return Ok(new { result = "isnotmyfavirite" });
+            }
+            return Unauthorized(new { result = "noLogin" });
+        }
+        //取出所有我的最愛
+        [HttpGet("GetAllMyfacirite")]
+        [Authorize]
+        public IActionResult GetAllMyfacirite()
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
+
+                Member mem = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
+
+                List<MyFavoriteItilityDTO> allmyfavoriteItinerarys = _context.MyCollections.Where(f => f.MemberId == mem.MemberId).Select(s => new MyFavoriteItilityDTO
+                {
+                    ItinerarySystemId = s.ItineraryId,
+                    ItineraryName = s.Itinerary.ItineraryName,
+                    Price = s.Itinerary.Price,
+                    ItineraryDetail = s.Itinerary.ItineraryDetail,
+                    //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
+                }).ToList();
+
+                return Ok(allmyfavoriteItinerarys);
+            }
+            return Unauthorized(new { result = "noLogin" });
+        }
 
         //===============================================================================================================================
         [HttpGet("GetCityArea")]

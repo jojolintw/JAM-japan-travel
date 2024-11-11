@@ -511,8 +511,11 @@ public partial class JapanTravelContext : DbContext
         {
             entity.ToTable("PortImage");
 
+            entity.Property(e => e.PortImageId).HasColumnName("PortImageID");
             entity.Property(e => e.PortId).HasColumnName("PortID");
-            entity.Property(e => e.PortImageDes).HasMaxLength(50);
+            entity.Property(e => e.PortImageDescription)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.PortImageUrl).HasColumnName("PortImageURL");
 
             entity.HasOne(d => d.Port).WithMany(p => p.PortImages)

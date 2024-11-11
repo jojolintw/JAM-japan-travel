@@ -13,7 +13,7 @@ public partial class PortImage
 
     public byte[] PortImageUrl { get; set; }
 
-    public string PortImageDes { get; set; }
+    public string PortImageDescription { get; set; }
 
     public virtual Port Port { get; set; }
 }

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="utf-8" />
+    <title>訂單確認</title>
+</head>
+<body>
+    <h2>親愛的 {{userName}}，感謝您的訂單！</h2>
+    <p>以下是您的訂單明細：</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>商品名稱</th>
+                <th>數量</th>
+                <th>單價</th>
+                <th>總價</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each items}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.quantity * this.price}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <p class="couponName">優惠券：{{couponName}}  折扣金額：-100</p>
+    <p class="total">總金額：{{totalPrice}}</p>
+
+    <p>如果您有任何問題，請隨時聯繫我們。</p>
+
+    <p>祝您購物愉快！</p>
+    <p>
+        <em>這是自動生成的郵件，請勿直接回覆。</em>
+    </p>
+</body>
+</html>

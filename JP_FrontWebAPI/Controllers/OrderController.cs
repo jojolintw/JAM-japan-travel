@@ -23,119 +23,133 @@ namespace JP_FrontWebAPI.Controllers
     {
         private JapanTravelContext _context;
         private readonly EmailService _emailService;
-        public OrderController(JapanTravelContext context, EmailService emailService)
+        private JWTService _jwtService;
+        private readonly LinePayService _linePayService;
+        public OrderController(JapanTravelContext context, EmailService emailService, JWTService jwtService)
         {
             _context = context;
             _emailService = emailService;
+            _jwtService = jwtService;
+            _linePayService = new LinePayService();
         }
-        [HttpGet("GetLoginMember")]
-        [Authorize]
-        public IActionResult GetLoginMember()
-        {
-            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
-
-            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
-            {
-                // 取出 JWT Token
-                var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-
-                // 如果需要進一步解析 JWT Token，可使用 JwtSecurityTokenHandler
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // 取得 Token 的相關資訊 (如使用者名稱等)
-
-                //var member = JsonSerializer.Deserialize<>(jwtToken);
-                var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
-
-                //從後端Session中取出登入者資料
-                //string memberjson = HttpContext.Session.GetString(CDictionary.SK_LoginMember);
-                //Member loginMember = JsonSerializer.Deserialize<Member>(memberjson);
-                //驗證後端Session及JWT Token中的email是相同的
-                //if (loginMember.Email == email) 
-                //{
-                var login = _context.Members.FirstOrDefault(m => m.Email == email);
-                LoginMemberDTO loginDTO = new LoginMemberDTO();
-                loginDTO.MemberId = login.MemberId;
-                loginDTO.ChineseName = login.MemberName;
-                if (login.EnglishName != null)
-                    loginDTO.EnglishName = login.EnglishName;
-                //if (login.Gender != null)
-                //    loginDTO.Gender = login.Gender;
-                if (login.Birthday != null)
-                    loginDTO.Birthday = login.Birthday;
-                if (login.City.CityAreaId != null)
-                    loginDTO.CityAreaId = login.City.CityAreaId;
-                if (login.City.CityName != null)
-                    loginDTO.CityAreaName = login.City.CityArea.CityAreaName;
-                if (login.CityId != null)
-                    loginDTO.CityId = login.CityId;
-                if (login.City.CityName != null)
-                    loginDTO.CityName = login.City.CityName;
-                if (login.Phone != null)
-                    loginDTO.Phone = login.Phone;
-                loginDTO.Email = login.Email;
-                loginDTO.MemberLevelId = login.MemberLevelId;
-                loginDTO.MemberLevel = login.MemberLevel.MemberLevelName;
-                loginDTO.MemberStatusId = login.MemberStatusId;
-                loginDTO.MemberStatus = login.MemberStatus.MemberStatusName;
-                //if (login.ImagePath != null)
-                //    loginDTO.Photopath = login.ImagePath;
-
-                return Ok(new { result = "succcess", loginmember = loginDTO });
-                //}
-                //return Ok(new { result = "inconsistent" });
-            }
-
-            return Unauthorized(new { result = "noLogin" });
-        }
-
+        
         [HttpGet("sendOrderInfoEmail")]
-        public IActionResult sendOrderInfoEmail()
+        public async Task<IActionResult> sendOrderInfoEmail([FromBody] OrderData orderData)
         {
-            string to = "qwe58912@gmail.com";
-            string subject = "test";
-            string body = "hi";
+            string orderContent = System.IO.File.ReadAllText("html/orderContent.html");
 
-            _emailService.SendEmailAsync(to, subject, body);
+            orderContent = orderContent.Replace("{{userName}}", "Luke");
+
+            string to = "qwe58912@gmail.com";
+            string subject = "Japan Activity Memory (JAM) 訂單通知";
+            //string body = GenerateHtmlEmail("Luke",orderData.cart,(decimal)orderData.totalAmount);
+            string body = "123";
+
+            await _emailService.SendEmailAsync(to, subject, body);
 
             return Ok((new {result="success"}));
         }
 
-        //[HttpPost]
-        //public IActionResult CreateOrder([FromBody] OrderItemDTO orderItemDTO)
+
+        //public string GenerateHtmlEmail(string customerName, List<CartItems> CartItems, decimal totalAmount)
         //{
+        //    if (CartItems == null || CartItems.Count == 0)
+        //    {
+        //        throw new ArgumentException("購物車沒有商品資料", nameof(CartItems));
+        //    }
 
-            //Order order = new Order()
-            //{
-            //    OrderNumber = '1' + DateTime.Now.ToString(),
-            //    MemberId = 1,
-            //    OrderTime = DateTime.Now,
-            //    PaymentMethodId = 2,                 // LinePay的付款方式id為2
-            //    OrderStatusId = 3,                   // 付款狀態id3為以付款
-            //    CouponId = 1,                        // 優惠券id1為驚喜大禮包 折扣100
-            //    //TotalAmount = orderDTO.TotalAmount,
-            //    //Remarks = orderDTO.Remarks,
-            //    ItineraryOrderItems = new List<ItineraryOrderItem>()
-            //};
+        //    var htmlContent = @"
+        //    <html>
+        //    <body>
+        //        <h1>訂單確認信</h1>
+        //        <p>親愛的 " + customerName + @",</p>
+        //        <p>感謝您在我們網站上購物，以下是您的訂單詳細資料：</p>
+        //        <table border='1'>
+        //            <tr><th>商品名稱</th><th>數量</th><th>單價</th></tr>";
 
-            //foreach (var item in orderDTO.Items)
-            //{
-            //    var orderItem = new ItineraryOrderItem
-            //    {
-            //        OrderId = item.OrderId,
-            //        ItineraryDateSystemId = item.ItineraryDateSystemId,
-            //        Quantity = item.Quantity
-            //    };
-            //    order.ItineraryOrderItems.Add(orderItem);
-            //}
+        //    foreach (var item in CartItems)
+        //    {
+        //        htmlContent += $@"
+        //        <tr>
+        //            <td>{item.name}</td>
+        //            <td>{item.quantity}</td>
+        //            <td>NT$ {item.price}</td>
+        //        </tr>";
+        //    }
 
-        //    _context.Orders.Add(order);
-        //    _context.SaveChanges();
+        //    htmlContent += $@"
+        //        </table>
+        //        <p><strong>總金額：NT$ {totalAmount}</strong></p>
+        //        <p>若有任何問題，請隨時與我們聯繫。</p>
+        //    </body>
+        //    </html>";
 
-
-        //    return CreatedAtAction(nameof(CreateOrder), new { id = order.OrderId }, order);
+        //    return htmlContent;
         //}
 
+        [HttpPost("CreateOrder")]
+        public IActionResult CreateOrder([FromBody] OrderData orderData)
+        {
+
+            if (orderData == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            //==============================
+
+
+            Order order = new Order()
+            {
+                OrderNumber = "1" + DateTime.Now.ToString("yyMMddHHmmss"),
+                MemberId = orderData.memberId,
+                OrderTime = DateTime.Now,
+                PaymentMethodId = 2,
+                OrderStatusId = 3,
+                CouponId = 1,
+                TotalAmount = orderData.totalAmount,
+                Remarks = orderData.remarks,
+            };
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+            
+            foreach(var item in orderData.cart)
+            {
+                ItineraryOrderItem items = new ItineraryOrderItem()
+                {
+                    OrderId = order.OrderId,
+                    ItineraryDateSystemId = item.itineraryDateSystemId,
+                    Quantity = item.quantity,
+                };
+
+                _context.ItineraryOrderItems.Add(items);
+                _context.SaveChanges();
+            };
+
+            //===============================
+
+            return Ok(new
+            {
+                message = "資料接收成功！",
+                receivedData = orderData
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> createOrder(decimal amount)
+        {
+            // 呼叫 CreateOrder 方法
+            var result = await _linePayService.CreateOrder(amount);
+
+            // 返回結果，您可以根據需求將結果顯示在頁面上
+            Console.WriteLine(result);
+
+            return Ok(new
+            {
+                message = "資料接收成功！",
+                receivedData = result
+            }); ;
+        }
     }
 }

@@ -16,9 +16,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
         }
 
         //---------------------首頁------------------------------------------
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var shipments = await _context.Routes
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var query = _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
                 .Select(r => new ShipmentListViewModel
@@ -28,11 +30,18 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     DestinationPortName = r.DestinationPort.PortName,
                     Price = r.Price,
                     RouteDescription = r.RouteDescription
-                })
-                .ToListAsync();
+                });
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(r => r.OriginPortName.Contains(searchTerm) || r.DestinationPortName.Contains(searchTerm));
+            }
+
+            var shipments = await query.ToListAsync();
 
             return View(shipments);
         }
+
 
         //---------------------Create------------------------------------------
         public async Task<IActionResult> Create()

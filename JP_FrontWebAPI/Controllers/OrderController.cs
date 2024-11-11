@@ -24,11 +24,13 @@ namespace JP_FrontWebAPI.Controllers
         private JapanTravelContext _context;
         private readonly EmailService _emailService;
         private JWTService _jwtService;
+        private readonly LinePayService _linePayService;
         public OrderController(JapanTravelContext context, EmailService emailService, JWTService jwtService)
         {
             _context = context;
             _emailService = emailService;
             _jwtService = jwtService;
+            _linePayService = new LinePayService();
         }
         
         [HttpGet("sendOrderInfoEmail")]
@@ -96,21 +98,21 @@ namespace JP_FrontWebAPI.Controllers
 
             //==============================
 
+
             Order order = new Order()
             {
                 OrderNumber = "1" + DateTime.Now.ToString("yyMMddHHmmss"),
-                MemberId = 1,
+                MemberId = orderData.memberId,
                 OrderTime = DateTime.Now,
                 PaymentMethodId = 2,
                 OrderStatusId = 3,
-                CouponId = orderData.couponId,
+                CouponId = 1,
                 TotalAmount = orderData.totalAmount,
                 Remarks = orderData.remarks,
             };
 
             _context.Orders.Add(order);
             _context.SaveChanges();
-
             
             foreach(var item in orderData.cart)
             {
@@ -134,5 +136,20 @@ namespace JP_FrontWebAPI.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> createOrder(decimal amount)
+        {
+            // 呼叫 CreateOrder 方法
+            var result = await _linePayService.CreateOrder(amount);
+
+            // 返回結果，您可以根據需求將結果顯示在頁面上
+            Console.WriteLine(result);
+
+            return Ok(new
+            {
+                message = "資料接收成功！",
+                receivedData = result
+            }); ;
+        }
     }
 }

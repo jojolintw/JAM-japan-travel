@@ -347,9 +347,7 @@ public partial class JapanTravelContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.MemberStatusId).HasColumnName("MemberStatusID");
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.Phone).HasMaxLength(50);
 
             entity.HasOne(d => d.City).WithMany(p => p.Members)
@@ -509,16 +507,13 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<PortImage>(entity =>
         {
-            entity.ToTable("PortImage");
+            entity
+                .HasNoKey()
+                .ToTable("PortImage");
 
             entity.Property(e => e.PortId).HasColumnName("PortID");
             entity.Property(e => e.PortImageDes).HasMaxLength(50);
-            entity.Property(e => e.PortImageUrl).HasColumnName("PortImageURL");
-
-            entity.HasOne(d => d.Port).WithMany(p => p.PortImages)
-                .HasForeignKey(d => d.PortId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PortImage_Port");
+            entity.Property(e => e.PortImageId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Route>(entity =>

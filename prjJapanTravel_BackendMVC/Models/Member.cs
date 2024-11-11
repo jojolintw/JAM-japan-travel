@@ -31,6 +31,8 @@ public partial class Member
 
     public int MemberStatusId { get; set; }
 
+    public bool GoogleLink { get; set; }
+
     public virtual City City { get; set; }
 
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();

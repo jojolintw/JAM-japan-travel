@@ -1,5 +1,4 @@
-﻿@* @model IEnumerable<prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.ItineraryListViewModel> *@
-@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.CreateListViewModel
+﻿@model prjJapanTravel_BackendMVC.ViewModels.ProductViewModels.CreateListViewModel
 
 @{
     ViewData["Title"] = "ItineraryCreate";
@@ -22,6 +21,7 @@
         <div>
             <button type="button" class="btn btn-secondary" onclick="fillData()">Demo</button>
         </div>
+
         <div style="margin-bottom: 10px;">
             <label for="text">行程編號</label>
             <input type="text" id="itineraryId" name="行程編號">
@@ -64,6 +64,7 @@
             <input type="date" id="departureDateInput">
             <label>請選擇出發時間</label>
             <input type="time" id="departureTimeInput">
+            <br />
             <button type="button" onclick="addDepartureDateTime()">添加日期和時間</button>
             <label>出發日期和時間</label>
             <table id="departureDateTable">
@@ -72,27 +73,11 @@
                 </tbody>
             </table>
         </div>
-        <div style="margin-bottom: 10px;">
-            <label>上傳圖片</label>
-            <input type="file" id="fileInput" class="form-control" style="width:800px" name="imageViewModel[0].ImageFile" multiple="multiple" />
-        </div>
-        <div>
-            <label>圖片預覽</label>
-            <img id="output" height="200" style="display:none">
-        </div>
         <br />
-        <div style="margin-bottom: 10px;">
-            <div style="margin-bottom: 10px;">
-                <label>圖片名稱</label>
-                <input type="text" id="itineraryPicName" name="imageViewModel[0].ImageName" />
-            </div>
-            <div>
-                <label style="vertical-align: top;">圖片描述</label>
-                <textarea id="itineraryPicDetail" name="imageViewModel[0].ImageDetail" rows="7" cols="99"></textarea>
-            </div>
+        <div id="imageDetails">
+            <button id="add-image" type="button">添加圖片</button>
+            <div id="images-container"></div>
         </div>
-        @* <button type="button" id="addImageButton">+</button> <!-- 按鈕來新增欄位 -->
-        <div id="imagePreviewContainer"></div> *@
         <div class="form-group">
             <div style="margin-bottom: 10px;">
                 <label>行程簡介</label>
@@ -138,82 +123,59 @@
         $.ajax({
             type: 'POST',
             url: '@Url.Action("FilterActivities", "Product")',
-            data: { themeId: themeId },
+            data: { themeId : themeId },
+            // contentType:"",
             success: function(data) {
                 activitySelect.innerHTML = '<option value="">請選擇體驗項目</option>';
                 data.forEach(activity => {
                     const option = document.createElement('option');
-                    option.value = activity.ActivitySystemId;
-                    option.textContent = activity.ActivityName;
+                    option.value = activity.activitySystemId;
+                    option.textContent = activity.activityName;
                     activitySelect.appendChild(option);
-                });
-            }
+                    });
+                }
+            });
+        }
+        
+        let imageIndex = 0;
+        document.getElementById('add-image').addEventListener('click', function () {
+            var template = `
+                    <div style="margin-bottom: 10px;">
+                        <label>圖片名稱</label>
+                        <input type="text" name="imageViewModel[${imageIndex}].ImageName" />
+                        <input type="file" name="imageViewModel[${imageIndex}].ImageFile" />
+                    </div>
+                    <div>
+                        <label style="vertical-align: top;">圖片描述</label>
+                        <textarea name="imageViewModel[${imageIndex}].ImageDetail" rows="7" cols="99"></textarea>
+                    </div>
+                    <div id="image-preview-${imageIndex}"></div>
+                `;
+            var container = document.getElementById('images-container');
+            container.innerHTML += template;
+            imageIndex++;
         });
-    } 
-        // let imageIndex = 1;
-        document.getElementById('fileInput').addEventListener('change', function (event) {
-            var output = document.getElementById('output');
-            var files = event.target.files;
 
-            if (files && files[0]) {
+        // 初始化一个输入字段
+        document.getElementById('add-image').click();
+
+        // 圖片預覽
+        document.getElementById('images-container').addEventListener('change', function (e) {
+            if (e.target.type === 'file') {
+                var file = e.target.files[0];
                 var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    output.src = e.target.result;
-                    output.style.display = 'block';  // 顯示圖片
+                reader.onload = function (event) {
+                    var img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.height = 200;
+                    var previewContainer = document.getElementById(`image-preview-${Array.prototype.indexOf.call(e.target.parentNode.parentNode.children, e.target.parentNode)}`);
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(img);
                 };
-
-                reader.readAsDataURL(files[0]);  // 讀取第一個文件並預覽
+                reader.readAsDataURL(file);
             }
         });
-        // 當按下 "+" 按鈕時，動態增加圖片上傳欄位
-        // document.getElementById('addImageButton').addEventListener('click', function () {
-        //     const container = document.getElementById('imageUploadContainer');
-
-        //     // 新增一個新的圖片上傳區域
-        //     const newImageSection = document.createElement('div');
-        //     newImageSection.classList.add('imageUploadSection');
-        //     newImageSection.setAttribute('data-index', imageIndex);
-
-        //     newImageSection.innerHTML = `
-        //             <label>上傳圖片</label>
-        //             <input type="file" name="imageViewModel[${imageIndex}].ImageFile" onchange="previewImage(event, ${imageIndex})" />
-
-        //             <label>圖片名稱</label>
-        //             <input type="text" name="imageViewModel[${imageIndex}].ImageName" />
-
-        //             <label>圖片描述</label>
-        //             <textarea name="imageViewModel[${imageIndex}].ImageDetail" rows="3"></textarea>
-        //         `;
-
-        //     // 將新欄位區塊添加到容器中
-        //     container.appendChild(newImageSection);
-
-        //     // 增加索引
-        //     imageIndex++;
-        // });
-
-        // // 預覽圖片的函數
-        // function previewImage(event, index) {
-        //     const file = event.target.files[0];
-        //     if (file) {
-        //         const reader = new FileReader();
-        //         reader.onload = function (e) {
-        //             const previewArea = document.getElementById('imagePreviewContainer');
-
-        //             // 如果這是新的預覽圖片，創建一個新的 img 標籤
-        //             let img = document.getElementById(`imgPreview-${index}`);
-        //             if (!img) {
-        //                 img = document.createElement('img');
-        //                 img.id = `imgPreview-${index}`;
-        //                 img.style.height = '200px';
-        //                 previewArea.appendChild(img);
-        //             }
-        //             img.src = e.target.result; // 設定圖片來源為讀取的結果
-        //         }
-        //         reader.readAsDataURL(file); // 開始讀取文件
-        //     }
-        // }
+        
         function addDepartureDateTime() {
             var dateInput = document.getElementById("departureDateInput");
             var timeInput = document.getElementById("departureTimeInput");

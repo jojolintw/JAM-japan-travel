@@ -28,6 +28,11 @@
                 <span asp-validation-for="行程名稱" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="體驗主題" class="control-label"></label>
+                <select asp-for="體驗主題編號" class="form-control" asp-items="Model.體驗主題選項"></select>
+                <span asp-validation-for="體驗主題編號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="體驗項目" class="control-label"></label>
                 <select asp-for="體驗項目編號" class="form-control" asp-items="Model.體驗項目選項"></select>
                 <span asp-validation-for="體驗項目編號" class="text-danger"></span>
@@ -50,23 +55,28 @@
             </div>
             <div class="form-group">
                 <label asp-for="行程圖片" class="control-label"></label>
-                @if (Model.行程圖片 != null && Model.行程圖片.Count > 0)
-                {
-                    <img id="currentImage" src="@Url.Content("~/images/Product/" + Model.行程圖片[0].ImagePath)"
-                         alt="行程圖片" style="width:150px; height:150px; cursor:pointer;" ondblclick="selectNewImage()" />
-                }
-                else
-                {
-                    <span>無圖片</span>
-                    <img onclick="selectNewImage()" />
-                }
+                 <div id="imageDetails">
+                    @if (Model.行程圖片!= null && Model.行程圖片.Count > 0)
+                    {
+                        @for (int i = 0; i < Model.行程圖片.Count; i++)
+                        {
+                            <div style="margin-bottom: 10px;">
+                                <img src="@Url.Content("~/images/Product/" + Model.行程圖片[i].ImagePath)" alt="行程圖片" style="width:150px; height:150px;" />
+                                <button type="button" onclick="deleteImage(@Model.行程圖片[i].ItineraryPicSystemId)">刪除</button>
+                                <input type="hidden" name="imageViewModel[@i].ImageId" value="@Model.行程圖片[i].ItineraryPicSystemId" />
+                                <input type="text" name="imageViewModel[@i].ImageName" value="@Model.行程圖片[i].ImageName" />
+                                <textarea name="imageViewModel[@i].ImageDetail" rows="7" cols="99">@Model.行程圖片[i].ImageDetail</textarea>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <span>無圖片</span>
+                    }
 
-                <!-- 隱藏的 input 用於選擇新圖片 -->
-                <input type="file" id="newImageInput" name="imageViewModel[0].ImageFile" @* style="display:none;" *@ accept="image/*" onchange="previewImage(event)" />
-
-                <!-- 預覽新圖片 -->
-                <img id="previewImage" src="#" alt="預覽圖片" style="display:none; width:150px; height:150px; margin-top:10px;" />
-
+                    <button id="add-image" type="button">添加圖片</button>
+                    <div id="new-images-container"></div>
+                </div>
                 <span asp-validation-for="行程圖片" class="text-danger"></span>
             </div>
             <div style="margin-bottom: 10px;">
@@ -115,7 +125,6 @@
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="List">取消修改</a>
 </div>
@@ -123,19 +132,57 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        function selectNewImage() {
-            document.getElementById('newImageInput').click();
+        let imageIndex = @Model.行程圖片.Count;
+        document.getElementById('add-image').addEventListener('click', function () {
+            var template = `
+                <div style="margin-bottom: 10px;">
+                        <label>圖片名稱</label>
+                        <input type="text" name="imageViewModel[${imageIndex}].ImageName" />
+                        <input type="file" name="imageViewModel[${imageIndex}].ImageFile" />
+                    </div>
+                    <div>
+                        <label style="vertical-align: top;">圖片描述</label>
+                        <textarea name="imageViewModel[${imageIndex}].ImageDetail" rows="7" cols="99"></textarea>
+                    </div>
+                    <div id="image-preview-${imageIndex}"></div>
+            `;
+            var container = document.getElementById('new-images-container');
+            container.innerHTML += template;
+            imageIndex++;
+        });
+
+        // 圖片預覽
+        document.getElementById('new-images-container').addEventListener('change', function (e) {
+            if (e.target.type === 'file') {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.height = 200;
+                    var previewContainer = document.getElementById(`image-preview-${Array.prototype.indexOf.call(e.target.parentNode.parentNode.children, e.target.parentNode)}`);
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 刪除圖片
+        function deleteImage(imageId) {
+            var confirmDelete = confirm("確定要刪除這張圖片嗎?");
+            if (confirmDelete) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Product/DeleteImage",
+                    data: { imageId: imageId },
+                    success: function () {
+                        location.reload();
+                    }
+                });
+            }
         }
 
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('previewImage');
-                output.src = reader.result;  // 設定圖片來源為讀取到的檔案
-                output.style.display = 'block';  // 顯示預覽圖片
-            };
-            reader.readAsDataURL(event.target.files[0]);  // 讀取檔案內容
-        }
         function addDepartureDateTime() {
             var dateInput = document.getElementById('departureDateInput');
             var timeInput = document.getElementById('departureTimeInput');

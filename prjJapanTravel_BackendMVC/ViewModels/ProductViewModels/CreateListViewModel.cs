@@ -7,5 +7,6 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
         public List<Area> areaList {  get; set; }
         public List<Activity> activityList { get; set; }
         public List<Theme> themeList { get; set; }
+        public List<ImageViewModel> imageViewModel { get; set; }
     }
 }

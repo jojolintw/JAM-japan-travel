@@ -18,8 +18,8 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ProductViewModels
 
         public decimal? 價格 { get; set; }
         public SelectList 體驗項目選項 { get; set; }
-
         public int? 體驗主題編號 { get; set; }
+        public SelectList 體驗主題選項 { get; set; }
         public string 體驗主題 { get; set; }
         public SelectList 地區選項 { get; set; }
         public int? 地區編號 { get; set; }

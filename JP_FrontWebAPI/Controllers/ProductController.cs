@@ -51,8 +51,8 @@ namespace JP_FrontWebAPI.Controllers
                 ActivityId = n.ActivitySystem.ActivitySystemId,
                 AvailableDate = n.Available,
                 Price = n.Price,
-                ImagePath = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId)
-                                    .Select(i => i.ImagePath)
+                ImagePath = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId && img.ImageName == "封面")
+                                    .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
                                     .FirstOrDefault()
             }).ToList();
             return Ok(datas);
@@ -77,8 +77,8 @@ namespace JP_FrontWebAPI.Controllers
                                                          DepartureDate = d.DepartureDate,
                                                          Stock = d.Stock
                                                      }).ToList(),
-                    ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
-                                        .Select(i => i.ImagePath).ToList(),
+                    ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId && i.ImageName == "內文")
+                                        .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath).ToList(),
                     ItineraryDetail = n.ItineraryDetail,
                     ItineraryBrief = n.ItineraryBrief,
                     ItineraryNote = n.ItineraryNotes
@@ -144,8 +144,8 @@ namespace JP_FrontWebAPI.Controllers
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
                 AvailableDate = n.Available,
                 Price = n.Price,
-                ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId)
-                                   .Select(i => i.ImagePath)
+                ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId && i.ImageName == "封面")
+                                   .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
                                    .FirstOrDefault()
             }).ToList();
 
@@ -178,8 +178,8 @@ namespace JP_FrontWebAPI.Controllers
                     DepartureDate = i.ItineraryDates.Select(d => d.DepartureDate).ToList(),
                     ActivityId = i.ActivitySystem.ActivitySystemId,
                     AreaName = i.AreaSystem.AreaName,
-                    ImagePath = i.Images.Where(i => i.ItinerarySystemId == i.ItinerarySystemId)
-                                    .Select(i => i.ImagePath)
+                    ImagePath = i.Images.Where(i => i.ItinerarySystemId == i.ItinerarySystemId && i.ImageName == "封面")
+                                    .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
                                     .FirstOrDefault(),
                     AvailableDate = i.Available,
                     Price = i.Price

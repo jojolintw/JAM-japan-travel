@@ -42,6 +42,7 @@ namespace JP_FrontWebAPI.Controllers
             var query = _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
+                .Include(r => r.Schedules) // Include schedules for next departure calculation
                 .AsQueryable();
 
             // 排序設定
@@ -65,25 +66,23 @@ namespace JP_FrontWebAPI.Controllers
 
             var totalRecords = await query.CountAsync();
             var shipments = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(r => new ShipmentListViewModel
-                {
-                    RouteId = r.RouteId,
-                    OriginPortName = r.OriginPort.PortName,
-                    DestinationPortName = r.DestinationPort.PortName,
-                    Price = r.Price,
-                    RouteDescription = r.RouteDescription,
-                })
-                .ToListAsync();
+                     .Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize)
+                     .Select(r => new ShipmentListViewModel
+                     {
+                         RouteId = r.RouteId,
+                         OriginPortName = r.OriginPort.PortName,
+                         DestinationPortName = r.DestinationPort.PortName,
+                         Price = r.Price,
+                         RouteDescription = r.RouteDescription,
+                         NextDeparture = r.Schedules
+                             .Where(s => s.DepartureTime > DateTime.Now)
+                             .OrderBy(s => s.DepartureTime)
+                             .Select(s => s.DepartureTime.ToString("yyyy-MM-dd HH:mm")) // 格式化日期為字串
+                             .FirstOrDefault() ?? "目前無預定開航計畫" // 若無符合條件的行程則顯示此字串
+                     })
+                     .ToListAsync();
 
-            shipments = sortBy switch
-            {
-                "priceAsc" => shipments.OrderBy(r => r.Price).ToList(),
-                "priceDesc" => shipments.OrderByDescending(r => r.Price).ToList(),
-                "latest" => shipments.OrderByDescending(r => r.RouteId).ToList(),
-                _ => isAscending ? shipments.OrderBy(r => r.RouteId).ToList() : shipments.OrderByDescending(r => r.RouteId).ToList()
-            };
 
             return Ok(new
             {
@@ -93,6 +92,7 @@ namespace JP_FrontWebAPI.Controllers
                 PageSize = pageSize
             });
         }
+
 
 
 

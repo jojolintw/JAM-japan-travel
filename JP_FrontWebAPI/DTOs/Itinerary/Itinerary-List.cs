@@ -9,7 +9,8 @@ namespace JP_FrontWebAPI.DTOs.Itinerary
         public string? ItineraryName { get; set; }
         public List<string?> DepartureDate { get; set; }
         public List<Itinerary_Date> ItineraryBatch { get; set; }
-        public int? ActivityId { get; set; }
+        public Theme_Activity Theme_Activity { get; set; }
+        public int? ActivitySystemId { get; set; }
         public string? AreaName { get; set; }
         public string? ImagePath { get; set; }
         public string? AvailableDate { get; set; }

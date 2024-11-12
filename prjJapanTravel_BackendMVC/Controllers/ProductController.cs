@@ -211,8 +211,6 @@ namespace prjJapanTravel_BackendMVC.Controllers
 
             
             var existingDates = _JP.ItineraryDates.Where(d => d.ItinerarySystemId == itinerary.ItinerarySystemId).ToList();
-            
-
             // 刪除已移除的日期
             foreach (var date in existingDates)
             {
@@ -232,6 +230,7 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     ItinerarySystemId = itinerary.ItinerarySystemId,
                     DepartureDate = defaultDate
                 });
+                _JP.SaveChanges();
             }
             else
             {
@@ -242,6 +241,11 @@ namespace prjJapanTravel_BackendMVC.Controllers
                     {
                         existingDate.DepartureDate = newDate.DepartureDate;
                         existingDates.Remove(existingDate); // 從 existingDates 中移除已更新的日期
+                        _JP.ItineraryDates.Add(new ItineraryDate
+                        {
+                            ItinerarySystemId = itinerary.ItinerarySystemId,
+                            DepartureDate = newDate.DepartureDate
+                        });
                     }
                     else
                     {
@@ -251,11 +255,10 @@ namespace prjJapanTravel_BackendMVC.Controllers
                             DepartureDate = newDate.DepartureDate
                         });
                     }
+
+                    _JP.SaveChanges();
                 }
             }
-
-            _JP.SaveChanges();
-
 
             if (itiModel.imageViewModel != null && itiModel.imageViewModel.Count > 0)
             {

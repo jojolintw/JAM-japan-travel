@@ -112,10 +112,15 @@ namespace JP_FrontWebAPI.Controllers
         }
 
         [HttpGet("hashtags")]
-        public async Task<ActionResult<IEnumerable<string>>> GetHashtags()
+        public async Task<ActionResult<IEnumerable<HashTag>>> GetHashtags()
         {
             var hashtags = await _context.HashtagMains
-                .Select(h => h.HashtagName)
+                .Select(e => new HashTag
+                {
+                    Id = e.HashtagNumber,
+                    Name = e.HashtagName,
+                })
+                //.Select(h => h.HashtagName)
                 .Distinct()
                 .ToListAsync();
 
@@ -210,8 +215,7 @@ namespace JP_FrontWebAPI.Controllers
             // 1. 設置預設狀態為 1
             var statusNumber = 1; // 預設狀態為 1
 
-
-            // 1. 創建一個新的 ArticleMain 物件
+            // 2. 創建一個新的 ArticleMain 物件
             var articleMain = new ArticleMain
             {
                 MemberId = articleCreateDTO.MemberId,
@@ -222,9 +226,12 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleStatusnumber = statusNumber  // 設置為預設的狀態 1
             };
 
-            // 2. 處理標籤關聯
-            var hashtags = new List<ArticleHashtag>();
+            // 3. 儲存文章，並取得自動生成的 ArticleNumber
+            _context.ArticleMains.Add(articleMain);
+            await _context.SaveChangesAsync(); // 儲存文章後，會自動生成 ArticleNumber
 
+            // 4. 處理標籤關聯
+            var hashtags = new List<ArticleHashtag>();
             foreach (var hashtagNumber in articleCreateDTO.HashtagNumbers)
             {
                 // 查詢標籤是否存在
@@ -234,7 +241,7 @@ namespace JP_FrontWebAPI.Controllers
                     // 創建標籤與文章的關聯
                     hashtags.Add(new ArticleHashtag
                     {
-                        ArticleNumber = articleMain.ArticleNumber,  // 這裡會在儲存後自動填充
+                        ArticleNumber = articleMain.ArticleNumber,  // 使用已生成的 ArticleNumber
                         HashtagNumber = hashtag.HashtagNumber
                     });
                 }
@@ -245,14 +252,14 @@ namespace JP_FrontWebAPI.Controllers
                 }
             }
 
-            // 3. 設置標籤關聯到文章
+            // 5. 設置標籤關聯到文章
             articleMain.ArticleHashtags = hashtags;
 
-            // 4. 儲存文章
-            _context.ArticleMains.Add(articleMain);
+            // 6. 儲存標籤關聯
+            _context.ArticleHashtags.AddRange(hashtags);
             await _context.SaveChangesAsync();
 
-            // 5. 返回創建的文章資料（包含標籤名稱）
+            // 7. 返回創建的文章資料（包含標籤名稱）
             var articleDTO = new ArticleDTO
             {
                 ArticleId = articleMain.ArticleNumber, // 記得使用 ArticleNumber 作為 ArticleId
@@ -266,9 +273,10 @@ namespace JP_FrontWebAPI.Controllers
                     .ToList()
             };
 
-            // 6. 回傳創建成功的文章資料
+            // 8. 回傳創建成功的文章資料
             return CreatedAtAction(nameof(GetArticleById), new { id = articleMain.ArticleNumber }, articleDTO);
         }
+
     }
 }
 

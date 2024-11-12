@@ -33,62 +33,22 @@ namespace JP_FrontWebAPI.Controllers
             _linePayService = new LinePayService();
         }
         
-        [HttpGet("sendOrderInfoEmail")]
-        public async Task<IActionResult> sendOrderInfoEmail([FromBody] OrderData orderData)
-        {
-            string orderContent = System.IO.File.ReadAllText("html/orderContent.html");
-
-            orderContent = orderContent.Replace("{{userName}}", "Luke");
-
-            string to = "qwe58912@gmail.com";
-            string subject = "Japan Activity Memory (JAM) 訂單通知";
-            //string body = GenerateHtmlEmail("Luke",orderData.cart,(decimal)orderData.totalAmount);
-            string body = "123";
-
-            await _emailService.SendEmailAsync(to, subject, body);
-
-            return Ok((new {result="success"}));
-        }
-
-
-        //public string GenerateHtmlEmail(string customerName, List<CartItems> CartItems, decimal totalAmount)
+        //[HttpGet("sendOrderInfoEmail")]
+        //public async Task<IActionResult> sendOrderInfoEmail()
         //{
-        //    if (CartItems == null || CartItems.Count == 0)
-        //    {
-        //        throw new ArgumentException("購物車沒有商品資料", nameof(CartItems));
-        //    }
+        //    string to = "qwe58912@gmail.com";
+        //    string subject = "Japan Activity Memory (JAM) 訂單通知";
+        //    string body = "訂單通知";
 
-        //    var htmlContent = @"
-        //    <html>
-        //    <body>
-        //        <h1>訂單確認信</h1>
-        //        <p>親愛的 " + customerName + @",</p>
-        //        <p>感謝您在我們網站上購物，以下是您的訂單詳細資料：</p>
-        //        <table border='1'>
-        //            <tr><th>商品名稱</th><th>數量</th><th>單價</th></tr>";
+        //    await _emailService.SendEmailAsync(to, subject, body);
 
-        //    foreach (var item in CartItems)
-        //    {
-        //        htmlContent += $@"
-        //        <tr>
-        //            <td>{item.name}</td>
-        //            <td>{item.quantity}</td>
-        //            <td>NT$ {item.price}</td>
-        //        </tr>";
-        //    }
-
-        //    htmlContent += $@"
-        //        </table>
-        //        <p><strong>總金額：NT$ {totalAmount}</strong></p>
-        //        <p>若有任何問題，請隨時與我們聯繫。</p>
-        //    </body>
-        //    </html>";
-
-        //    return htmlContent;
+        //    return Ok((new { result = "success" }));
         //}
 
+
+
         [HttpPost("CreateOrder")]
-        public IActionResult CreateOrder([FromBody] OrderData orderData)
+        public async Task<IActionResult> CreateOrderAsync([FromBody] OrderData orderData)
         {
 
             if (orderData == null)
@@ -104,15 +64,15 @@ namespace JP_FrontWebAPI.Controllers
                 OrderNumber = "1" + DateTime.Now.ToString("yyMMddHHmmss"),
                 MemberId = orderData.memberId,
                 OrderTime = DateTime.Now,
-                PaymentMethodId = 2,
-                OrderStatusId = 3,
-                CouponId = 1,
+                PaymentMethodId = 2, //付款方式:LinePay
+                OrderStatusId = 1,   //訂單狀態:已成立
+                CouponId = 1,        //優惠券:驚喜大禮包-100
                 TotalAmount = orderData.totalAmount,
                 Remarks = orderData.remarks,
             };
 
             _context.Orders.Add(order);
-            _context.SaveChanges();
+            //_context.SaveChanges();
             
             foreach(var item in orderData.cart)
             {
@@ -124,32 +84,141 @@ namespace JP_FrontWebAPI.Controllers
                 };
 
                 _context.ItineraryOrderItems.Add(items);
-                _context.SaveChanges();
+                //_context.SaveChanges();
             };
 
             //===============================
 
-            return Ok(new
+            // ============================== 發送訂單確認郵件 ==============================
+            try
             {
-                message = "資料接收成功！",
-                receivedData = orderData
-            });
-        }
+                // 設定郵件內容
+                string to = "qwe58912@gmail.com";  // 假設從 orderData 中獲取用戶的 email
+                string subject = "Japan Activity Memory (JAM) 訂單通知";
+                string body = $@"
+<!DOCTYPE html>
+<html lang='zh-tw'>
+<head>
+    <meta charset='utf-8' />
+    <title>訂單確認</title>
+    <style>
+        body {{
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }}
+        h2 {{
+            color: #333333;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }}
+        table th, table td {{
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }}
+        table th {{
+            background-color: #f7f7f7;
+            color: #333;
+        }}
+        table tr:nth-child(even) {{
+            background-color: #f9f9f9;
+        }}
+        .total, .couponName {{
+            font-weight: bold;
+            color: #d9534f;
+            margin-top: 20px;
+        }}
+        .footer {{
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            margin-top: 30px;
+        }}
+        .footer em {{
+            font-style: normal;
+            color: #555555;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h2>親愛的 {orderData.memberId}，感謝您的訂單！</h2>
+        <p>以下是您的訂單明細：</p>
 
-        [HttpPost]
-        public async Task<IActionResult> createOrder(decimal amount)
-        {
-            // 呼叫 CreateOrder 方法
-            var result = await _linePayService.CreateOrder(amount);
+        <table>
+            <thead>
+                <tr>
+                    <th>商品名稱</th>
+                    <th>數量</th>
+                    <th>單價</th>
+                    <th>總價</th>
+                </tr>
+            </thead>
+            <tbody>";
 
-            // 返回結果，您可以根據需求將結果顯示在頁面上
-            Console.WriteLine(result);
+                // 訂單項目明細
+                foreach (var item in orderData.cart)
+                {
+                    body += $@"
+                <tr>
+                    <td>{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>{item.price}</td>
+                    <td>{item.quantity * item.price}</td>
+                </tr>";
+                }
 
-            return Ok(new
-            {
-                message = "資料接收成功！",
-                receivedData = result
-            }); ;
-        }
+                body += $@"
+            </tbody>
+        </table>
+        
+        <p class='couponName'>優惠券：{orderData.couponId} 折扣金額：-100</p>
+        <p class='total'>總金額：{orderData.totalAmount:C}</p>
+        
+        <p>如果您有任何問題，請隨時聯繫我們。</p>
+        <p>祝您購物愉快！</p>
+        
+        <div class='footer'>
+            <em>這是自動生成的郵件，請勿直接回覆。</em>
+        </div>
+    </div>
+</body>
+</html>";
+
+                    // 發送郵件
+                    await _emailService.SendEmailAsync(to, subject, body);
+                }
+                catch (Exception ex)
+                {
+                    // 發送郵件失敗，處理錯誤
+                    return StatusCode(500, new { message = "訂單建立成功，但郵件發送失敗", error = ex.Message });
+                }
+
+
+                //===============================
+
+                return Ok(new
+                {
+                    message = "資料接收成功！",
+                    receivedData = orderData
+                });
+            }
+
     }
 }

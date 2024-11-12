@@ -20,6 +20,15 @@ namespace JP_FrontWebAPI.DTOs.Blog
         public List<string> ArticleHashtags { get; set; }
         // 如果需要，可以取消注释以下行
         // public string Image { get; set; }
+        //public List<HashTag> HashTags { get; set; } = new List<HashTag>();
 
     }
+
+
+    public class HashTag
+    {
+        public int Id { get; set; } = 0;
+        public string Name { get; set; } = default;
+    }
+
 }

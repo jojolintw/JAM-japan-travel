@@ -158,7 +158,7 @@ namespace JP_FrontWebAPI.Controllers
                 MyCollection mc = new MyCollection
                 {
                     MemberId = mem.MemberId,
-                    ItineraryId = iti.ItinerarySystemId
+                    ItinerarySystemId = iti.ItinerarySystemId
                 };
 
                 _context.MyCollections.Add(mc);
@@ -186,7 +186,7 @@ namespace JP_FrontWebAPI.Controllers
 
                 Itinerary iti = _context.Itineraries.FirstOrDefault(i => i.ItinerarySystemId == id);
 
-                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItineraryId == iti.ItinerarySystemId);
+                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItinerarySystemId == iti.ItinerarySystemId);
 
                 _context.MyCollections.Remove(myCollection);
 
@@ -214,7 +214,7 @@ namespace JP_FrontWebAPI.Controllers
 
                 Itinerary iti = _context.Itineraries.FirstOrDefault(i => i.ItinerarySystemId == id);
 
-                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItineraryId == iti.ItinerarySystemId);
+                MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItinerarySystemId == iti.ItinerarySystemId);
 
                 if (myCollection != null) 
                 {
@@ -226,9 +226,9 @@ namespace JP_FrontWebAPI.Controllers
             return Unauthorized(new { result = "noLogin" });
         }
         //取出所有我的最愛
-        [HttpGet("GetAllMyfacirite")]
+        [HttpGet("GetAllMyfavorite")]
         [Authorize]
-        public IActionResult GetAllMyfacirite()
+        public IActionResult GetAllMyfavorite()
         {
             var request = _httpContextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
@@ -244,10 +244,12 @@ namespace JP_FrontWebAPI.Controllers
 
                 List<MyFavoriteItilityDTO> allmyfavoriteItinerarys = _context.MyCollections.Where(f => f.MemberId == mem.MemberId).Select(s => new MyFavoriteItilityDTO
                 {
-                    ItinerarySystemId = s.ItineraryId,
-                    ItineraryName = s.Itinerary.ItineraryName,
-                    Price = s.Itinerary.Price,
-                    ItineraryDetail = s.Itinerary.ItineraryDetail,
+                    ItinerarySystemId = s.ItinerarySystemId,
+                    ItineraryName = s.ItinerarySystem.ItineraryName,
+                    AreaSystemId = s.ItinerarySystem.AreaSystemId,
+                    Price = s.ItinerarySystem.Price,
+                    //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
+                    ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
                     //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
                 }).ToList();
 
@@ -256,9 +258,43 @@ namespace JP_FrontWebAPI.Controllers
             return Unauthorized(new { result = "noLogin" });
         }
 
+        //取出地區分類的我的最愛
+        [HttpGet("GetAreaMyfavorite/{id}")]
+        [Authorize]
+        public IActionResult GetAreaMyfavorite(int id)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+            //取出JWT
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
+
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer"))
+            {
+
+                int loginMemberId = _jwtService.CertificationJWTToken(authorizationHeader);
+
+                Member mem = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
+
+                List<MyFavoriteItilityDTO> allmyfavoriteItinerarys = _context.MyCollections.Where(f => f.MemberId == mem.MemberId && f.ItinerarySystem.AreaSystemId == id).Select(s => new MyFavoriteItilityDTO
+                {
+                    ItinerarySystemId = s.ItinerarySystemId,
+                    ItineraryName = s.ItinerarySystem.ItineraryName,
+                    AreaSystemId = s.ItinerarySystem.AreaSystemId,
+                    Price = s.ItinerarySystem.Price,
+                    DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
+                    ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
+                    //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
+                }).ToList();
+
+                return Ok(allmyfavoriteItinerarys);
+            }
+            return Unauthorized(new { result = "noLogin" });
+        }
+
+
         //===============================================================================================================================
         [HttpGet("GetCityArea")]
-        [Authorize]
+        //[Authorize]
         public IActionResult GetCityArea() 
         {
             var CityAreas = _context.CityAreas.Select(s => new CityAreaDTO 
@@ -278,6 +314,17 @@ namespace JP_FrontWebAPI.Controllers
                 CityName = s.CityName,
             });
             return Ok(Citys);
+        }
+        [HttpGet("GetAllArea")]
+        //[Authorize]
+        public IActionResult GetAllArea()
+        {
+            var Areas = _context.Areas.Select(s => new AreaDTO
+            {
+                AreaSystemId = s.AreaSystemId,
+                AreaName = s.AreaName,
+            });
+            return Ok(Areas);
         }
     }
 }

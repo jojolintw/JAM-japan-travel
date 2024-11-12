@@ -423,11 +423,10 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("MyCollection");
 
             entity.Property(e => e.MyCollectionId).HasColumnName("MyCollectionID");
-            entity.Property(e => e.ItineraryId).HasColumnName("ItineraryID");
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
 
-            entity.HasOne(d => d.Itinerary).WithMany(p => p.MyCollections)
-                .HasForeignKey(d => d.ItineraryId)
+            entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.MyCollections)
+                .HasForeignKey(d => d.ItinerarySystemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MyFavorite我的最愛_Itinerary行程");
 

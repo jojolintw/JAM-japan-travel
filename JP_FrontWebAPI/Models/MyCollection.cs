@@ -11,9 +11,9 @@ public partial class MyCollection
 
     public int MemberId { get; set; }
 
-    public int ItineraryId { get; set; }
+    public int ItinerarySystemId { get; set; }
 
-    public virtual Itinerary Itinerary { get; set; }
+    public virtual Itinerary ItinerarySystem { get; set; }
 
     public virtual Member Member { get; set; }
 }

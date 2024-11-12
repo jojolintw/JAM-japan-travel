@@ -38,6 +38,89 @@ namespace JP_FrontWebAPI.Controllers
 
             return Ok(activity);
         }
+        [HttpGet("theme_activities")]
+        public ActionResult<List<Theme_Activity>> GetAllThemeActivities()
+        {
+            try
+            {
+                var themeActivities = _JP.Themes
+                    .Select(t => new Theme_Activity
+                    {
+                        ThemeSystemId = t.ThemeSystemId,
+                        ThemeName = t.ThemeName,
+                        Activities = _JP.Activities
+                            .Where(a => a.ThemeSystemId == t.ThemeSystemId)
+                            .Select(a => new Activity
+                            {
+                                ActivitySystemId = a.ActivitySystemId,
+                                ActivityName = a.ActivityName
+                            })
+                            .ToList()
+                    })
+                    .ToList();
+
+                if (!themeActivities.Any())
+                {
+                    return NotFound("未找到相關主題");
+                }
+
+                return Ok(themeActivities);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"獲取主题失敗: {ex.Message}");
+            }
+        }
+
+        // 根據主題ID獲取行程列表
+        [HttpGet("itineraries/theme/{themeId}")]
+        public ActionResult<List<Itinerary_List>> GetItinerariesByTheme(int themeId)
+        {
+            try
+            {
+                var itineraries = _JP.Itineraries
+                    .Where(i => i.ActivitySystem.ThemeSystemId == themeId)
+                    .Select(i => new Itinerary_List
+                    {
+                        // 映射所需屬性
+                        ItinerarySystemId = i.ItinerarySystemId,
+                        ItineraryName = i.ItineraryName,
+                        // ... 其他屬性
+                    })
+                    .ToList();
+
+                return Ok(itineraries);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"獲取行程失敗: {ex.Message}");
+            }
+        }
+
+        // 根據活動ID獲取行程列表
+        [HttpGet("itineraries/activity/{activityId}")]
+        public ActionResult<List<Itinerary_List>> GetItinerariesByActivity(int activityId)
+        {
+            try
+            {
+                var itineraries = _JP.Itineraries
+                    .Where(i => i.ActivitySystemId == activityId)
+                    .Select(i => new Itinerary_List
+                    {
+                        // 映射所需屬性
+                        ItinerarySystemId = i.ItinerarySystemId,
+                        ItineraryName = i.ItineraryName,
+                        // ... 其他屬性
+                    })
+                    .ToList();
+
+                return Ok(itineraries);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"獲取行程失敗: {ex.Message}");
+            }
+        }
 
         [HttpGet("list")]
         public ActionResult<IEnumerable<Itinerary_List>> GetList()
@@ -48,7 +131,7 @@ namespace JP_FrontWebAPI.Controllers
                 ItineraryName = n.ItineraryName,
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
                 DepartureDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
-                ActivityId = n.ActivitySystem.ActivitySystemId,
+                ActivitySystemId = n.ActivitySystem.ActivitySystemId,
                 AvailableDate = n.Available,
                 Price = n.Price,
                 ImagePath = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId && img.ImageName == "封面")
@@ -67,7 +150,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItinerarySystemId = n.ItinerarySystemId,
                     ItineraryName = n.ItineraryName,
                     ActivityName = n.ActivitySystem.ActivityName,
-                    ActivityId = n.ActivitySystem.ActivitySystemId,
+                    ActivitySystemId = n.ActivitySystem.ActivitySystemId,
                     Price = (decimal)n.Price,
                     AreaName = n.AreaSystem.AreaName,
                     ItineraryBatch = n.ItineraryDates.Where(batch => batch.ItinerarySystemId == n.ItinerarySystemId)
@@ -79,6 +162,19 @@ namespace JP_FrontWebAPI.Controllers
                                                      }).ToList(),
                     ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId && i.ImageName == "內文")
                                         .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath).ToList(),
+                    Theme_Activity = new Theme_Activity // 直接在这里填充主题活动信息
+                    {
+                        ThemeSystemId = (int)n.ActivitySystem.ThemeSystemId, // 确保 ActivitySystem 有 ThemeSystemId 属性
+                        ThemeName = n.ActivitySystem.ThemeSystem.ThemeName, // 确保 ActivitySystem 有 ThemeSystem 属性
+                        Activities = new List<Activity>
+                        {
+                            new Activity
+                            {
+                                ActivitySystemId = (int)n.ActivitySystem.ActivitySystemId,
+                                ActivityName = n.ActivitySystem.ActivityName
+                            }
+                        }
+                    },
                     ItineraryDetail = n.ItineraryDetail,
                     ItineraryBrief = n.ItineraryBrief,
                     ItineraryNote = n.ItineraryNotes
@@ -90,19 +186,21 @@ namespace JP_FrontWebAPI.Controllers
                                                           .Select(segment => segment.Trim())
                                                           .Where(segment => !string.IsNullOrEmpty(segment))
                                                           .ToList();
+
             var result = new Itineray_Detail
             {
                 ItinerarySystemId = data.ItinerarySystemId,
                 ItineraryName = data.ItineraryName,
                 ActivityName = data.ActivityName,
-                ActivityId = data.ActivityId,
+                ActivitySystemId = data.ActivitySystemId,
                 Price = data.Price,
                 AreaName = data.AreaName,
                 ItineraryBatch = data.ItineraryBatch,
                 ImagePath = data.ImagePath,
                 ItineraryDetails = itineraryDetailList,
                 ItineraryBrief = data.ItineraryBrief,
-                ItineraryNote = data.ItineraryNote
+                ItineraryNote = data.ItineraryNote,
+                Theme_Activity = data.Theme_Activity
             };
 
             return Ok(result);
@@ -140,7 +238,7 @@ namespace JP_FrontWebAPI.Controllers
                 ItinerarySystemId = n.ItinerarySystemId,
                 ItineraryName = n.ItineraryName ?? "",
                 DepartureDate = n.ItineraryDates.Select(d => d.DepartureDate).ToList(),
-                ActivityId = n.ActivitySystem.ActivitySystemId,
+                ActivitySystemId = n.ActivitySystem.ActivitySystemId,
                 AreaName = n.AreaSystem != null ? n.AreaSystem.AreaName : "",
                 AvailableDate = n.Available,
                 Price = n.Price,
@@ -176,7 +274,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItinerarySystemId = i.ItinerarySystemId,
                     ItineraryName = i.ItineraryName,
                     DepartureDate = i.ItineraryDates.Select(d => d.DepartureDate).ToList(),
-                    ActivityId = i.ActivitySystem.ActivitySystemId,
+                    ActivitySystemId = i.ActivitySystem.ActivitySystemId,
                     AreaName = i.AreaSystem.AreaName,
                     ImagePath = i.Images.Where(i => i.ItinerarySystemId == i.ItinerarySystemId && i.ImageName == "封面")
                                     .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)

@@ -53,6 +53,8 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<MemberStatus> MemberStatuses { get; set; }
 
+    public virtual DbSet<MemberTotalAmount> MemberTotalAmounts { get; set; }
+
     public virtual DbSet<MyCollection> MyCollections { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -260,9 +262,7 @@ public partial class JapanTravelContext : DbContext
 
             entity.ToTable("Itinerary");
 
-            entity.Property(e => e.Available)
-                .IsRequired()
-                .HasMaxLength(50);
+            entity.Property(e => e.Available).HasMaxLength(50);
             entity.Property(e => e.ItineraryId)
                 .IsRequired()
                 .HasMaxLength(20);
@@ -391,6 +391,7 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("MemberLevel");
 
             entity.Property(e => e.MemberLevelId).HasColumnName("MemberLevelID");
+            entity.Property(e => e.Condtition).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.MemberLevelName)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -406,6 +407,15 @@ public partial class JapanTravelContext : DbContext
                 .HasMaxLength(50);
         });
 
+        modelBuilder.Entity<MemberTotalAmount>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("MemberTotalAmount");
+
+            entity.Property(e => e.TotalAmount).HasColumnType("money");
+        });
+
         modelBuilder.Entity<MyCollection>(entity =>
         {
             entity.HasKey(e => e.MyCollectionId).HasName("PK_MyFavorite我的最愛");
@@ -413,11 +423,10 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("MyCollection");
 
             entity.Property(e => e.MyCollectionId).HasColumnName("MyCollectionID");
-            entity.Property(e => e.ItineraryId).HasColumnName("ItineraryID");
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
 
-            entity.HasOne(d => d.Itinerary).WithMany(p => p.MyCollections)
-                .HasForeignKey(d => d.ItineraryId)
+            entity.HasOne(d => d.ItinerarySystem).WithMany(p => p.MyCollections)
+                .HasForeignKey(d => d.ItinerarySystemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MyFavorite我的最愛_Itinerary行程");
 
@@ -429,7 +438,7 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.ToTable("Order");
+            entity.ToTable("Order", tb => tb.HasTrigger("trg_AfterInsertOrder"));
 
             entity.Property(e => e.OrderNumber).HasMaxLength(50);
             entity.Property(e => e.OrderTime).HasColumnType("datetime");
@@ -507,9 +516,7 @@ public partial class JapanTravelContext : DbContext
 
         modelBuilder.Entity<PortImage>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("PortImage");
+            entity.ToTable("PortImage");
 
             entity.Property(e => e.PortImageId).HasColumnName("PortImageID");
             entity.Property(e => e.PortId).HasColumnName("PortID");

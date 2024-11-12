@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="html\**" />
+    <Content Remove="html\**" />
+    <EmbeddedResource Remove="html\**" />
+    <None Remove="html\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="DTOs\Itinerary\Image.cs" />
   </ItemGroup>
 

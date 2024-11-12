@@ -71,10 +71,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ItineraryOrder]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[ItineraryOrderItem]",
          "ObjectType": 0
       },
@@ -136,10 +132,6 @@
       },
       {
          "Name": "[dbo].[Theme]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[TicketOrder]",
          "ObjectType": 0
       },
       {

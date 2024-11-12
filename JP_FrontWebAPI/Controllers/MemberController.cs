@@ -281,7 +281,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
+                    //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
                     //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
                 }).ToList();

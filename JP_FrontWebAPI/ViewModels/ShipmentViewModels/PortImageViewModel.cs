@@ -6,7 +6,7 @@ namespace prjJapanTravel_BackendMVC.ViewModels.Ports
     {
         public int PortImageId { get; set; }             // 圖片的唯一 ID
         public int PortId { get; set; }                  // 關聯的 Port ID
-        public string PortImagePath { get; set; }        // 圖片的相對路徑
+        public string PortImageUrl { get; set; }        // 圖片的相對路徑
         public string PortImageDescription { get; set; } // 圖片的描述
 
         // 用於圖片上傳的檔案

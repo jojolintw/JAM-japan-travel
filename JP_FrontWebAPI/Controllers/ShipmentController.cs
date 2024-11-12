@@ -42,8 +42,19 @@ namespace JP_FrontWebAPI.Controllers
             var query = _context.Routes
                 .Include(r => r.OriginPort)
                 .Include(r => r.DestinationPort)
+                .Include(r => r.Schedules) // Include schedules for next departure calculation
                 .AsQueryable();
 
+            // 排序設定
+            query = sortBy switch
+            {
+                "priceAsc" => query.OrderBy(r => r.Price),
+                "priceDesc" => query.OrderByDescending(r => r.Price),
+                "latest" => query.OrderByDescending(r => r.RouteId),
+                _ => isAscending ? query.OrderBy(r => r.RouteId) : query.OrderByDescending(r => r.RouteId)
+            };
+
+            // 過濾出發港和目的港
             if (!string.IsNullOrEmpty(originPort))
             {
                 query = query.Where(r => r.OriginPort.PortName.Contains(originPort));
@@ -53,60 +64,25 @@ namespace JP_FrontWebAPI.Controllers
                 query = query.Where(r => r.DestinationPort.PortName.Contains(destinationPort));
             }
 
-
             var totalRecords = await query.CountAsync();
             var shipments = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(r => new ShipmentListViewModel
-                {
-                    RouteId = r.RouteId,
-                    OriginPortName = r.OriginPort.PortName,
-                    DestinationPortName = r.DestinationPort.PortName,
-                    Price = r.Price,
-                    RouteDescription = r.RouteDescription
-                })
-                .ToListAsync();
+                     .Skip((pageNumber - 1) * pageSize)
+                     .Take(pageSize)
+                     .Select(r => new ShipmentListViewModel
+                     {
+                         RouteId = r.RouteId,
+                         OriginPortName = r.OriginPort.PortName,
+                         DestinationPortName = r.DestinationPort.PortName,
+                         Price = r.Price,
+                         RouteDescription = r.RouteDescription,
+                         NextDeparture = r.Schedules
+                             .Where(s => s.DepartureTime > DateTime.Now)
+                             .OrderBy(s => s.DepartureTime)
+                             .Select(s => s.DepartureTime.ToString("yyyy-MM-dd HH:mm")) // 格式化日期為字串
+                             .FirstOrDefault() ?? "2100-12-15 00:00:00.000" // 若無符合條件的行程則顯示此字串
+                     })
+                     .ToListAsync();
 
-            //query = sortBy switch
-            //{
-            //    "Price" => isAscending ? query.OrderBy(r => r.Price) : query.OrderByDescending(r => r.Price),
-            //    _ => query.OrderBy(r => r.RouteId)
-            //};
-
-            //switch (sortBy)
-            //{
-            //    case "Price":
-
-            //        //shipments = shipments.OrderBy(r => r.Price).ToList();
-            //        shipments = isAscending ? shipments.OrderBy(r => r.Price).ToList() : shipments.OrderByDescending(r => r.Price).ToList();
-            //        break;
-            //    default:
-            //        shipments = shipments.OrderBy(r => r.RouteId).ToList();
-            //        break;
-            //}
-            //switch (sortBy)
-            //{
-            //    case "priceAsc":
-            //        shipments = shipments.OrderBy(r => r.Price).ToList();
-            //        break;
-            //    case "priceDesc":
-            //        shipments = shipments.OrderByDescending(r => r.Price).ToList();
-            //        break;
-            //    case "latest":
-            //        shipments = shipments.OrderByDescending(r => r.RouteId).ToList();
-            //        break;
-            //    default:
-            //        shipments = isAscending ? shipments.OrderBy(r => r.RouteId).ToList() : shipments.OrderByDescending(r => r.RouteId).ToList();
-            //        break;
-            //}
-            shipments = sortBy switch
-            {
-                "priceAsc" => shipments.OrderBy(r => r.Price).ToList(),
-                "priceDesc" => shipments.OrderByDescending(r => r.Price).ToList(),
-                "latest" => shipments.OrderByDescending(r => r.RouteId).ToList(),
-                _ => isAscending ? shipments.OrderBy(r => r.RouteId).ToList() : shipments.OrderByDescending(r => r.RouteId).ToList()
-            };
 
             return Ok(new
             {
@@ -116,6 +92,10 @@ namespace JP_FrontWebAPI.Controllers
                 PageSize = pageSize
             });
         }
+
+
+
+
 
 
 
@@ -240,50 +220,82 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(schedule);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateImage([FromForm] PortImageViewModel model)
+        //[HttpPost]
+        //public async Task<IActionResult> CreateImage([FromForm] PortImageViewModel model)
+        //{
+        //    if (model.ImageFile != null && model.ImageFile.Length > 0)
+        //    {
+        //        // 先創建一個臨時 PortImage 物件，無圖片路徑
+        //        var portImage = new PortImage
+        //        {
+        //            PortId = model.PortId,
+        //            PortImageDescription = model.PortImageDescription
+        //        };
+
+        //        // 將該物件添加到資料庫並保存以獲取 PortImageId
+        //        _context.PortImages.Add(portImage);
+        //        await _context.SaveChangesAsync();
+
+        //        // 使用獲取的 PortImageId 來創建唯一文件名稱
+        //        var folderPath = Path.Combine("wwwroot", "images", "Shipment", "Port");
+        //        if (!Directory.Exists(folderPath))
+        //        {
+        //            Directory.CreateDirectory(folderPath);
+        //        }
+
+        //        var uniqueFileName = $"{portImage.PortImageId}.jpg"; // 使用 PortImageId 作為文件名
+        //        var filePath = Path.Combine(folderPath, uniqueFileName);
+
+        //        // 保存圖片到指定文件夾
+        //        using (var stream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await model.ImageFile.CopyToAsync(stream);
+        //        }
+
+        //        // 更新 PortImagePath 屬性，保存圖片的相對路徑到資料庫
+        //        portImage.PortImageUrl = $"/images/Shipment/Port/{uniqueFileName}";
+        //        _context.PortImages.Update(portImage);
+        //        await _context.SaveChangesAsync();
+
+        //        return RedirectToAction("Details", new { id = model.PortId });
+        //    }
+
+        //    ModelState.AddModelError("ImageFile", "Please upload a valid image file.");
+        //    return View(model);
+        //}
+
+        [HttpGet("GetPortImages")]
+        public async Task<IActionResult> GetPortImages(int portId)
         {
-            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            var images = await _context.PortImages
+                .Where(img => img.PortId == portId)
+                .Select(img => new PortImageViewModel
+                {
+                    PortImageId = img.PortImageId,
+                    PortId = img.PortId,
+                    // 正確地使用 img 變數
+                    PortImageUrl = Url.Content($"~/images/Shipment/Port/{img.PortImageId}.jpg"),
+                    PortImageDescription = img.PortImageDescription
+                }).ToListAsync();
+
+            return Ok(images);
+        }
+
+        [HttpGet("GetPortIdByDestinationPort")]
+        public async Task<IActionResult> GetPortIdByDestinationPort(string destinationPort)
+        {
+            var port = await _context.Ports
+                .Where(p => p.PortName == destinationPort)
+                .Select(p => p.PortId)
+                .FirstOrDefaultAsync();
+
+            if (port == 0)
             {
-                // 先創建一個臨時 PortImage 物件，無圖片路徑
-                var portImage = new PortImage
-                {
-                    PortId = model.PortId,
-                    PortImageDescription = model.PortImageDescription
-                };
-
-                // 將該物件添加到資料庫並保存以獲取 PortImageId
-                _context.PortImages.Add(portImage);
-                await _context.SaveChangesAsync();
-
-                // 使用獲取的 PortImageId 來創建唯一文件名稱
-                var folderPath = Path.Combine("wwwroot", "images", "Shipment", "Port");
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                var uniqueFileName = $"{portImage.PortImageId}.jpg"; // 使用 PortImageId 作為文件名
-                var filePath = Path.Combine(folderPath, uniqueFileName);
-
-                // 保存圖片到指定文件夾
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.ImageFile.CopyToAsync(stream);
-                }
-
-                // 更新 PortImagePath 屬性，保存圖片的相對路徑到資料庫
-                portImage.PortImageUrl = $"/images/Shipment/Port/{uniqueFileName}";
-                _context.PortImages.Update(portImage);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Details", new { id = model.PortId });
+                return NotFound(new { message = "Port not found for the specified destination port." });
             }
 
-            ModelState.AddModelError("ImageFile", "Please upload a valid image file.");
-            return View(model);
+            return Ok(new { PortId = port });
         }
-        
 
 
 

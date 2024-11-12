@@ -8,6 +8,7 @@ namespace prjJapanTravel_BackendMVC.ViewModels.ShipmentViewModels
             public string DestinationPortName { get; set; }
             public decimal Price { get; set; }
             public string RouteDescription { get; set; }
+        public DateTime? NextDeparture { get; set; } 
 
     }
 }

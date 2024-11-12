@@ -79,7 +79,7 @@ namespace JP_FrontWebAPI.Controllers
                              .Where(s => s.DepartureTime > DateTime.Now)
                              .OrderBy(s => s.DepartureTime)
                              .Select(s => s.DepartureTime.ToString("yyyy-MM-dd HH:mm")) // 格式化日期為字串
-                             .FirstOrDefault() ?? "目前無預定開航計畫" // 若無符合條件的行程則顯示此字串
+                             .FirstOrDefault() ?? "2100-12-15 00:00:00.000" // 若無符合條件的行程則顯示此字串
                      })
                      .ToListAsync();
 

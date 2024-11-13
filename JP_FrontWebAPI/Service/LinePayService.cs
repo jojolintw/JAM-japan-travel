@@ -45,7 +45,7 @@ namespace JP_FrontWebAPI.Service
                 var orderData = new
                 {
                     amount = amount,
-                    currency = "JPY",  // 您可以根據需求改變貨幣，這裡是日元
+                    currency = "TWD",
                     orderId = "jam202411110942",  // 您可以根據需求設置您的訂單ID
                     packages = new[]
                     {

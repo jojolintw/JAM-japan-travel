@@ -9,7 +9,7 @@
         public int AreaSystemId { get; set; }
 
         public decimal Price { get; set; }
-        public string DepartureDate { get; set; }
+        public List<string> DepartureDate { get; set; }
         public string ItineraryDetail { get; set; }
 
         public string Image { get; set; }

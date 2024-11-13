@@ -248,9 +248,9 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
+                    DepartureDate= s.ItinerarySystem.ItineraryDates.Where(p => p.ItinerarySystemId == s.ItinerarySystemId).Select(a => a.DepartureDate).ToList(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
-                    //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
+                    Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName =="封面").Select(a => a.ImagePath).FirstOrDefault()}" 
                 }).ToList();
 
                 return Ok(allmyfavoriteItinerarys);
@@ -283,7 +283,7 @@ namespace JP_FrontWebAPI.Controllers
                     Price = s.ItinerarySystem.Price,
                     //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
-                    //Image = $"{baseUrl}/images/Member/{s.Itinerary.Images.Where(i => i.ItinerarySystemId == s.ItineraryId).FirstOrDefault().ImagePath}" 
+                    Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName == "封面").Select(a => a.ImagePath).FirstOrDefault()}"
                 }).ToList();
 
                 return Ok(allmyfavoriteItinerarys);

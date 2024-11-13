@@ -84,7 +84,6 @@ namespace JP_FrontWebAPI.Controllers
             {
                 return Unauthorized(new { Message = "Invalid Google token", Error = ex.Message });
             }
-            return Ok();
         }
         //登入==============================================================================================================
         [HttpPost("Login")]

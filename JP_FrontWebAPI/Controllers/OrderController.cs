@@ -72,7 +72,7 @@ namespace JP_FrontWebAPI.Controllers
             };
 
             _context.Orders.Add(order);
-            //_context.SaveChanges();
+            _context.SaveChanges();
             
             foreach(var item in orderData.cart)
             {
@@ -84,7 +84,7 @@ namespace JP_FrontWebAPI.Controllers
                 };
 
                 _context.ItineraryOrderItems.Add(items);
-                //_context.SaveChanges();
+                _context.SaveChanges();
             };
 
             //===============================

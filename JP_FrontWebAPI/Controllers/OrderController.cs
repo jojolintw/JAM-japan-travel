@@ -32,7 +32,9 @@ namespace JP_FrontWebAPI.Controllers
             _jwtService = jwtService;
             _linePayService = new LinePayService();
         }
-        
+
+        string memberName = "";
+
         //[HttpGet("sendOrderInfoEmail")]
         //public async Task<IActionResult> sendOrderInfoEmail()
         //{
@@ -58,10 +60,12 @@ namespace JP_FrontWebAPI.Controllers
 
             //==============================
 
+           
+
 
             Order order = new Order()
             {
-                OrderNumber = "1" + DateTime.Now.ToString("yyMMddHHmmss"),
+                OrderNumber = orderData.memberId + DateTime.Now.ToString("yyMMddHHmmss"),
                 MemberId = orderData.memberId,
                 OrderTime = DateTime.Now,
                 PaymentMethodId = 2, //付款方式:LinePay
@@ -89,117 +93,131 @@ namespace JP_FrontWebAPI.Controllers
 
             //===============================
 
+
+
+            var MemberName = _context.Members
+               .Where(m => m.MemberId == orderData.memberId)
+               .FirstOrDefault();
+
+            
+
+            if (MemberName != null)
+            {
+                memberName = MemberName.MemberName;
+            }
+
             // ============================== 發送訂單確認郵件 ==============================
             try
             {
                 // 設定郵件內容
-                string to = "qwe58912@gmail.com";  // 假設從 orderData 中獲取用戶的 email
+                string to = "luchienyu0313@gmail.com";  // 假設從 orderData 中獲取用戶的 email
                 string subject = "Japan Activity Memory (JAM) 訂單通知";
                 string body = $@"
-<!DOCTYPE html>
-<html lang='zh-tw'>
-<head>
-    <meta charset='utf-8' />
-    <title>訂單確認</title>
-    <style>
-        body {{
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }}
-        .container {{
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }}
-        h2 {{
-            color: #333333;
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }}
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }}
-        table th, table td {{
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }}
-        table th {{
-            background-color: #f7f7f7;
-            color: #333;
-        }}
-        table tr:nth-child(even) {{
-            background-color: #f9f9f9;
-        }}
-        .total, .couponName {{
-            font-weight: bold;
-            color: #d9534f;
-            margin-top: 20px;
-        }}
-        .footer {{
-            font-size: 12px;
-            color: #888888;
-            text-align: center;
-            margin-top: 30px;
-        }}
-        .footer em {{
-            font-style: normal;
-            color: #555555;
-        }}
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <h2>親愛的 {orderData.memberId}，感謝您的訂單！</h2>
-        <p>以下是您的訂單明細：</p>
+                <!DOCTYPE html>
+                <html lang='zh-tw'>
+                <head>
+                    <meta charset='utf-8' />
+                    <title>訂單確認</title>
+                    <style>
+                        body {{
+                            font-family: 'Arial', sans-serif;
+                            background-color: #f4f4f9;
+                            margin: 0;
+                            padding: 20px;
+                        }}
+                        .container {{
+                            max-width: 800px;
+                            margin: 0 auto;
+                            background-color: #ffffff;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                        }}
+                        h2 {{
+                            color: #333333;
+                            text-align: center;
+                            font-size: 24px;
+                            margin-bottom: 20px;
+                        }}
+                        table {{
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }}
+                        table th, table td {{
+                            padding: 12px 15px;
+                            text-align: left;
+                            border-bottom: 1px solid #e0e0e0;
+                        }}
+                        table th {{
+                            background-color: #f7f7f7;
+                            color: #333;
+                        }}
+                        table tr:nth-child(even) {{
+                            background-color: #f9f9f9;
+                        }}
+                        .total, .couponName {{
+                            font-weight: bold;
+                            color: #d9534f;
+                            margin-top: 20px;
+                        }}
+                        .footer {{
+                            font-size: 12px;
+                            color: #888888;
+                            text-align: center;
+                            margin-top: 30px;
+                        }}
+                        .footer em {{
+                            font-style: normal;
+                            color: #555555;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h2>親愛的 {memberName}，感謝您的訂單！</h2>
+                        <p>以下是您的訂單明細：</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>商品名稱</th>
-                    <th>數量</th>
-                    <th>單價</th>
-                    <th>總價</th>
-                </tr>
-            </thead>
-            <tbody>";
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>商品名稱</th>
+                                    <th>數量</th>
+                                    <th>單價</th>
+                                    <th>總價</th>
+                                </tr>
+                            </thead>
+                            <tbody>";
 
-                // 訂單項目明細
-                foreach (var item in orderData.cart)
-                {
-                    body += $@"
-                <tr>
-                    <td>{item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price}</td>
-                    <td>{item.quantity * item.price}</td>
-                </tr>";
-                }
+                                // 訂單項目明細
+                                foreach (var item in orderData.cart)
+                                {
+                                    body += $@"
+                                <tr>
+                                    <td>{item.name}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>{item.price}</td>
+                                    <td>{item.quantity * item.price}</td>
+                                </tr>";
+                                }
 
-                body += $@"
-            </tbody>
-        </table>
+                                body += $@"
+                            </tbody>
+                        </table>
+
+                        <p class='remarks'>備註：{orderData.remarks}</p>
+                        <p class='couponName'>折扣金額：-100</p>
+                        <p class='total'>總金額：{orderData.totalAmount.ToString()}</p>
         
-        <p class='couponName'>優惠券：{orderData.couponId} 折扣金額：-100</p>
-        <p class='total'>總金額：{orderData.totalAmount:C}</p>
+                        <p>如果您有任何問題，請隨時聯繫我們。</p>
+                        <p>祝您購物愉快！</p>
         
-        <p>如果您有任何問題，請隨時聯繫我們。</p>
-        <p>祝您購物愉快！</p>
-        
-        <div class='footer'>
-            <em>這是自動生成的郵件，請勿直接回覆。</em>
-        </div>
-    </div>
-</body>
-</html>";
+                        <div class='footer'>
+                            <em>這是自動生成的郵件，請勿直接回覆。</em>
+                        </div>
+                    </div>
+                </body>
+                </html>";
 
                     // 發送郵件
                     await _emailService.SendEmailAsync(to, subject, body);

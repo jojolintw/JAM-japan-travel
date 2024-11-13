@@ -32,7 +32,9 @@ namespace JP_FrontWebAPI.Controllers
             _jwtService = jwtService;
             _linePayService = new LinePayService();
         }
-        
+
+        string memberName = "";
+
         //[HttpGet("sendOrderInfoEmail")]
         //public async Task<IActionResult> sendOrderInfoEmail()
         //{
@@ -97,7 +99,7 @@ namespace JP_FrontWebAPI.Controllers
                .Where(m => m.MemberId == orderData.memberId)
                .FirstOrDefault();
 
-            string memberName = "";
+            
 
             if (MemberName != null)
             {

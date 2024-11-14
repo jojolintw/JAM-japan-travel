@@ -35,18 +35,6 @@ namespace JP_FrontWebAPI.Controllers
 
         string memberName = "";
 
-        //[HttpGet("sendOrderInfoEmail")]
-        //public async Task<IActionResult> sendOrderInfoEmail()
-        //{
-        //    string to = "qwe58912@gmail.com";
-        //    string subject = "Japan Activity Memory (JAM) 訂單通知";
-        //    string body = "訂單通知";
-
-        //    await _emailService.SendEmailAsync(to, subject, body);
-
-        //    return Ok((new { result = "success" }));
-        //}
-
 
 
         [HttpPost("CreateOrder")]
@@ -65,7 +53,7 @@ namespace JP_FrontWebAPI.Controllers
 
             Order order = new Order()
             {
-                OrderNumber = orderData.memberId + DateTime.Now.ToString("yyMMddHHmmss"),
+                OrderNumber = orderData.orderNumber,
                 MemberId = orderData.memberId,
                 OrderTime = DateTime.Now,
                 PaymentMethodId = 2, //付款方式:LinePay
@@ -238,5 +226,7 @@ namespace JP_FrontWebAPI.Controllers
                 });
             }
 
+
+        
     }
 }

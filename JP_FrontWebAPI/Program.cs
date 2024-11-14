@@ -58,7 +58,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<JWTService>();
 builder.Services.AddScoped<EmailService>();
 
-
+builder.Services.AddHttpClient();  // 註冊 HttpClient
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

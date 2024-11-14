@@ -14,21 +14,21 @@ namespace JP_FrontWebAPI.Controllers
     [EnableCors("All")]
     [Route("api/[controller]")]
     [ApiController]
-    public class LinePayController : ControllerBase
+    public class PaymentController : ControllerBase
     {
 
 
         private readonly HttpClient _httpClient;
         private readonly LinePayService _linePayService;
-        
-        public LinePayController(HttpClient httpClient)
+
+        public PaymentController(HttpClient httpClient)
         {
             _linePayService = new LinePayService();
             _httpClient = httpClient;
         }
 
 
-        [HttpPost("CreateOrder")]
+        [HttpPost]
         public async Task<IActionResult> LinePay([FromBody] LineOrderData lineOrderData)
         {
             // 獲取ngrok URL

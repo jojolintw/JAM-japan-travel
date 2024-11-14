@@ -35,18 +35,6 @@ namespace JP_FrontWebAPI.Controllers
 
         string memberName = "";
 
-        //[HttpGet("sendOrderInfoEmail")]
-        //public async Task<IActionResult> sendOrderInfoEmail()
-        //{
-        //    string to = "qwe58912@gmail.com";
-        //    string subject = "Japan Activity Memory (JAM) 訂單通知";
-        //    string body = "訂單通知";
-
-        //    await _emailService.SendEmailAsync(to, subject, body);
-
-        //    return Ok((new { result = "success" }));
-        //}
-
 
 
         [HttpPost("CreateOrder")]

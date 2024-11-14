@@ -9,9 +9,12 @@
 
         public int ItinerarySystemId { get; set; }
 
+        public string ItineraryId {  get; set; }
+
         public string ItineraryName { get; set; }
         public string DepartureDate { get; set; }
         public int Quantity { get; set; }
+        public string TotalPrice { get; set; }
 
     }
 }

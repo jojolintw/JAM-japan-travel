@@ -44,8 +44,8 @@ namespace JP_FrontWebAPI.Controllers
                     OrderStatus = s.OrderStatus.OrderStatus1,
                     PaymentMehtodId = Convert.ToInt32(s.PaymentMethodId),
                     PaymentMethod = s.PaymentMethod.PaymentMethod1,
-                    TotalAmount = Convert.ToDecimal(s.TotalAmount),
-                    OrderTime = s.OrderTime.ToString()
+                    TotalAmount = Convert.ToDecimal(s.TotalAmount).ToString("###,###"),
+                    OrderTime = Convert.ToDateTime(s.OrderTime).ToString("yyyy-MM-dd") 
                 }).ToList();
 
 
@@ -72,11 +72,14 @@ namespace JP_FrontWebAPI.Controllers
                 {
                     OrderDetailId = s.ItineraryOrderItemId,
                     OrderId = Convert.ToInt32(s.OrderId),
+                    OrderNumber= s.Order.OrderNumber,
                     ItineraryDateSystemId = Convert.ToInt32(s.ItineraryDateSystemId),
+                    ItineraryId = s.ItineraryDateSystem.ItinerarySystem.ItineraryId,
                     ItinerarySystemId = Convert.ToInt32(s.ItineraryDateSystem.ItinerarySystemId),
                     ItineraryName = s.ItineraryDateSystem.ItinerarySystem.ItineraryName,
-                    DepartureDate = s.ItineraryDateSystem.DepartureDate,
-                    Quantity =Convert.ToInt32(s.Quantity)
+                    DepartureDate = Convert.ToDateTime(s.ItineraryDateSystem.DepartureDate).ToString("yyyy-MM-dd HH:mm"),
+                    Quantity =Convert.ToInt32(s.Quantity),
+                    TotalPrice = (Convert.ToInt32(s.ItineraryDateSystem.ItinerarySystem.Price)* Convert.ToInt32(s.Quantity)).ToString("###,###")
                 }).ToList(); 
 
 

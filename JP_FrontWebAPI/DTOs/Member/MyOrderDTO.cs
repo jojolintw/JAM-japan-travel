@@ -10,7 +10,7 @@
         public string OrderStatus { get; set; }
         public int PaymentMehtodId { get; set; }
         public string PaymentMethod { get; set; }
-        public decimal TotalAmount { get; set; }
+        public string TotalAmount { get; set; }
         public string OrderTime { get; set; }
     }
 }

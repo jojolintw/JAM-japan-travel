@@ -65,7 +65,7 @@ namespace JP_FrontWebAPI.Controllers
 
             Order order = new Order()
             {
-                OrderNumber = orderData.memberId + DateTime.Now.ToString("yyMMddHHmmss"),
+                OrderNumber = orderData.orderNumber,
                 MemberId = orderData.memberId,
                 OrderTime = DateTime.Now,
                 PaymentMethodId = 2, //付款方式:LinePay
@@ -238,5 +238,7 @@ namespace JP_FrontWebAPI.Controllers
                 });
             }
 
+
+        
     }
 }

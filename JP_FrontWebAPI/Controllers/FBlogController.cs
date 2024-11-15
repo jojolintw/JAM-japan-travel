@@ -277,6 +277,20 @@ namespace JP_FrontWebAPI.Controllers
             return CreatedAtAction(nameof(GetArticleById), new { id = articleMain.ArticleNumber }, articleDTO);
         }
 
+        [HttpGet("IsSelf")]
+        public IActionResult IsSelf([FromQuery] int loginMemberId, [FromQuery] int articleId)
+        {
+            bool isSelf = false;
+
+            // Logic ==========================
+
+
+
+            // ==========================
+
+
+            return Ok(isSelf);
+        }
     }
 }
 

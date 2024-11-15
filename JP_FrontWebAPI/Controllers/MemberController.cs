@@ -281,7 +281,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList(),
+                    //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
                     Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName == "封面").Select(a => a.ImagePath).FirstOrDefault()}"
                 }).ToList();
@@ -290,40 +290,8 @@ namespace JP_FrontWebAPI.Controllers
             }
             return Unauthorized(new { result = "noLogin" });
         }
-        //評論-------------------------------------------------------------------------------------------------------------------------------------------
-        //取出評論的行程及OrderID
-        [HttpGet("GetCommentOrderDetailId/{id}")]
 
-        public IActionResult GetCommentOrderDetailId(int id)
-        {
 
-            ItineraryOrderItem io = _context.ItineraryOrderItems.FirstOrDefault(o => o.ItineraryOrderItemId == id);
-
-            CommentDTO comment = new CommentDTO();
-
-            comment.ordertetailId = io.ItineraryOrderItemId;
-            comment.itinerarySystemId = io.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId;
-            comment.itineraryName = io.ItineraryDateSystem.ItinerarySystem.ItineraryName;
-            if(io.CommentStar != null)
-                comment.CommentStar = io.CommentStar;
-            if (io.CommentContent != null)
-                comment.CommentContent = io.CommentContent;
-            if (io.CommentTime != null)
-                comment.CommentTime = Convert.ToDateTime(Convert.ToDateTime(io.CommentTime).ToString("yyyy-MM-dd"));
-
-            return Ok(comment);
-        }
-
-        [HttpPost("InsertComment")]
-        public IActionResult InsertComment([FromBody] CommentDTO comment)
-        {
-            ItineraryOrderItem io = _context.ItineraryOrderItems.FirstOrDefault(o => o.ItineraryOrderItemId == comment.ordertetailId);
-            io.CommentStar = comment.CommentStar;
-            io.CommentContent = comment.CommentContent;
-            io.CommentTime = Convert.ToDateTime(Convert.ToDateTime(comment.CommentTime).ToString("yyyy-MM-dd"));
-            _context.SaveChanges();
-            return Ok(new {result="success"});
-        }
         //===============================================================================================================================
         [HttpGet("GetCityArea")]
         //[Authorize]

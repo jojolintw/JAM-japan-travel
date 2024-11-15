@@ -294,7 +294,6 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("ItineraryOrderItem");
 
             entity.Property(e => e.CommentContent).HasMaxLength(50);
-            entity.Property(e => e.CommentTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.ItineraryDateSystem).WithMany(p => p.ItineraryOrderItems)
                 .HasForeignKey(d => d.ItineraryDateSystemId)

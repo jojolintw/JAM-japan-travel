@@ -6,8 +6,14 @@
         public decimal amount { get; set; }
         public string currency { get; set; }
         public string productName {  get; set; }
-        public string confirmUrl {  get; set; }
-        public string cancelUrl {  get; set; }
+        //public string confirmUrl {  get; set; }
+        //public string cancelUrl {  get; set; }
+        public RedirectUrls redirectUrls { get; set; }
+    }
 
+    public class RedirectUrls
+    {
+        public string confirmUrl { get; set; }
+        public string cancelUrl { get; set; }
     }
 }

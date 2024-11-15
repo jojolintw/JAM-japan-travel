@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Mail;
 using JP_FrontWebAPI.Service;
 using JP_FrontWebAPI.DTOs.Order;
+using Microsoft.EntityFrameworkCore;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -34,7 +35,8 @@ namespace JP_FrontWebAPI.Controllers
         }
 
         string memberName = "";
-
+        decimal discount = 0;
+        string couponName = "";
 
 
         [HttpPost("CreateOrder")]
@@ -58,7 +60,7 @@ namespace JP_FrontWebAPI.Controllers
                 OrderTime = DateTime.Now,
                 PaymentMethodId = 2, //付款方式:LinePay
                 OrderStatusId = 1,   //訂單狀態:已成立
-                CouponId = 1,        //優惠券:驚喜大禮包-100
+                CouponId = orderData.couponId,
                 TotalAmount = orderData.totalAmount,
                 Remarks = orderData.remarks,
             };
@@ -79,6 +81,25 @@ namespace JP_FrontWebAPI.Controllers
                 _context.SaveChanges();
             };
 
+            //==============================
+
+
+            if(orderData.couponId.HasValue)
+            {
+                var coupon = await _context.MemberCouponLists.FirstOrDefaultAsync(c => c.CouponId == orderData.couponId.Value && c.MemberId == orderData.memberId);
+                if(coupon != null)
+                {
+                    coupon.Used = true;
+                    _context.MemberCouponLists.Update(coupon);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+
+
+
+
+
             //===============================
 
 
@@ -93,6 +114,20 @@ namespace JP_FrontWebAPI.Controllers
             {
                 memberName = MemberName.MemberName;
             }
+
+
+
+            var Discount = _context.Coupons
+                .Where(c => c.CouponId == orderData.couponId)
+                .FirstOrDefault();
+
+            if(discount!=null)
+            {
+                discount = Discount.Discount;
+                couponName = Discount.CouponName;
+            }
+
+
 
             // ============================== 發送訂單確認郵件 ==============================
             try
@@ -194,7 +229,8 @@ namespace JP_FrontWebAPI.Controllers
                         </table>
 
                         <p class='remarks'>備註：{orderData.remarks}</p>
-                        <p class='couponName'>折扣金額：-100</p>
+                        <p class='couponName'>優惠券名稱：{couponName}</p>
+                        <p class='couponName'>折扣金額：{discount}</p>
                         <p class='total'>總金額：{orderData.totalAmount.ToString()}</p>
         
                         <p>如果您有任何問題，請隨時聯繫我們。</p>
@@ -225,6 +261,8 @@ namespace JP_FrontWebAPI.Controllers
                     receivedData = orderData
                 });
             }
+
+
 
 
         

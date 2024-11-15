@@ -2,6 +2,7 @@
 {
     public class OrderData
     {
+        public string? orderNumber { get; set; }
         public int? couponId { get; set; }
         public string? remarks { get; set; }
         public decimal? totalAmount { get; set; }

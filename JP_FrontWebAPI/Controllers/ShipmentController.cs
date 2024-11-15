@@ -50,7 +50,11 @@ namespace JP_FrontWebAPI.Controllers
             {
                 "priceAsc" => query.OrderBy(r => r.Price),
                 "priceDesc" => query.OrderByDescending(r => r.Price),
-                "latest" => query.OrderByDescending(r => r.RouteId),
+                "latest" => query.OrderBy(r => r.Schedules
+            .Where(s => s.DepartureTime > DateTime.Now)
+            .OrderBy(s => s.DepartureTime)
+            .Select(s => s.DepartureTime)
+            .FirstOrDefault()),
                 _ => isAscending ? query.OrderBy(r => r.RouteId) : query.OrderByDescending(r => r.RouteId)
             };
 

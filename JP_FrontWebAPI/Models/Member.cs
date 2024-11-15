@@ -33,6 +33,8 @@ public partial class Member
 
     public bool GoogleLink { get; set; }
 
+    public virtual ICollection<ArticleMain> ArticleMains { get; set; } = new List<ArticleMain>();
+
     public virtual City City { get; set; }
 
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();

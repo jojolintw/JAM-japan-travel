@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using JP_FrontWebAPI.DTOs.Order;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -287,24 +286,33 @@ namespace JP_FrontWebAPI.Controllers
             return Ok(relatedItineraries);
         }
 
-        [HttpGet("detail/comment/{id}")]
-        public ActionResult<Comments> GetCommentByOrderId(int orderId)
+        [HttpGet("detail/comment/{itinerarySystemId}")]
+        public ActionResult<OrderComments> GetCommentsByItineraryId(int itinerarySystemId)
         {
-            var commentData = _JP.Orders
-         .Where(o => o.OrderId == orderId)
-         .Select(o => new Comments
-         {
-             MemberId = (int)o.MemberId,
-             MemberName = o.Member.MemberName,
-             OrderId = o.OrderId,
-             ItinerarySystemId = o.ItineraryOrderItems
-                 .Select(io => io.ItineraryDateSystem.ItinerarySystemId) // 获取 ItinerarySystemId
-                 .FirstOrDefault(), // 获取第一个 ItinerarySystemId
-             CommentStar = o.ItineraryOrderItems.Select(i => i.CommentStar).FirstOrDefault(), // 根据需要填充或从数据库中获取
-             CommentContent = o.ItineraryOrderItems.Select(i => i.CommentContent).FirstOrDefault() // 根据需要填充或从数据库中获取
-         }); // 只获取第一
+            var orderCommentsData = _JP.Orders
+                .Where(o => o.ItineraryOrderItems.Any(io => io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId))
+                .Select(o => new OrderComments
+                {
+                    MemberId = (int)o.MemberId,
+                    MemberName = o.Member.MemberName,
+                    OrderId = o.OrderId,
+                    Comments = o.ItineraryOrderItems
+                        .Where(io => io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId) // 只选择与指定行程相关的评论
+                        .Select(io => new Comments
+                        {
+                            ItinerarySystemId = io.ItineraryDateSystem.ItinerarySystemId,
+                            CommentStar = io.CommentStar,
+                            CommentContent = io.CommentContent,
+                            CommentDate = io.CommentTime.ToString() // 确保 CommentTime 处理为字符串
+                        }).ToList()
+                });
 
-            return Ok();
+            if (orderCommentsData == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(orderCommentsData);
         }
     }
 }

@@ -58,6 +58,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<JWTService>();
 builder.Services.AddScoped<EmailService>();
 
+// 註冊LinePayService服務
+builder.Services.AddScoped<LinePayService>();
+
 builder.Services.AddHttpClient();  // 註冊 HttpClient
 
 builder.Services.AddControllers();

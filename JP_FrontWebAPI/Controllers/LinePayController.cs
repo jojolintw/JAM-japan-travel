@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Cors;
 using JP_FrontWebAPI.DTOs.Order;
 using JP_FrontWebAPI.Service;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.WebRequestMethods;
+using System.Security.Cryptography.Xml;
+using System.Security.Policy;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace JP_FrontWebAPI.Controllers
@@ -28,7 +33,7 @@ namespace JP_FrontWebAPI.Controllers
         }
 
 
-        [HttpPost("CreateOrder")]
+        [HttpPost("LinePay")]
         public async Task<IActionResult> LinePay([FromBody] LineOrderData lineOrderData)
         {
             // 獲取ngrok URL
@@ -39,10 +44,10 @@ namespace JP_FrontWebAPI.Controllers
             var orderData = new
             {
                 amount = lineOrderData.amount,
-                currency = lineOrderData.currency,
-                orderId = lineOrderData.orderId,
-                confirmUrl = $"{ngrokUrl}/payment/confirm", // 回調URL
-                cancelUrl = $"{ngrokUrl}/payment/cancel",   // 取消支付的URL
+                currency = "TWD",
+                orderId = "JAM" + lineOrderData.orderId,
+                confirmUrl = $"{ngrokUrl}/orderconfirmation", // 回調URL
+                cancelUrl = $"{ngrokUrl}/itinerary-list",   // 取消支付的URL
             };
 
 
@@ -52,9 +57,17 @@ namespace JP_FrontWebAPI.Controllers
             string jsonContent = JsonConvert.SerializeObject(orderData);
             var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
+            // 生成 X-LINE-Authorization-Nonce (防止重放攻擊)
+            string nonce = Guid.NewGuid().ToString();
+
+            // 計算 X-LINE-Authorization（基於 ChannelSecret 和請求的內容）
+            string signature = GenerateAuthorizationSignature(orderData, nonce);
+
 
             _httpClient.DefaultRequestHeaders.Add("X-LINE-ChannelId", "2006530351");
             _httpClient.DefaultRequestHeaders.Add("X-LINE-ChannelSecret", "96f3c66527b68f45c7dee92962c58855");
+            _httpClient.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
+            _httpClient.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
 
 
             HttpResponseMessage response = await _httpClient.PostAsync(linePayApiUrl, content);
@@ -70,9 +83,27 @@ namespace JP_FrontWebAPI.Controllers
             }
             else
             {
-                return StatusCode(500, "Line Pay API error");
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"LinePay API error: {errorResponse}");
+                return StatusCode(500, $"Line Pay API error: {errorResponse}");
             }
         }
+
+        // 用於生成 X-LINE-Authorization 签名的函数
+        private string GenerateAuthorizationSignature(object orderData, string nonce)
+        {
+            string channelSecret = "96f3c66527b68f45c7dee92962c58855";  // 你的 ChannelSecret
+            string payload = "POST /v3/payments/request" + JsonConvert.SerializeObject(orderData) + nonce;
+
+            // 使用 HMACSHA256 計算簽名
+            using (var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(channelSecret)))
+            {
+                byte[] hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(payload));
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();  // 返回簽名
+            }
+        }
+
+
 
         // 獲取ngrok的公開URL
         private async Task<string> GetNgrokPublicUrl()

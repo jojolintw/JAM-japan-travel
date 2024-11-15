@@ -19,7 +19,7 @@ public partial class ItineraryOrderItem
 
     public string CommentContent { get; set; }
 
-    public DateOnly? CommentTime { get; set; }
+    public DateTime? CommentTime { get; set; }
 
     public virtual ItineraryDate ItineraryDateSystem { get; set; }
 

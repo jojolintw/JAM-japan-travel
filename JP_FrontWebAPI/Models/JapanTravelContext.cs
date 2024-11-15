@@ -157,6 +157,11 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.ArticleStatusnumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ArticleMain_ArticleStatus");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.ArticleMains)
+                .HasForeignKey(d => d.MemberId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleMain_Member");
         });
 
         modelBuilder.Entity<ArticlePic>(entity =>
@@ -294,6 +299,7 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("ItineraryOrderItem");
 
             entity.Property(e => e.CommentContent).HasMaxLength(50);
+            entity.Property(e => e.CommentTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.ItineraryDateSystem).WithMany(p => p.ItineraryOrderItems)
                 .HasForeignKey(d => d.ItineraryDateSystemId)

@@ -148,12 +148,12 @@ namespace JP_FrontWebAPI.Controllers
                 ItinerarySystemId = n.ItinerarySystemId,
                 ItineraryName = n.ItineraryName,
                 AreaName = n.AreaName,
-                DepartureDate = n.ItineraryBatch.Select(d => d.DepartureDate).ToList(),
+                DepartureDate = n.DepartureDate.ToList(),
                 ActivitySystemId = n.ActivitySystemId,
                 AvailableDate = n.AvailableDate,
                 Price = n.Price,
                 ImagePath = n.ImagePath,
-                StarRate = starRates.ContainsKey(n.ItinerarySystemId) ? starRates[n.ItinerarySystemId] : 0
+                StarRate = starRates.TryGetValue(n.ItinerarySystemId, out var starRate) ? starRate : 0
             }).ToList();
 
             return Ok(result);

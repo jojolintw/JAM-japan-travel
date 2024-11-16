@@ -32,12 +32,12 @@ namespace JP_FrontWebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ShipmentListViewModel>>> GetShipments(
-    string? originPort = null,
-    string? destinationPort = null,
-    string? sortBy = null,
-    bool isAscending = true,
-    int pageNumber = 1,
-    int pageSize = 12)
+        string? originPort = null,
+        string? destinationPort = null,
+        string? sortBy = null,
+        bool isAscending = true,
+        int pageNumber = 1,
+        int pageSize = 12)
         {
             var query = _context.Routes
                 .Include(r => r.OriginPort)

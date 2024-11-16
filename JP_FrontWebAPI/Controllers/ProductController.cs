@@ -136,9 +136,27 @@ namespace JP_FrontWebAPI.Controllers
                 Price = n.Price,
                 ImagePath = n.Images.Where(img => img.ItinerarySystemId == n.ItinerarySystemId && img.ImageName == "封面")
                                     .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
-                                    .FirstOrDefault()
+                                    .FirstOrDefault(),
             }).ToList();
-            return Ok(datas);
+
+            var starRates = _JP.StarRatings
+                            .Select(sr => new { sr.ItinerarySystemId, sr.StarRate })
+                            .ToDictionary(sr => sr.ItinerarySystemId, sr => sr.StarRate);
+
+            var result = datas.Select(n => new Itinerary_List
+            {
+                ItinerarySystemId = n.ItinerarySystemId,
+                ItineraryName = n.ItineraryName,
+                AreaName = n.AreaName,
+                DepartureDate = n.DepartureDate.ToList(),
+                ActivitySystemId = n.ActivitySystemId,
+                AvailableDate = n.AvailableDate,
+                Price = n.Price,
+                ImagePath = n.ImagePath,
+                StarRate = starRates.TryGetValue(n.ItinerarySystemId, out var starRate) ? starRate : 0
+            }).ToList();
+
+            return Ok(result);
         }
 
         [HttpGet("detail/{id}")]

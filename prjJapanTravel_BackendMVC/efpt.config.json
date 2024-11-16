@@ -71,10 +71,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ItineraryOrder]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[ItineraryOrderItem]",
          "ObjectType": 0
       },
@@ -139,15 +135,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[TicketOrder]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[TicketOrderItem]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[MemberTotalAmount]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[StarRating]",
          "ObjectType": 3
       }
    ],

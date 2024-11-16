@@ -17,6 +17,8 @@ public partial class Coupon
 
     public bool CouponStatus { get; set; }
 
+    public int? MemberLevelId { get; set; }
+
     public virtual ICollection<MemberCouponList> MemberCouponLists { get; set; } = new List<MemberCouponList>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

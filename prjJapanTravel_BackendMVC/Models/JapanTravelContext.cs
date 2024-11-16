@@ -41,8 +41,6 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<ItineraryDate> ItineraryDates { get; set; }
 
-    public virtual DbSet<ItineraryOrder> ItineraryOrders { get; set; }
-
     public virtual DbSet<ItineraryOrderItem> ItineraryOrderItems { get; set; }
 
     public virtual DbSet<Member> Members { get; set; }
@@ -75,9 +73,9 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<Schedule> Schedules { get; set; }
 
-    public virtual DbSet<Theme> Themes { get; set; }
+    public virtual DbSet<StarRating> StarRatings { get; set; }
 
-    public virtual DbSet<TicketOrder> TicketOrders { get; set; }
+    public virtual DbSet<Theme> Themes { get; set; }
 
     public virtual DbSet<TicketOrderItem> TicketOrderItems { get; set; }
 
@@ -161,6 +159,11 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.ArticleStatusnumber)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ArticleMain_ArticleStatus");
+
+            entity.HasOne(d => d.Member).WithMany(p => p.ArticleMains)
+                .HasForeignKey(d => d.MemberId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArticleMain_Member");
         });
 
         modelBuilder.Entity<ArticlePic>(entity =>
@@ -293,31 +296,12 @@ public partial class JapanTravelContext : DbContext
                 .HasConstraintName("FK_ItineraryDate_Itinerary");
         });
 
-        modelBuilder.Entity<ItineraryOrder>(entity =>
-        {
-            entity.HasKey(e => e.ItineraryOrderId).HasName("PK_訂單資料_行程");
-
-            entity.ToTable("ItineraryOrder");
-
-            entity.Property(e => e.ItineraryOrderNumber).HasMaxLength(50);
-            entity.Property(e => e.OrderTime).HasColumnType("datetime");
-            entity.Property(e => e.PaymentTime).HasColumnType("datetime");
-            entity.Property(e => e.Remarks).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeFirstName).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeIdnumber).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeLastName).HasMaxLength(50);
-            entity.Property(e => e.RepresentativePassportNumber).HasMaxLength(50);
-            entity.Property(e => e.RepresentativePhoneNumber).HasMaxLength(50);
-            entity.Property(e => e.ReveiwContent).HasMaxLength(50);
-            entity.Property(e => e.ReviewTime).HasColumnType("datetime");
-            entity.Property(e => e.TotalAmount).HasColumnType("money");
-        });
-
         modelBuilder.Entity<ItineraryOrderItem>(entity =>
         {
             entity.ToTable("ItineraryOrderItem");
 
             entity.Property(e => e.CommentContent).HasMaxLength(50);
+            entity.Property(e => e.CommentTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.ItineraryDateSystem).WithMany(p => p.ItineraryOrderItems)
                 .HasForeignKey(d => d.ItineraryDateSystemId)
@@ -592,6 +576,13 @@ public partial class JapanTravelContext : DbContext
                 .HasConstraintName("FK_tSchedules_tRoutes");
         });
 
+        modelBuilder.Entity<StarRating>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("StarRating");
+        });
+
         modelBuilder.Entity<Theme>(entity =>
         {
             entity.HasKey(e => e.ThemeSystemId).HasName("PK_Theme主題");
@@ -599,26 +590,6 @@ public partial class JapanTravelContext : DbContext
             entity.ToTable("Theme");
 
             entity.Property(e => e.ThemeName).HasMaxLength(50);
-        });
-
-        modelBuilder.Entity<TicketOrder>(entity =>
-        {
-            entity.HasKey(e => e.TicketOrderId).HasName("PK_訂單資料_航班");
-
-            entity.ToTable("TicketOrder");
-
-            entity.Property(e => e.OrderTime).HasColumnType("datetime");
-            entity.Property(e => e.PaymentTime).HasColumnType("datetime");
-            entity.Property(e => e.Remarks).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeFirstName).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeIdnumber).HasMaxLength(50);
-            entity.Property(e => e.RepresentativeLastName).HasMaxLength(50);
-            entity.Property(e => e.RepresentativePassportNumber).HasMaxLength(50);
-            entity.Property(e => e.RepresentativePhoneNumber).HasMaxLength(50);
-            entity.Property(e => e.ReviewContent).HasMaxLength(50);
-            entity.Property(e => e.ReviewTime).HasColumnType("datetime");
-            entity.Property(e => e.TicketOrderNumber).HasMaxLength(50);
-            entity.Property(e => e.TotalAmount).HasColumnType("money");
         });
 
         modelBuilder.Entity<TicketOrderItem>(entity =>

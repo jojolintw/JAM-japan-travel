@@ -15,5 +15,6 @@ namespace JP_FrontWebAPI.DTOs.Itinerary
         public string? ImagePath { get; set; }
         public string? AvailableDate { get; set; }
         public decimal? Price { get; set; }
+        public double? StarRate {  get; set; }
     }
 }

@@ -73,6 +73,8 @@ public partial class JapanTravelContext : DbContext
 
     public virtual DbSet<Schedule> Schedules { get; set; }
 
+    public virtual DbSet<StarRating> StarRatings { get; set; }
+
     public virtual DbSet<Theme> Themes { get; set; }
 
     public virtual DbSet<TicketOrderItem> TicketOrderItems { get; set; }
@@ -572,6 +574,13 @@ public partial class JapanTravelContext : DbContext
                 .HasForeignKey(d => d.RouteId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_tSchedules_tRoutes");
+        });
+
+        modelBuilder.Entity<StarRating>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("StarRating");
         });
 
         modelBuilder.Entity<Theme>(entity =>

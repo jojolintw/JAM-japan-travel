@@ -141,6 +141,10 @@
       {
          "Name": "[dbo].[MemberTotalAmount]",
          "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[StarRating]",
+         "ObjectType": 3
       }
    ],
    "UiHint": null,

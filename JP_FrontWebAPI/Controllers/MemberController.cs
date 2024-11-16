@@ -332,7 +332,7 @@ namespace JP_FrontWebAPI.Controllers
             var request = _httpContextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
 
-            List<AllCommentsByItinerary> allCommentsByItinerary = _context.ItineraryOrderItems.Where(i => i.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId == id).Select(s => new AllCommentsByItinerary
+            List<AllCommentsByItinerary> allCommentsByItinerary = _context.ItineraryOrderItems.Where(i => i.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId == id && i.CommentStar >0).Select(s => new AllCommentsByItinerary
             {
                 MemberID = Convert.ToInt32(s.Order.MemberId),
                 MemberName = s.Order.Member.MemberName,

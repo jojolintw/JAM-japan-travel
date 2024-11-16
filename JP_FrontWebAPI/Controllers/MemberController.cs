@@ -281,7 +281,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    //DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList().FirstOrDefault(),
+                    DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
                     Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName == "封面").Select(a => a.ImagePath).FirstOrDefault()}"
                 }).ToList();
@@ -319,10 +319,30 @@ namespace JP_FrontWebAPI.Controllers
         {
             ItineraryOrderItem io = _context.ItineraryOrderItems.FirstOrDefault(o => o.ItineraryOrderItemId == comment.ordertetailId);
             io.CommentStar = comment.CommentStar;
-            io.CommentContent = comment.CommentContent;
+            if (io.CommentContent != null)
+                io.CommentContent = comment.CommentContent;
             io.CommentTime = Convert.ToDateTime(Convert.ToDateTime(comment.CommentTime).ToString("yyyy-MM-dd"));
             _context.SaveChanges();
             return Ok(new { result = "success" });
+        }
+        //取得同一行程的所有評論===============================================================================================================================
+        [HttpGet("GetAllCommentByItinerary/{id}")]
+        public IActionResult GetAllCommentByItinerary(int id)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+
+            List<AllCommentsByItinerary> allCommentsByItinerary = _context.ItineraryOrderItems.Where(i => i.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId == id).Select(s => new AllCommentsByItinerary
+            {
+                MemberID = Convert.ToInt32(s.Order.MemberId),
+                MemberName = s.Order.Member.MemberName,
+                MemberPhotoURL = $"{baseUrl}/images/Member/{s.Order.Member.ImagePath}",
+                CommentStar = Convert.ToInt32(s.CommentStar),
+                CommentContent = !string.IsNullOrEmpty(s.CommentContent) ? s.CommentContent : null,
+                CommentTime = Convert.ToDateTime(s.CommentTime).ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Ok(allCommentsByItinerary);
         }
         //===============================================================================================================================
         [HttpGet("GetCityArea")]

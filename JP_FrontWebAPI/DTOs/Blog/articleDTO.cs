@@ -21,7 +21,8 @@ namespace JP_FrontWebAPI.DTOs.Blog
         // 如果需要，可以取消注释以下行
         // public string Image { get; set; }
         //public List<HashTag> HashTags { get; set; } = new List<HashTag>();
-
+        public string MemberName { get; set; }
+        public string? ImagePath { get; set; }
     }
 
 

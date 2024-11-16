@@ -49,7 +49,7 @@ namespace JP_FrontWebAPI.Controllers
             //_notificationService = notificationService;
         }
 
-        [HttpPost]
+        [HttpPost("RequestPayment")]
         public async Task<IActionResult> RequestPayment([FromBody] CheckOutDTO checkOutDto)
         {
             // 使用 JwtService 來獲取 fUserId

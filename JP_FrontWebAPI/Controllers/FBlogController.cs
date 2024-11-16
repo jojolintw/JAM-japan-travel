@@ -29,6 +29,7 @@ namespace JP_FrontWebAPI.Controllers
         {
 
             var articles = await _context.ArticleMains
+                .Include(a => a.Member) // 加載 Member 資料
         .Include(a => a.ArticleHashtags) // 确保加载 ArticleHashtags
         .ThenInclude(h => h.HashtagNumberNavigation) // 加载 HashtagMain
         .ToListAsync();
@@ -41,7 +42,9 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleTitle = a.ArticleTitle,
                 LastUpdateTime = a.ArticleLastupatetime,
                 ArticleContent = a.ArticleContent,
-                ArticleHashtags = a.ArticleHashtags.Select(h => h.HashtagNumberNavigation.HashtagName).ToList() // 获取标签名称
+                ArticleHashtags = a.ArticleHashtags.Select(h => h.HashtagNumberNavigation.HashtagName).ToList(),// 获取标签名称
+                MemberName = a.Member.MemberName, // 抓取 MemberName
+                ImagePath = a.Member.ImagePath // 將 Member 的 ImagePath 加入到 DTO 中
             }).ToList();
 
             return Ok(articleDtos);
@@ -56,6 +59,7 @@ namespace JP_FrontWebAPI.Controllers
             var article = await _context.ArticleMains
         .Include(a => a.ArticleHashtags) // 加载 ArticleHashtags
         .ThenInclude(h => h.HashtagNumberNavigation) // 加载 HashtagMain
+        .Include(a => a.Member) // 加载 Member 資料
         .FirstOrDefaultAsync(a => a.ArticleNumber == id); // 使用 FirstOrDefaultAsync
 
             if (article == null)
@@ -73,7 +77,10 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleContent = article.ArticleContent,
                 ArticleHashtags = article.ArticleHashtags
                     .Select(h => h.HashtagNumberNavigation.HashtagName) // 提取标签名称
-                    .ToList()
+                    .ToList(),
+                // 這裡新增會員名稱和圖片路徑
+                MemberName = article.Member.MemberName,  // 會員名稱
+                ImagePath = article.Member.ImagePath    // 會員圖片路徑
             };
 
             return Ok(articleDto);

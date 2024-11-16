@@ -14,7 +14,7 @@ using static JP_FrontWebAPI.DTOs.Order.LinepayDTO;
 
 namespace JP_FrontWebAPI.Service
 {
-    public class LinePayService : ILinePayService
+    public class LinePayService/* : ILinePayService*/
     {
         private readonly string channelId = "2006530351";  // 替換為您的 Channel ID
         private readonly string channelSecretKey = "96f3c66527b68f45c7dee92962c58855";  // 替換為您的 Channel Secret
@@ -29,63 +29,63 @@ namespace JP_FrontWebAPI.Service
         }
 
 
-        public async Task<PaymentResponseDto> Request(PaymentRequestDto dto)
-        {
-            PaymentResponseDto linePayResponse;
-            var json = _jsonProvider.Serialize(dto);
-            // 產生 GUID Nonce
-            var nonce = Guid.NewGuid().ToString();
-            // 要放入 signature 中的 requestUrl
-            var requestUrl = "/v3/payments/request";
+        //public async Task<PaymentResponseDto> Request(PaymentRequestDto dto)
+        //{
+        //    PaymentResponseDto linePayResponse;
+        //    var json = _jsonProvider.Serialize(dto);
+        //    // 產生 GUID Nonce
+        //    var nonce = Guid.NewGuid().ToString();
+        //    // 要放入 signature 中的 requestUrl
+        //    var requestUrl = "/v3/payments/request";
 
-            //使用 channelSecretKey & requestUrl & jsonBody & nonce 做簽章
-            var signature = SignatureProvider.HMACSHA256(channelSecretKey, channelSecretKey + requestUrl + json + nonce);
+        //    //使用 channelSecretKey & requestUrl & jsonBody & nonce 做簽章
+        //    var signature = SignatureProvider.HMACSHA256(channelSecretKey, channelSecretKey + requestUrl + json + nonce);
 
-            using (HttpClient client = new())
-            {
-                var request = new HttpRequestMessage(HttpMethod.Post, linePayBaseApiUrl + requestUrl)
-                {
-                    Content = new StringContent(json, Encoding.UTF8, "application/json")
-                };
-                // 帶入 Headers
-                client.DefaultRequestHeaders.Add("X-LINE-ChannelId", channelId);
-                client.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
-                client.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
+        //    using (HttpClient client = new())
+        //    {
+        //        var request = new HttpRequestMessage(HttpMethod.Post, linePayBaseApiUrl + requestUrl)
+        //        {
+        //            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        //        };
+        //        // 帶入 Headers
+        //        client.DefaultRequestHeaders.Add("X-LINE-ChannelId", channelId);
+        //        client.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
+        //        client.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
 
-                var response = await client.SendAsync(request);
-                var resultString = await response.Content.ReadAsStringAsync();
-                linePayResponse = _jsonProvider.Deserialize<PaymentResponseDto>(resultString);
-                linePayResponse.Info.StringTransactionId = linePayResponse.Info.TransactionId.ToString();
-            }
+        //        var response = await client.SendAsync(request);
+        //        var resultString = await response.Content.ReadAsStringAsync();
+        //        linePayResponse = _jsonProvider.Deserialize<PaymentResponseDto>(resultString);
+        //        linePayResponse.Info.StringTransactionId = linePayResponse.Info.TransactionId.ToString();
+        //    }
 
-            return linePayResponse;
-        }
+        //    return linePayResponse;
+        //}
 
 
-        public async Task<PaymentConfirmResponseDto> Confirm(string transactionId, string orderId, PaymentConfirmDto dto)
-        {
-            PaymentConfirmResponseDto result;
+        //public async Task<PaymentConfirmResponseDto> Confirm(string transactionId, string orderId, PaymentConfirmDto dto)
+        //{
+        //    PaymentConfirmResponseDto result;
 
-            var json = _jsonProvider.Serialize(dto);
+        //    var json = _jsonProvider.Serialize(dto);
 
-            using (HttpClient client = new())
-            {
-                var nonce = Guid.NewGuid().ToString();
-                var requestUrl = string.Format("/v3/payments/{0}/confirm", transactionId);
-                var signature = SignatureProvider.HMACSHA256(channelSecretKey, channelSecretKey + requestUrl + json + nonce);
-                var request = new HttpRequestMessage(HttpMethod.Post, linePayBaseApiUrl + requestUrl)
-                {
-                    Content = new StringContent(json, Encoding.UTF8, "application/json")
-                };
-                client.DefaultRequestHeaders.Add("X-LINE-ChannelId", channelId);
-                client.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
-                client.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
+        //    using (HttpClient client = new())
+        //    {
+        //        var nonce = Guid.NewGuid().ToString();
+        //        var requestUrl = string.Format("/v3/payments/{0}/confirm", transactionId);
+        //        var signature = SignatureProvider.HMACSHA256(channelSecretKey, channelSecretKey + requestUrl + json + nonce);
+        //        var request = new HttpRequestMessage(HttpMethod.Post, linePayBaseApiUrl + requestUrl)
+        //        {
+        //            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        //        };
+        //        client.DefaultRequestHeaders.Add("X-LINE-ChannelId", channelId);
+        //        client.DefaultRequestHeaders.Add("X-LINE-Authorization-Nonce", nonce);
+        //        client.DefaultRequestHeaders.Add("X-LINE-Authorization", signature);
 
-                var response = await client.SendAsync(request);
-                result = _jsonProvider.Deserialize<PaymentConfirmResponseDto>(await response.Content.ReadAsStringAsync());
-            }
-            return result;
-        }
+        //        var response = await client.SendAsync(request);
+        //        result = _jsonProvider.Deserialize<PaymentConfirmResponseDto>(await response.Content.ReadAsStringAsync());
+        //    }
+        //    return result;
+        //}
 
 
 

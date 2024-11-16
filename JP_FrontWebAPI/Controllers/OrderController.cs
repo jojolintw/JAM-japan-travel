@@ -34,10 +34,9 @@ namespace JP_FrontWebAPI.Controllers
             _linePayService = new LinePayService();
         }
 
-        string memberName = "";
+        string memberName = "未使用優惠券";
         decimal discount = 0;
         string couponName = "";
-
 
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrderAsync([FromBody] OrderData orderData)

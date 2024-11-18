@@ -160,7 +160,7 @@ namespace JP_FrontWebAPI.Controllers
 
                 Member member = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
 
-                _emailService.SendEmailAsync("chaosabyss73@gmail.com", subject, body);
+                _emailService.SendEmailAsync(member.Email, subject, body);
                 return Ok((new { result = "success" }));
             }
             return Ok((new { result = "fail" }));
@@ -190,12 +190,12 @@ namespace JP_FrontWebAPI.Controllers
                 Member forgetpasswordmember = _context.Members.FirstOrDefault(m => m.Email == l.Email);
             if (forgetpasswordmember == null) 
             {
-                return Ok((new { result = "fail", message="查無此人" }));
+                return Ok((new { result = "fail", message="找不到帳號" }));
             }
 
-            string recipientEmail = "chaosabyss73@gmail.com";
-            string subject = "重設密碼";
-            string body = "<a href=\"http://localhost:4200/login/resetpassword\">點擊重設密碼</a>";
+            string recipientEmail = forgetpasswordmember.Email;
+            string subject = "重設密碼確認";
+            string body = "" +"<a href=\"http://localhost:4200/login/resetpassword\">點擊重設密碼</a>";
 
             _emailService.SendEmailAsync(recipientEmail, subject, body);
 

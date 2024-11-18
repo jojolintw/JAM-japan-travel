@@ -79,7 +79,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItineraryDateSystem.ItinerarySystem.ItineraryName,
                     DepartureDate = Convert.ToDateTime(s.ItineraryDateSystem.DepartureDate).ToString("yyyy-MM-dd HH:mm"),
                     Quantity =Convert.ToInt32(s.Quantity),
-                    TotalPrice = (Convert.ToInt32(s.ItineraryDateSystem.ItinerarySystem.Price)* Convert.ToInt32(s.Quantity)).ToString("###,###")
+                    TotalPrice = (Convert.ToInt32(s.ItineraryDateSystem.ItinerarySystem.Price)).ToString("###,###")
                 }).ToList(); 
 
 

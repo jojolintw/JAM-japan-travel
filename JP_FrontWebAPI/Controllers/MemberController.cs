@@ -46,18 +46,18 @@ namespace JP_FrontWebAPI.Controllers
                 LoginMemberDTO loginDTO = new LoginMemberDTO();
                 loginDTO.MemberId = login.MemberId;
                 loginDTO.ChineseName = login.MemberName;
-                if(login.EnglishName!= null)
+                if (login.EnglishName != null)
                     loginDTO.EnglishName = login.EnglishName;
                 if (login.Gender != null)
                     if (login.Gender == true)
                     {
                         loginDTO.Gender = "true";
                     }
-                    else 
+                    else
                     {
                         loginDTO.Gender = "false";
                     }
-                    
+
                 if (login.Birthday != null)
                     loginDTO.Birthday = login.Birthday;
                 if (login.City?.CityAreaId != null)
@@ -78,8 +78,8 @@ namespace JP_FrontWebAPI.Controllers
                 if (login.ImagePath != null)
                     loginDTO.ImageUrl = $"{baseUrl}/images/Member/{login.ImagePath}";
                 var totoamount = _context.MemberTotalAmounts?.FirstOrDefault(m => m.MemberId == login.MemberId)?.TotalAmount;
-                if(totoamount!= null)
-                     loginDTO.TotalAmount = totoamount;
+                if (totoamount != null)
+                    loginDTO.TotalAmount = totoamount;
                 return Ok(new { result = "success", loginmember = loginDTO });
             }
 
@@ -101,20 +101,20 @@ namespace JP_FrontWebAPI.Controllers
 
                 var member = _context.Members.FirstOrDefault(m => m.MemberId == loginMemberId);
 
-                if(memberDTO != null)
+                if (memberDTO != null)
                     member.MemberName = memberDTO.MemberName;
                 if (memberDTO.EnglishName != null)
                     member.EnglishName = memberDTO.EnglishName;
-                if (memberDTO.Gender != null) 
+                if (memberDTO.Gender != null)
                 {
                     bool gender = true;
-                    if (memberDTO.Gender == "false") 
+                    if (memberDTO.Gender == "false")
                     {
                         gender = !gender;
                     }
                     member.Gender = gender;
                 }
-               
+
                 if (memberDTO.Birthday != null)
                     member.Birthday = Convert.ToDateTime(memberDTO.Birthday);
                 if (memberDTO.CityId != null)
@@ -133,7 +133,7 @@ namespace JP_FrontWebAPI.Controllers
 
                 _context.SaveChanges();
 
-                return Ok(new { result = "success"});
+                return Ok(new { result = "success" });
 
             }
             return Unauthorized(new { result = "noLogin" });
@@ -216,7 +216,7 @@ namespace JP_FrontWebAPI.Controllers
 
                 MyCollection myCollection = _context.MyCollections.FirstOrDefault(f => f.MemberId == mem.MemberId && f.ItinerarySystemId == iti.ItinerarySystemId);
 
-                if (myCollection != null) 
+                if (myCollection != null)
                 {
                     return Ok(new { result = "ismyfavirite" });
                 }
@@ -248,9 +248,9 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    DepartureDate= s.ItinerarySystem.ItineraryDates.Where(p => p.ItinerarySystemId == s.ItinerarySystemId).Select(a => a.DepartureDate).ToList(),
+                    DepartureDate = s.ItinerarySystem.ItineraryDates.Where(p => p.ItinerarySystemId == s.ItinerarySystemId).Select(a => a.DepartureDate).ToList(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
-                    Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName =="封面").Select(a => a.ImagePath).FirstOrDefault()}" 
+                    Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName == "封面").Select(a => a.ImagePath).FirstOrDefault()}"
                 }).ToList();
 
                 return Ok(allmyfavoriteItinerarys);
@@ -281,7 +281,7 @@ namespace JP_FrontWebAPI.Controllers
                     ItineraryName = s.ItinerarySystem.ItineraryName,
                     AreaSystemId = s.ItinerarySystem.AreaSystemId,
                     Price = s.ItinerarySystem.Price,
-                    DepartureDate= s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList(),
+                    DepartureDate = s.ItinerarySystem.ItineraryDates.Select(s => s.DepartureDate).ToList(),
                     ItineraryDetail = s.ItinerarySystem.ItineraryDetail,
                     Image = $"{baseUrl}/images/Product/{s.ItinerarySystem.Images.Where(p => p.ItinerarySystemId == s.ItinerarySystemId && p.ImageName == "封面").Select(a => a.ImagePath).FirstOrDefault()}"
                 }).ToList();
@@ -319,7 +319,7 @@ namespace JP_FrontWebAPI.Controllers
         {
             ItineraryOrderItem io = _context.ItineraryOrderItems.FirstOrDefault(o => o.ItineraryOrderItemId == comment.ordertetailId);
             io.CommentStar = comment.CommentStar;
-            if (io.CommentContent != null)
+            if (comment.CommentContent != null)
                 io.CommentContent = comment.CommentContent;
             io.CommentTime = Convert.ToDateTime(Convert.ToDateTime(comment.CommentTime).ToString("yyyy-MM-dd"));
             _context.SaveChanges();
@@ -332,7 +332,7 @@ namespace JP_FrontWebAPI.Controllers
             var request = _httpContextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
 
-            List<AllCommentsByItinerary> allCommentsByItinerary = _context.ItineraryOrderItems.Where(i => i.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId == id && i.CommentStar >0).Select(s => new AllCommentsByItinerary
+            List<AllCommentsByItinerary> allCommentsByItinerary = _context.ItineraryOrderItems.Where(i => i.ItineraryDateSystem.ItinerarySystem.ItinerarySystemId == id && i.CommentStar > 0).Select(s => new AllCommentsByItinerary
             {
                 MemberID = Convert.ToInt32(s.Order.MemberId),
                 MemberName = s.Order.Member.MemberName,
@@ -342,7 +342,9 @@ namespace JP_FrontWebAPI.Controllers
                 CommentTime = Convert.ToDateTime(s.CommentTime).ToString("yyyy-MM-dd")
             }).ToList();
 
-            return Ok(allCommentsByItinerary);
+                return Ok(allCommentsByItinerary);
+
+        
         }
         //===============================================================================================================================
         [HttpGet("GetCityArea")]

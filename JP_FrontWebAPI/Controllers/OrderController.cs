@@ -35,7 +35,7 @@ namespace JP_FrontWebAPI.Controllers
         }
 
         string memberName = "未使用優惠券";
-        decimal discount = 0;
+        decimal? discount = 0;
         string couponName = "";
 
         [HttpPost("CreateOrder")]
@@ -120,7 +120,7 @@ namespace JP_FrontWebAPI.Controllers
                 .Where(c => c.CouponId == orderData.couponId)
                 .FirstOrDefault();
 
-            if(discount!=null)
+            if(Discount!=null)
             {
                 discount = Discount.Discount;
                 couponName = Discount.CouponName;

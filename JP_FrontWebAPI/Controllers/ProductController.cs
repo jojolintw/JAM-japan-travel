@@ -82,14 +82,37 @@ namespace JP_FrontWebAPI.Controllers
                     .Where(i => i.ActivitySystem.ThemeSystemId == themeId)
                     .Select(i => new Itinerary_List
                     {
-                        // 映射所需屬性
                         ItinerarySystemId = i.ItinerarySystemId,
                         ItineraryName = i.ItineraryName,
-                        // ... 其他屬性
+                        AreaName = i.AreaSystem != null ? i.AreaSystem.AreaName : "",
+                        DepartureDate = i.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                        ActivitySystemId = i.ActivitySystem.ActivitySystemId,
+                        AvailableDate = i.Available,
+                        Price = i.Price,
+                        ImagePath = i.Images.Where(img => img.ItinerarySystemId == i.ItinerarySystemId && img.ImageName == "封面")
+                                    .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
+                                    .FirstOrDefault(),
                     })
                     .ToList();
+                var starRates = _JP.StarRatings
+                            .Select(sr => new { sr.ItinerarySystemId, sr.StarRate })
+                            .ToDictionary(sr => sr.ItinerarySystemId, sr => sr.StarRate);
 
-                return Ok(itineraries);
+                var result = itineraries.Select(n => new Itinerary_List
+                {
+                    ItinerarySystemId = n.ItinerarySystemId,
+                    ItineraryName = n.ItineraryName,
+                    AreaName = n.AreaName,
+                    DepartureDate = n.DepartureDate.ToList(),
+                    ActivitySystemId = n.ActivitySystemId,
+                    AvailableDate = n.AvailableDate,
+                    Price = n.Price,
+                    ImagePath = n.ImagePath,
+                    StarRate = starRates.TryGetValue(n.ItinerarySystemId, out var starRate) ? starRate : 0
+                }).ToList();
+
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -107,14 +130,37 @@ namespace JP_FrontWebAPI.Controllers
                     .Where(i => i.ActivitySystemId == activityId)
                     .Select(i => new Itinerary_List
                     {
-                        // 映射所需屬性
                         ItinerarySystemId = i.ItinerarySystemId,
                         ItineraryName = i.ItineraryName,
-                        // ... 其他屬性
+                        AreaName = i.AreaSystem != null ? i.AreaSystem.AreaName : "",
+                        DepartureDate = i.ItineraryDates.Select(d => d.DepartureDate).ToList(),
+                        ActivitySystemId = i.ActivitySystem.ActivitySystemId,
+                        AvailableDate = i.Available,
+                        Price = i.Price,
+                        ImagePath = i.Images.Where(img => img.ItinerarySystemId == i.ItinerarySystemId && img.ImageName == "封面")
+                                    .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
+                                    .FirstOrDefault(),
                     })
                     .ToList();
+                var starRates = _JP.StarRatings
+                            .Select(sr => new { sr.ItinerarySystemId, sr.StarRate })
+                            .ToDictionary(sr => sr.ItinerarySystemId, sr => sr.StarRate);
 
-                return Ok(itineraries);
+                var result = itineraries.Select(n => new Itinerary_List
+                {
+                    ItinerarySystemId = n.ItinerarySystemId,
+                    ItineraryName = n.ItineraryName,
+                    AreaName = n.AreaName,
+                    DepartureDate = n.DepartureDate.ToList(),
+                    ActivitySystemId = n.ActivitySystemId,
+                    AvailableDate = n.AvailableDate,
+                    Price = n.Price,
+                    ImagePath = n.ImagePath,
+                    StarRate = starRates.TryGetValue(n.ItinerarySystemId, out var starRate) ? starRate : 0
+                }).ToList();
+
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -167,6 +213,8 @@ namespace JP_FrontWebAPI.Controllers
                 {
                     ItinerarySystemId = n.ItinerarySystemId,
                     ItineraryName = n.ItineraryName,
+                    ThemeName = n.ActivitySystem.ThemeSystem.ThemeName,
+                    ThemeSystemId = n.ActivitySystem.ThemeSystemId,
                     ActivityName = n.ActivitySystem.ActivityName,
                     ActivitySystemId = n.ActivitySystem.ActivitySystemId,
                     Price = (decimal)n.Price,
@@ -180,10 +228,10 @@ namespace JP_FrontWebAPI.Controllers
                                                      }).ToList(),
                     ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId && i.ImageName == "內文")
                                         .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath).ToList(),
-                    Theme_Activity = new Theme_Activity // 直接在这里填充主题活动信息
+                    Theme_Activity = new Theme_Activity
                     {
-                        ThemeSystemId = (int)n.ActivitySystem.ThemeSystemId, // 确保 ActivitySystem 有 ThemeSystemId 属性
-                        ThemeName = n.ActivitySystem.ThemeSystem.ThemeName, // 确保 ActivitySystem 有 ThemeSystem 属性
+                        ThemeSystemId = (int)n.ActivitySystem.ThemeSystemId,
+                        ThemeName = n.ActivitySystem.ThemeSystem.ThemeName,
                         Activities = new List<Activity>
                         {
                             new Activity
@@ -209,6 +257,8 @@ namespace JP_FrontWebAPI.Controllers
             {
                 ItinerarySystemId = data.ItinerarySystemId,
                 ItineraryName = data.ItineraryName,
+                ThemeSystemId = data.ThemeSystemId,
+                ThemeName = data.ThemeName,
                 ActivityName = data.ActivityName,
                 ActivitySystemId = data.ActivitySystemId,
                 Price = data.Price,
@@ -251,7 +301,7 @@ namespace JP_FrontWebAPI.Controllers
                 query = query.Where(i => i.ActivitySystem.ActivitySystemId == searchForm.ActivityId);
             }
 
-            var result = query.Select(n => new Itinerary_List
+            var datas = query.Select(n => new Itinerary_List
             {
                 ItinerarySystemId = n.ItinerarySystemId,
                 ItineraryName = n.ItineraryName ?? "",
@@ -262,7 +312,24 @@ namespace JP_FrontWebAPI.Controllers
                 Price = n.Price,
                 ImagePath = n.Images.Where(i => i.ItinerarySystemId == n.ItinerarySystemId && i.ImageName == "封面")
                                    .Select(i => "https://localhost:7100/images/Product/" + i.ImagePath)
-                                   .FirstOrDefault()
+                                   .FirstOrDefault(),
+            }).ToList();
+
+            var starRates = _JP.StarRatings
+                            .Select(sr => new { sr.ItinerarySystemId, sr.StarRate })
+                            .ToDictionary(sr => sr.ItinerarySystemId, sr => sr.StarRate);
+
+            var result = datas.Select(n => new Itinerary_List
+            {
+                ItinerarySystemId = n.ItinerarySystemId,
+                ItineraryName = n.ItineraryName,
+                AreaName = n.AreaName,
+                DepartureDate = n.DepartureDate.ToList(),
+                ActivitySystemId = n.ActivitySystemId,
+                AvailableDate = n.AvailableDate,
+                Price = n.Price,
+                ImagePath = n.ImagePath,
+                StarRate = starRates.TryGetValue(n.ItinerarySystemId, out var starRate) ? starRate : 0
             }).ToList();
 
             switch (searchForm.SortBy?.ToLower())
@@ -273,8 +340,11 @@ namespace JP_FrontWebAPI.Controllers
                 case "latest":  // 最優惠
                     result = result.OrderBy(i => i.Price).ToList();
                     break;
-                default:  // "popular" 或其他 - 最熱門
-                    result = result.OrderBy(i => i.ItineraryName).ToList();  // 這裡可以改成依照您的熱門定義來排序
+                case "popular":  // 最熱門
+                    result = result.OrderByDescending(i => i.StarRate).ToList();
+                    break;
+                default:
+                    result = result.OrderBy(i =>i.ItinerarySystemId).ToList(); 
                     break;
             }
 
@@ -308,22 +378,26 @@ namespace JP_FrontWebAPI.Controllers
         public ActionResult<OrderComments> GetCommentsByItineraryId(int itinerarySystemId)
         {
             var orderCommentsData = _JP.Orders
-                .Where(o => o.ItineraryOrderItems.Any(io => io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId))
-                .Select(o => new OrderComments
-                {
-                    MemberId = (int)o.MemberId,
-                    MemberName = o.Member.MemberName,
-                    OrderId = o.OrderId,
-                    Comments = o.ItineraryOrderItems
-                        .Where(io => io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId) // 只选择与指定行程相关的评论
-                        .Select(io => new Comments
-                        {
-                            ItinerarySystemId = io.ItineraryDateSystem.ItinerarySystemId,
-                            CommentStar = io.CommentStar,
-                            CommentContent = io.CommentContent,
-                            CommentDate = io.CommentTime.ToString() // 确保 CommentTime 处理为字符串
-                        }).ToList()
-                });
+                                    .Where(o => o.ItineraryOrderItems.Any(io =>
+                                    io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId &&
+                                    io.CommentStar.HasValue && !string.IsNullOrEmpty(io.CommentContent)))
+                                    .Select(o => new OrderComments
+                                    {
+                                        MemberId = (int)o.MemberId,
+                                        MemberName = o.Member.MemberName,
+                                        OrderId = o.OrderId,
+                                        Comments = o.ItineraryOrderItems
+                                            .Where(io =>
+                                                io.ItineraryDateSystem.ItinerarySystemId == itinerarySystemId &&
+                                                io.CommentStar.HasValue && !string.IsNullOrEmpty(io.CommentContent))
+                                            .Select(io => new Comments
+                                            {
+                                                ItinerarySystemId = io.ItineraryDateSystem.ItinerarySystemId,
+                                                CommentStar = io.CommentStar,
+                                                CommentContent = io.CommentContent,
+                                                CommentDate = io.CommentTime.ToString()
+                                            }).ToList()
+                                    }).ToList();
 
             if (orderCommentsData == null)
             {

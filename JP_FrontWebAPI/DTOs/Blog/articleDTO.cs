@@ -23,6 +23,9 @@ namespace JP_FrontWebAPI.DTOs.Blog
         //public List<HashTag> HashTags { get; set; } = new List<HashTag>();
         public string MemberName { get; set; }
         public string? ImagePath { get; set; }
+
+        // 新增：用來儲存提取的 Base64 圖片
+        public List<string> ArticleImages { get; set; } = new List<string>();
     }
 
 

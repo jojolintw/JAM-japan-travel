@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using static JP_FrontWebAPI.DTOs.Blog.ArticleDTO;
+using HtmlAgilityPack;
 
 namespace JP_FrontWebAPI.Controllers
 {
@@ -44,10 +45,44 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleContent = a.ArticleContent,
                 ArticleHashtags = a.ArticleHashtags.Select(h => h.HashtagNumberNavigation.HashtagName).ToList(),// 获取标签名称
                 MemberName = a.Member.MemberName, // 抓取 MemberName
-                ImagePath = a.Member.ImagePath // 將 Member 的 ImagePath 加入到 DTO 中
+                ImagePath = a.Member.ImagePath, // 將 Member 的 ImagePath 加入到 DTO 中
+                // 提取 HTML 文章內容中的圖片
+                ArticleImages = ExtractImagesFromHtml(a.ArticleContent)
             }).ToList();
 
             return Ok(articleDtos);
+        }
+
+        private List<string> ExtractImagesFromHtml(string articleContent)
+        {
+            var images = new List<string>();
+
+            if (string.IsNullOrEmpty(articleContent))
+                return images;
+
+            // 使用 HtmlAgilityPack 解析 HTML
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(articleContent);
+
+            // 查找所有 <img> 標籤
+            var imgNodes = htmlDoc.DocumentNode.SelectNodes("//img");
+
+            if (imgNodes != null)
+            {
+                foreach (var img in imgNodes)
+                {
+                    // 提取 <img> 標籤中的 src 屬性
+                    var src = img.GetAttributeValue("src", "");
+
+                    // 確保 src 是 Base64 編碼的圖片數據
+                    if (src.StartsWith("data:image"))
+                    {
+                        images.Add(src);
+                    }
+                }
+            }
+
+            return images;
         }
 
         //根據id獲取文章
@@ -112,7 +147,9 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleContent = a.ArticleContent,
                 ArticleHashtags = a.ArticleHashtags
                     .Select(h => h.HashtagNumberNavigation.HashtagName)
-                    .ToList()
+                    .ToList(),
+                MemberName = a.Member.MemberName, // 抓取 MemberName
+                ImagePath = a.Member.ImagePath, // 將 Member 的 ImagePath 加入到 DTO 中
             }).ToList();
 
             return Ok(articleDtos);
@@ -159,7 +196,9 @@ namespace JP_FrontWebAPI.Controllers
                 ArticleContent = a.ArticleContent,
                 ArticleHashtags = a.ArticleHashtags
                     .Select(ah => ah.HashtagNumberNavigation.HashtagName)
-                    .ToList()
+                    .ToList(),
+                MemberName = a.Member.MemberName, // 抓取 MemberName
+                ImagePath = a.Member.ImagePath, // 將 Member 的 ImagePath 加入到 DTO 中
             }).ToList();
 
             return Ok(articleDtos);

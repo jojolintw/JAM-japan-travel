@@ -132,7 +132,7 @@ namespace JP_FrontWebAPI.Controllers
             try
             {
                 // 設定郵件內容
-                string to = "luchienyu0313@gmail.com";  // 假設從 orderData 中獲取用戶的 email
+                string to = MemberName.Email;  // 假設從 orderData 中獲取用戶的 email
                 string subject = "Japan Activity Memory (JAM) 訂單通知";
                 string body = $@"
                 <!DOCTYPE html>

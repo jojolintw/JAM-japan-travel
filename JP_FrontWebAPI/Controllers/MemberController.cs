@@ -336,7 +336,9 @@ namespace JP_FrontWebAPI.Controllers
             {
                 MemberID = Convert.ToInt32(s.Order.MemberId),
                 MemberName = s.Order.Member.MemberName,
-                MemberPhotoURL = $"{baseUrl}/images/Member/{s.Order.Member.ImagePath}",
+                MemberPhotoURL = !string.IsNullOrEmpty(s.Order.Member.ImagePath)
+                ? $"{baseUrl}/images/Member/{s.Order.Member.ImagePath}"
+                : null,
                 CommentStar = Convert.ToInt32(s.CommentStar),
                 CommentContent = !string.IsNullOrEmpty(s.CommentContent) ? s.CommentContent : null,
                 CommentTime = Convert.ToDateTime(s.CommentTime).ToString("yyyy-MM-dd")
